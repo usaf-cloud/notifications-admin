@@ -62,9 +62,11 @@
 
   &-error {
 
-    border-left: 5px solid $error-colour;
-    padding-left: 7px;
+    border-left: 8px solid $error-colour;
+    margin-left: -13px;
+    padding-left: 5px;
     display: block;
+    height: 100%;
 
     &-label {
       display: block;
@@ -179,7 +181,7 @@
 .table-show-more-link {
   @include core-16;
   color: $secondary-text-colour;
-  margin-top: -30px;
+  margin-top: 0;
   margin-bottom: $gutter * 1.3333;
   border-bottom: 1px solid $border-colour;
   padding: 0.75em 0 0.5625em 0;
@@ -247,8 +249,12 @@ a.table-show-more-link {
     cursor: pointer;
   }
 
-  .table-field-center-aligned {
-    min-width: 15.5em;
+  .table-field-center-aligned,
+  .table-field-heading {
+    white-space: nowrap;
+    input {
+      min-width: 15em;
+    }
   }
 
   .table-field-index,

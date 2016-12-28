@@ -155,11 +155,18 @@
     caption=original_file_name,
     field_headings=['1'] + recipients.column_headers
   ) %}
-    {{ index_field(item.index + 2) }}
+    <td class="table-field-index">
+      {% if item['has_errors'] and not recipients.missing_column_headers %}
+        <span class="table-field-error">
+      {% else %}
+        <span>
+      {% endif %}
+        {{ item.index + 2 }}</span>
+    </td>
     {% for column in recipients.column_headers %}
       {% if item['columns'][column].error and not recipients.missing_column_headers %}
         {% call field() %}
-          <span class="table-field-error">
+          <span>
             <span class="table-field-error-label">{{ item['columns'][column].error }}</span>
             {{ item['columns'][column].data if item['columns'][column].data != None }}
           </span>
