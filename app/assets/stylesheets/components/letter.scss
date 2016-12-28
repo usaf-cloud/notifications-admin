@@ -1,3 +1,5 @@
+$transition-speed: 0.2s;
+
 .letter {
 
   font-family: Helvetica, Arial, sans-serif;
@@ -18,6 +20,16 @@
     transform: skew(-1deg, 0deg) scale(1, 0.99);
     transform-origin: left bottom;
     box-shadow: inset 0 0 0 2px $panel-colour;
+    // Easing function from: http://easings.net/#easeOutBack
+    transition: transform $transition-speed cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  &:hover {
+
+    &:after {
+      transform: skew(-1.5deg, 0deg) scale(1, 0.97);
+      transition: transform ($transition-speed / 2) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
 
   }
 
