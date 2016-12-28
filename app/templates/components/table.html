@@ -25,7 +25,7 @@
 {% macro list_table(items, caption='', empty_message='', field_headings=[], field_headings_visible=True, caption_visible=True) -%}
 
   {% set parent_caller = caller %}
-
+  <div class="scrollable-table" data-module="scrollable-table">
   {% call mapping_table(caption, field_headings, field_headings_visible, caption_visible) %}
     {% for item in items %}
       {% call row(item.id) %}
@@ -40,6 +40,7 @@
       {% endcall %}
     {% endif %}
   {%- endcall %}
+  </div>
 
 {%- endmacro %}
 
