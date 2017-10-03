@@ -229,24 +229,22 @@ def service_switch_research_mode(service_id):
     return redirect(url_for('.service_settings', service_id=service_id))
 
 
-def switch_service_permissions(service_id, permission, sms_sender=None):
+def switch_service_permissions(service_id, permission):
 
     force_service_permission(
         service_id,
         permission,
-        on=permission not in current_service['permissions'],
-        sms_sender=sms_sender
+        on=permission not in current_service['permissions']
     )
 
 
-def force_service_permission(service_id, permission, on=False, sms_sender=None):
+def force_service_permission(service_id, permission, on=False):
 
     permissions, permission = set(current_service['permissions']), {permission}
 
     update_service_permissions(
         service_id,
-        permissions | permission if on else permissions - permission,
-        sms_sender=sms_sender
+        permissions | permission if on else permissions - permission
     )
 
 
@@ -420,6 +418,24 @@ def service_set_sms_sender(service_id):
     return render_template(
         'views/service-settings/set-sms-sender.html',
         form=form)
+
+
+# @main.route("/services/<service_id>/service-settings/allow-inbound-number")
+# @login_required
+# @user_has_permissions('manage_settings', admin_override=True)
+# def service_set_inbound_sms_permission(service_id):
+#     switch_service_permissions(current_service['id'], 'inbound_sms')
+#     set_inbound_sms = request.args.get('set_inbound_sms', False)
+#     try:
+#         if set_inbound_sms == 'True':
+#             inbound_number_client.activate_inbound_sms_service(service_id)
+#             return redirect(url_for('.service_settings', service_id=service_id))
+#         else:
+#             inbound_number_client.deactivate_inbound_sms_permission(service_id=service_id)
+#             return redirect(url_for('.service_set_sms_sender', service_id=service_id))
+#     except HTTPError as e:
+#         switch_service_permissions(current_service['id'], 'inbound_sms')
+#         raise e
 
 
 @main.route("/services/<service_id>/service-settings/set-inbound-number", methods=['GET'])
