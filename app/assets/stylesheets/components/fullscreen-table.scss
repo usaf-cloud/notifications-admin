@@ -26,6 +26,7 @@ body.with-fullscreen {
   }
 
   &-content {
+
     width: 100%;
     background: $white;
     z-index: 10;
@@ -35,16 +36,26 @@ body.with-fullscreen {
     position: relative;
     padding-left: $gutter-half;
 
-    td,
-    th {
-      min-width: 20em;
-    }
-
     .banner-dangerous {
       margin: $gutter-half $gutter-half 0 $gutter-half;
       position: sticky;
       left: 0;
     }
+
+    .table {
+      border-right: $gutter-half solid $white;  // border used as padding
+    }
+
+    th,
+    .table-field-error-label {
+      white-space: nowrap;
+    }
+
+    .table-show-more-link {
+      border: none;
+      text-align: left;
+    }
+
   }
 
   &-shim {
@@ -55,6 +66,7 @@ body.with-fullscreen {
   }
 
   &-sticky-bar {
+
     z-index: 20;
     padding-right: 0;
 
@@ -67,6 +79,7 @@ body.with-fullscreen {
     .file-upload-button {
       margin: 0 0 0 $gutter-half;
     }
+
   }
 
 }
