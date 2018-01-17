@@ -13,9 +13,6 @@
 {% endblock %}
 
 {% block right_column %}
-  <div style="margin-top: 42px; text-align: right;">
-    <a href="{{ url_for('.casework_dashboard', service_id=current_service.id) }}">Back to home</a>
-  </div>
 {% endblock %}
 {% block left_column %}
   <h2 class="heading-large">
@@ -23,7 +20,7 @@
   </h2>
   <form method="post" class="js-stick-at-top-when-scrolling" data-module="autofocus" autocomplete="off" novalidate>
     <div class="grid-row">
-      <div class="column-two-thirds {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}">
+      <div class="column-half {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}">
         {{ textbox(
           form.placeholder_value,
           hint='Optional' if optional_placeholder else None,

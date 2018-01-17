@@ -11,7 +11,10 @@
   Dashboard
 {% endblock %}
 
-{% block right_column %}
+{% block left_column %}
+<div style="padding: 42px 0 0 0">
+  <a href="{{ url_for('.casework_dashboard_template', service_id=current_service.id) }}" class="pill-separate-item" style="text-align: center; padding: 37px 0; font-weight: bold;font-size: 24px;">Send new message</a>
+</div>
   <div style="padding: 40px 0 0 0">
     <form
       method="post"
@@ -33,8 +36,6 @@
     {% include "views/activity/notifications.html" %}
   </div>
 {% endblock %}
-{% block left_column %}
-  <div style="padding: 42px 30px 0 0">
-    <a href="{{ url_for('.casework_dashboard_template', service_id=current_service.id) }}" class="pill-separate-item" style="text-align: center; padding: 37px 0">New message</a>
-  </div>
+{% block right_column %}
+
 {% endblock %}
