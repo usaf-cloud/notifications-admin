@@ -6,9 +6,6 @@ from flask import (
     Response,
     abort,
     current_app,
-    render_template,
-    url_for,
-    session,
     jsonify,
     render_template,
     request,
@@ -32,7 +29,7 @@ from app import (
 )
 from app.main import main
 from app.statistics_utils import add_rate_to_job, get_formatted_percentage
-from app.main.forms import SearchTemplatesForm, get_placeholder_form_instance
+from app.main.forms import SearchTemplatesForm, SearchNotificationsForm, get_placeholder_form_instance
 from app.main.views.jobs import (
     add_preview_of_content_to_notifications,
     parse_filter_args,
@@ -85,6 +82,25 @@ def service_dashboard(service_id):
     )
 
 
+@main.route("/services/<service_id>/casework-dashboard/choose")
+@login_required
+@user_has_permissions('view_activity', admin_override=True)
+def casework_dashboard_template(service_id, template_id=None):
+
+    if session.get('invited_user'):
+        session.pop('invited_user', None)
+        session['service_id'] = service_id
+
+    templates = service_api_client.get_service_templates(service_id)['data']
+
+    return render_template(
+        'views/dashboard/casework-choose.html',
+        templates=templates,
+        search_form=SearchTemplatesForm(),
+        show_search_box=len(templates) > 7,
+    )
+
+
 @main.route("/services/<service_id>/casework-dashboard")
 @main.route("/services/<service_id>/casework-dashboard/<template_id>")
 @login_required
@@ -120,15 +136,46 @@ def casework_dashboard(service_id, template_id=None):
         )
     else:
         return render_template(
-            'views/dashboard/casework-new-message.html',
+            'views/dashboard/casework-home.html',
             templates=templates,
             notifications=list(add_preview_of_content_to_notifications(
                 notifications * 10
             )),
-            search_form=SearchTemplatesForm(),
+            search_form=SearchNotificationsForm(),
             show_search_box=len(templates) > 7,
             right_col_title='New message',
         )
+
+
+@main.route("/services/<service_id>/casework-dashboard/<template_id>/sent")
+@login_required
+@user_has_permissions('view_activity', admin_override=True)
+def casework_sent(service_id, template_id):
+
+    templates = service_api_client.get_service_templates(service_id)['data']
+
+    filter_args = parse_filter_args(request.args)
+    filter_args['status'] = set_status_filters(filter_args)
+    notifications = notification_api_client.get_notifications_for_service(
+        service_id=service_id,
+        template_type=['sms'],
+        status=filter_args.get('status'),
+        limit_days=current_app.config['ACTIVITY_STATS_LIMIT_DAYS'],
+    )['notifications']
+
+    template = service_api_client.get_service_template(service_id, template_id)
+    template = get_template(template['data'], current_service, show_recipient=True)
+    template.values = {'phonenumber': '07815 838 437', 'name': 'Mr Hill-Scott'}
+    return render_template(
+        'views/dashboard/casework-sent.html',
+        templates=templates,
+        notifications=list(add_preview_of_content_to_notifications(
+            notifications * 10
+        )),
+        search_form=SearchNotificationsForm(),
+        show_search_box=len(templates) > 7,
+        template=template,
+    )
 
 
 
