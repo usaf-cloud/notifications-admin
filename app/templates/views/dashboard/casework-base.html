@@ -13,14 +13,9 @@
 {% block maincolumn_content %}
   <div class="grid-row">
     <div class="column-half">
-      <div style="padding: 40px 30px 0 0">
-        {% include "views/activity/notifications.html" %}
-      </div>
+      {% block left_column %}{% endblock %}
     </div>
     <div class="column-half">
-      <h2 class="heading-large">
-        {{ right_col_title }}
-      </h2>
       {% block right_column %}{% endblock %}
     </div>
   </div>
