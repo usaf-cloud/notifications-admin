@@ -2,6 +2,7 @@ import calendar
 from datetime import datetime
 from functools import partial
 from flask import (
+    current_app,
     render_template,
     url_for,
     session,
@@ -19,14 +20,22 @@ from app import (
     current_service,
     billing_api_client,
     job_api_client,
+    notification_api_client,
     service_api_client,
     template_statistics_client,
     inbound_number_client,
     format_date_numeric,
     format_datetime_numeric,
 )
+from app.main.forms import SearchTemplatesForm, get_placeholder_form_instance
+from app.main.views.jobs import (
+    add_preview_of_content_to_notifications,
+    parse_filter_args,
+    set_status_filters,
+)
 from app.statistics_utils import get_formatted_percentage, add_rate_to_job
 from app.utils import (
+    get_template,
     user_has_permissions,
     get_current_financial_year,
     FAILURE_STATUSES,
@@ -63,6 +72,53 @@ def service_dashboard(service_id):
         templates=service_api_client.get_service_templates(service_id)['data'],
         partials=get_dashboard_partials(service_id)
     )
+
+
+@main.route("/services/<service_id>/casework-dashboard")
+@main.route("/services/<service_id>/casework-dashboard/<template_id>")
+@login_required
+@user_has_permissions('view_activity', admin_override=True)
+def casework_dashboard(service_id, template_id=None):
+
+    if session.get('invited_user'):
+        session.pop('invited_user', None)
+        session['service_id'] = service_id
+
+    templates = service_api_client.get_service_templates(service_id)['data']
+
+    filter_args = parse_filter_args(request.args)
+    filter_args['status'] = set_status_filters(filter_args)
+    notifications = notification_api_client.get_notifications_for_service(
+        service_id=service_id,
+        template_type=['sms'],
+        status=filter_args.get('status'),
+        limit_days=current_app.config['ACTIVITY_STATS_LIMIT_DAYS'],
+    )['notifications']
+
+    if template_id:
+        template = service_api_client.get_service_template(service_id, template_id)
+        template = get_template(template['data'], current_service, show_recipient=True)
+        return render_template(
+            'views/dashboard/casework-template.html',
+            template=template,
+            notifications=list(add_preview_of_content_to_notifications(
+                notifications * 10
+            )),
+            form=get_placeholder_form_instance('phone number', dict()),
+            right_col_title=template.name,
+        )
+    else:
+        return render_template(
+            'views/dashboard/casework-new-message.html',
+            templates=templates,
+            notifications=list(add_preview_of_content_to_notifications(
+                notifications * 10
+            )),
+            search_form=SearchTemplatesForm(),
+            show_search_box=len(templates) > 7,
+            right_col_title='New message',
+        )
+
 
 
 @main.route("/services/<service_id>/dashboard.json")

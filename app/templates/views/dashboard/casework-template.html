@@ -1,0 +1,39 @@
+{% extends "views/dashboard/casework-base.html" %}
+
+{% from "components/big-number.html" import big_number, big_number_with_status %}
+{% from "components/show-more.html" import show_more %}
+{% from "components/message-count-label.html" import message_count_label %}
+{% from "components/table.html" import list_table, field, right_aligned_field_heading, hidden_field_heading %}
+{% from "components/ajax-block.html" import ajax_block %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block service_page_title %}
+  Dashboard
+{% endblock %}
+
+{% block right_column %}
+  <form method="post" class="js-stick-at-top-when-scrolling" data-module="autofocus" autocomplete="off" novalidate>
+    <div class="grid-row">
+      <div class="column-two-thirds {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}">
+        {{ textbox(
+          form.placeholder_value,
+          hint='Optional' if optional_placeholder else None,
+          width='1-1',
+        ) }}
+      </div>
+      {% if skip_link %}
+        <div class="column-one-third">
+          <a href="{{ skip_link[1] }}" class="top-gutter-4-3">{{ skip_link[0] }}</a>
+        </div>
+      {% endif %}
+    </div>
+    {{ page_footer('Continue', back_link=back_link) }}
+  </form>
+
+  <div class="bottom-gutter-2">
+    {{ template|string }}
+  </div>
+
+  {{ page_footer(secondary_link=url_for('.casework_dashboard', service_id=current_service.id), secondary_link_text='Back to templates') }}
+{% endblock %}
