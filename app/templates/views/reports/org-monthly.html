@@ -1,0 +1,67 @@
+{% from "components/big-number.html" import big_number %}
+{% from "components/message-count-label.html" import message_count_label %}
+{% from "components/table.html" import list_table, field, hidden_field_heading, row_heading, text_field, spark_bar %}
+{% from "components/report-nav.html" import org_report_nav %}
+
+{% extends "orgnav_template.html" %}
+
+{% block service_page_title %}
+  Reports
+{% endblock %}
+
+{% block maincolumn_content %}
+
+    {% include 'views/reports/_heading.html' %}
+
+    {{ org_report_nav(selected, current_service=current_service) }}
+
+    <div class="grid-row">
+      <div class="column-half">
+        {% include 'views/reports/_current-financial-year.html' %}
+      </div>
+      <div class="column-half">
+        {% include 'views/reports/_download.html' %}
+      </div>
+    </div>
+
+    <div class="dashboard-table body-copy-table">
+      {% call(month, row_index) list_table(
+        months,
+        caption="Total spend",
+        caption_visible=False,
+        empty_message='',
+        field_headings=[
+          hidden_field_heading('By month'),
+          hidden_field_heading('Cost')
+        ],
+        field_headings_visible=False
+      ) %}
+        {% call row_heading() %}
+          {{ month.name }}
+        {% endcall %}
+        {% call field(align='left') %}
+          {{ big_number(
+            (0.0155 * month.requested_sms) + (0.33 * month.requested_letters),
+            currency="£",
+            smallest=True
+          ) }}
+          <ul class="tabular-numbers">
+            <li>{{ month.requested_sms }} text messages at 1.55p</li>
+            <li>{{ month.requested_letters }} letters at 33p</li>
+          </ul>
+        {% endcall %}
+      {% endcall %}
+    </div>
+
+    {% from "components/previous-next-navigation.html" import previous_next_navigation %}
+    {{ previous_next_navigation({
+      'url': '#',
+      'title': '2016 to 2017',
+      'label': 'financial year'
+    }, {
+      'url': '#',
+      'title': '2018 to 2019',
+      'label': 'financial year'
+    }) }}
+
+{% endblock %}

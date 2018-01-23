@@ -211,7 +211,7 @@ def org_redirect():
 def org_reports(report='overview'):
     return render_template(
         'views/reports/org-{}.html'.format(report),
-        selected='foo',
+        selected=report,
         jobs=[],
         weeks=[],
         months=[
@@ -223,9 +223,9 @@ def org_reports(report='overview'):
             }
             for index, name in enumerate(reversed(get_months_for_financial_year(2017)))
         ],
-        numbers=[],
-        highest_number=0,
-        failures={},
+        numbers=numbers,
+        highest_number=max(numbers),
+        failures=failures,
         names=sorted(
             ({
                 'id': 'foo',
@@ -245,7 +245,12 @@ def org_reports(report='overview'):
                 'failure_rate': failures[index + 20],
             }
             for index, team in enumerate(teams)
-        ]
+        ],
+        services=enumerate([
+          'Bulky waste',
+          'Council tax reminders',
+          'Bin collection',
+        ]),
     )
 
 

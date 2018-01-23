@@ -1,6 +1,6 @@
 {% from "components/big-number.html" import big_number %}
 {% from "components/message-count-label.html" import message_count_label %}
-{% from "components/table.html" import list_table, field, hidden_field_heading, row_heading, text_field, spark_bar_field %}
+{% from "components/table.html" import list_table, field, hidden_field_heading, row_heading, text_field, spark_bar_field, spark_bar %}
 {% from "components/report-nav.html" import report_nav, org_report_nav %}
 {% from "components/previous-next-navigation.html" import previous_next_navigation %}
 
@@ -16,17 +16,36 @@
 
     {{ org_report_nav(selected, current_service=current_service) }}
 
-    <nav class="browse-list">
+    <nav class="browse-list dashboard-table">
       <ul>
-        {% for service_name in [
-          'Bulky waste',
-          'Council tax reminders',
-          'Bin collection'
-        ] %}
-          <li class="browse-list-item">
-            <a href="/organisations/test/redirect-to-service?fake_service_name={{ service_name }}" class="browse-list-link">{{ service_name }}</a>
-          </li>
+        {% for service_index, service_name in services %}
+          <div class="keyline-block bottom-gutter-2-3">
+            <div class="grid-row ">
+              <div class="column-half">
+                <li class="browse-list-item">
+                  <a href="/organisations/test/redirect-to-service?fake_service_name={{ service_name }}" class="browse-list-link">{{ service_name }}</a>
+                </li>
+              </div>
+              <div class="column-half">
+                {{ big_number(numbers[service_index] * 1.23, label, currency='£', smallest=True) }}
+              </div>
+            </div>
+            <div class="grid-row">
+              <div class="column-half">
+                {{ spark_bar(numbers[service_index + 5] * 51, highest_number * 51, failure_rate=failures[service_index + 5]) }}
+              </div>
+              <div class="column-half">
+                <ul class="tabular-numbers" style="list-style: none;">
+                  <li>{{ "{:,}".format(numbers[service_index + 5] * 33) }} text messages at 1.55p</li>
+                  <li>{{ "{:,}".format(numbers[service_index + 5] * 12) }} letters at 33p</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         {% endfor %}
+        <div class="keyline-block">
+          &nbsp;
+        </div>
       </ul>
     </nav>
 

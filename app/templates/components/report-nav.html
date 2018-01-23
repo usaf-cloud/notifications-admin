@@ -74,25 +74,25 @@
         (
             'Overview',
             'overview',
-            url_for('.reports', service_id=current_service.id),
+            url_for('.org_reports', service_id=current_service.id),
             ''
         ),
         (
             'Weekly',
             'weekly',
-            url_for('.reports', service_id=current_service.id, report='weekly'),
+            url_for('.org_reports', service_id=current_service.id, report='weekly'),
             ''
         ),
         (
             'Monthly spend',
             'monthly',
-            url_for('.reports', service_id=current_service.id, report='monthly'),
+            url_for('.org_reports', service_id=current_service.id, report='monthly'),
             ''
         ),
         (
             'Teams',
             'services',
-            url_for('.reports', service_id=current_service.id, report='services'),
+            url_for('.org_reports', service_id=current_service.id, report='services'),
             ''
         ),
       ],
