@@ -200,6 +200,8 @@ teams = [
 @login_required
 @user_has_permissions('view_activity', admin_override=True)
 def org_redirect():
+    if not current_service:
+        return redirect(url_for('.choose_service'))
     session['fake_service_name'] = request.args.get('fake_service_name')
     return redirect(url_for(".reports", service_id=current_service['id']))
 

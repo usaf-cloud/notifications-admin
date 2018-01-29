@@ -11,6 +11,13 @@
     Choose service
   </h1>
 
+  {{ browse_list([
+    {
+      'title': 'South Oxfordshire District Council',
+      'link': '/organisations/test/reports'
+    }
+  ]) }}
+  <div class="keyline-block">&nbsp;</div>
   {{ browse_list(services) }}
   {% if can_add_service %}
     {{ browse_list([
