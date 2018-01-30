@@ -1,4 +1,4 @@
-from flask import (render_template, redirect, url_for, session)
+from flask import render_template, redirect, url_for, session
 from flask_login import login_required, current_user
 from app.main import main
 from app import service_api_client
@@ -24,11 +24,5 @@ def show_all_services_or_dashboard():
         return redirect(url_for('.index'))
 
     services = service_api_client.get_active_services({'user_id': current_user.id})['data']
-
-    if 1 == len(services):
-        return redirect(url_for('.service_dashboard', service_id=services[0]['id']))
-    else:
-        service_id = session.get('service_id', None)
-        if any([service_id == x['id'] for x in services]):
-            return redirect(url_for('.service_dashboard', service_id=service_id))
-        return redirect(url_for('.choose_service'))
+    session['service_id'] = services[0]['id']
+    return redirect(url_for('.org_reports'))

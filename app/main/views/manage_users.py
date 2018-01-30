@@ -48,7 +48,6 @@ def manage_users(service_id):
 
 @main.route("/organisations/test/team")
 @login_required
-@user_has_permissions('view_activity', admin_override=True)
 def manage_org_users():
     service_id = current_service['id']
     users = user_api_client.get_users_for_service(service_id=service_id)

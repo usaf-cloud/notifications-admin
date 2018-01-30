@@ -198,7 +198,6 @@ teams = [
 
 @main.route("/organisations/test/redirect-to-service")
 @login_required
-@user_has_permissions('view_activity', admin_override=True)
 def org_redirect():
     if not current_service:
         return redirect(url_for('.choose_service'))
@@ -209,7 +208,6 @@ def org_redirect():
 @main.route("/organisations/test/reports")
 @main.route("/organisations/test/reports/<report>")
 @login_required
-@user_has_permissions('manage_settings', admin_override=True)
 def org_reports(report='overview'):
     return render_template(
         'views/reports/org-{}.html'.format(report),
@@ -259,7 +257,7 @@ def org_reports(report='overview'):
 @main.route("/services/<service_id>/reports")
 @main.route("/services/<service_id>/reports/<report>")
 @login_required
-@user_has_permissions('manage_settings', admin_override=True)
+@user_has_permissions('view_activity', admin_override=True)
 def reports(service_id, report='overview'):
 
     jobs = [

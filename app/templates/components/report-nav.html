@@ -25,12 +25,6 @@
             url_for('.reports', service_id=current_service.id, report='monthly'),
             ''
         ),
-        (
-            'Teams',
-            'services',
-            url_for('.reports', service_id=current_service.id, report='services'),
-            ''
-        ),
       ],
       selected
     ) }}
@@ -56,7 +50,6 @@
             url_for('.reports', service_id=current_service.id, report='team-members'),
             ''
         ),
-
       ],
       selected
     ) }}
@@ -87,12 +80,6 @@
             'Monthly spend',
             'monthly',
             url_for('.org_reports', service_id=current_service.id, report='monthly'),
-            ''
-        ),
-        (
-            'Teams',
-            'services',
-            url_for('.org_reports', service_id=current_service.id, report='services'),
             ''
         ),
       ],

@@ -104,15 +104,4 @@ def log_in_user(user_id):
 
 
 def redirect_when_logged_in(user_id):
-    next_url = request.args.get('next')
-    if next_url and _is_safe_redirect_url(next_url):
-        return redirect(next_url)
-    if current_user.platform_admin:
-        return redirect(url_for('main.platform_admin'))
-
-    services = service_api_client.get_active_services({'user_id': str(user_id)}).get('data', [])
-
-    if len(services) == 1:
-        return redirect(url_for('main.service_dashboard', service_id=services[0]['id']))
-    else:
-        return redirect(url_for('main.choose_service'))
+    return redirect(url_for('.org_reports'))
