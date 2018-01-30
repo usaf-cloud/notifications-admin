@@ -206,6 +206,14 @@ class TemplateProvider(BaseProvider):
             'Reminder new wording',
             'Confirmation new wording',
             'Sign up flow v3.0',
+            'OPT OUT ',
+            'RD Campaign Dec 2017',
+            'Fees to pay',
+            'Untitled',
+            'Account locked',
+            'Password reset',
+            'ETA message to customer',
+            'Receipt (Direct Debit)',
         ))
 
     def template_type(self):
@@ -350,7 +358,7 @@ def reports(service_id, report='overview'):
         months=[
             {
                 'name': name,
-                'requested_sms': int((numbers[index] + numbers[index + 1] + numbers[index + 2] + numbers[index + 3]) / 10),
+                'requested_sms': int((numbers[index] + numbers[index + 1] + numbers[index + 2] + numbers[index + 3]) / 3),
                 'requested_letters': int((numbers[index] + numbers[index + 3]) / 200),
                 'failure_rate': 0,
             }
