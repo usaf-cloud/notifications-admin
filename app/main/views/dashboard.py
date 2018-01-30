@@ -551,9 +551,9 @@ def get_dashboard_partials(service_id):
 
 def get_dashboard_totals(statistics):
     statistics = {
-        'email': {'failed': 3, 'requested': 1213, 'delivered': 1100},
-        'sms': {'failed': 33, 'requested': 2407, 'delivered': 2300},
-        'letter': {'failed': 0, 'requested': 0, 'delivered': 0}
+        'email': {'failed': 0, 'requested': 3, 'delivered': 3},
+        'sms': {'failed': 33, 'requested': 538, 'delivered': 538},
+        'letter': {'failed': 0, 'requested': 10, 'delivered': 10}
     }
     for msg_type in statistics.values():
         msg_type['failed_percentage'] = get_formatted_percentage(msg_type['failed'], msg_type['requested'])
