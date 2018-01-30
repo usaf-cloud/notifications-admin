@@ -15,14 +15,8 @@
 
     {{ report_nav(selected, current_service=current_service) }}
 
-    <div class="grid-row">
-      <div class="column-half">
-        {% include 'views/reports/_current-financial-year.html' %}
-      </div>
-      <div class="column-half">
-        {% include 'views/reports/_download.html' %}
-      </div>
-    </div>
+    {% include 'views/reports/_fy_and_download.html' %}
+
     <div class='dashboard-table-1-3 dashboard-table'>
       {% call(item, row_number) list_table(
         weeks,

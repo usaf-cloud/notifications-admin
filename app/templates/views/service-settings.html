@@ -22,7 +22,7 @@
 
         {% call row() %}
           {{ text_field('Service name') }}
-          {{ text_field(current_service.name) }}
+          {{ text_field(session['fake_service_name'] or current_service.name) }}
           {{ edit_field('Change', url_for('.service_name_change', service_id=current_service.id)) }}
         {% endcall %}
 

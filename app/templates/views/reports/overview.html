@@ -29,12 +29,12 @@
       <div class='column-third'>
         <h2 class='heading-small'>Text messages</h2>
         <div class="keyline-block">
-          {{ big_number(481516, 'sent', smaller=True) }}
-          {{ big_number(250000, 'free allowance', smaller=True) }}
+          {{ big_number(28116, 'sent', smaller=True) }}
+          {{ big_number(25000, 'free allowance', smaller=True) }}
           {{ big_number(0, 'free allowance remaining', smaller=True) }}
           {% if sms_chargeable %}
             {{ big_number(
-              481516 - 250000,
+              28116 - 25000,
               'at {:.2f} pence per message'.format(0.0155 * 100),
               smaller=True
             ) }}
@@ -58,7 +58,7 @@
       <div class='column-one-third'>
         <div class="keyline-block">
           {{ big_number(
-            ((481516 - 250000) * 0.0155),
+            ((48116 - 25000) * 0.0155),
             'spent',
             currency="£",
             smaller=True
@@ -68,7 +68,7 @@
       <div class='column-one-third'>
         <div class="keyline-block">
           {{ big_number(
-            0,
+            12 * 0.33,
             'spent',
             currency="£",
             smaller=True
@@ -85,8 +85,8 @@
             <div class='column-one-third'>&nbsp;</div>
             <div class='column-one-third'>
               {{ big_number(
-                ((481516 - 250000) * 0.0155),
-                'total',
+                ((48116 - 25000) * 0.0155) + (12 * 0.33),
+                'total spent',
                 currency="£",
                 smaller=True
               ) }}

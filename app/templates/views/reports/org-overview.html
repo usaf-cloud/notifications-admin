@@ -16,9 +16,39 @@
 
     {{ org_report_nav(selected, current_service=current_service) }}
 
+    <div class='grid-row bottom-gutter-1-2'>
+      <div class='column-half'>
+          <h2 style="margin-top: 10px;">2017 to 2018 financial year</h2>
+          <div class="keyline-block">
+            {{ big_number(4024.90, 'spent', currency='£', smaller=True) }}
+          </div>
+       </div>
+      <div class='column-half'>
+        <h2 class='' style="margin-top: 10px;">Emails</h2>
+        <div class="keyline-block bottom-gutter-2-3">
+          {{ big_number(3, '', smaller=True) }}
+        </div>
+
+        <h2 style="margin-top: 20px;">Text messages</h2>
+        <div class="keyline-block bottom-gutter-2-3">
+          {{ big_number(96102, '', smaller=True) }}
+        </div>
+
+        <h2 style="margin-top: 20px;">Letters</h2>
+        <div class="keyline-block bottom-gutter-2-3">
+          {{ big_number(119, '', smaller=True) }}
+        </div>
+      </div>
+    </div>
+
     <nav class="browse-list dashboard-table">
       <ul>
         {% for service_index, service_name in services %}
+          {% set sms = numbers[service_index + 5] * 33 %}
+          {% set letters = (numbers[service_index + 5] / 25) | round | int %}
+          {% set free_sms = (sms, 25000)|min %}
+          {% set chargeable_sms = ((sms - 25000), 0)|max %}
+          {% set chargeable_letters = letters %}
           <div class="keyline-block bottom-gutter-2-3">
             <div class="grid-row ">
               <div class="column-half">
@@ -27,17 +57,21 @@
                 </li>
               </div>
               <div class="column-half">
-                {{ big_number(numbers[service_index] * 1.23, label, currency='£', smallest=True) }}
+                {{ big_number((chargeable_sms * 0.0155) + (chargeable_letters * 0.33), label, currency='£', smallest=True) }}
               </div>
             </div>
             <div class="grid-row">
               <div class="column-half">
-                {{ spark_bar(numbers[service_index + 5] * 51, highest_number * 51, failure_rate=failures[service_index + 5]) }}
+                {{ spark_bar(sms + letters, 31818, failure_rate=failures[service_index + 5]) }}
               </div>
               <div class="column-half">
                 <ul class="tabular-numbers" style="list-style: none;">
-                  <li>{{ "{:,}".format(numbers[service_index + 5] * 33) }} text messages at 1.55p</li>
-                  <li>{{ "{:,}".format(numbers[service_index + 5] * 12) }} letters at 33p</li>
+
+                  <li>{{ "{:,}".format(free_sms) }} free text messages</li>
+                  {% if chargeable_sms > 0 %}
+                    <li>{{ "{:,}".format(chargeable_sms) }} text messages at 1.55p</li>
+                  {% endif %}
+                  <li>{{ "{:,}".format(letters) }} letters at 33p</li>
                 </ul>
               </div>
             </div>
@@ -48,5 +82,17 @@
         </div>
       </ul>
     </nav>
+
+    <div>
+      {{ previous_next_navigation({
+        'url': '#',
+        'title': '2016 to 2017',
+        'label': 'financial year'
+      }, {
+        'url': '#',
+        'title': '2018 to 2019',
+        'label': 'financial year'
+      }) }}
+    </div>
 
 {% endblock %}

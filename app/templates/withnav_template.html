@@ -1,7 +1,7 @@
 {% extends "admin_template.html" %}
 
 {% block per_page_title %}
-  {% block service_page_title %}{% endblock %} – {{ current_service.name }}
+  {% block service_page_title %}{% endblock %} – {{ session['fake_service_name'] or current_service.name }}
 {% endblock %}
 
 {% block fullwidth_content %}
@@ -11,7 +11,6 @@
         <a href="/organisations/test/reports">South Oxfordshire District Council</a>
         <span>{{ session['fake_service_name'] or current_service.name }}</span>
       </div>
-      {{ current_service.name }}
       <a href="{{ url_for('main.choose_service') }}" class="navigation-service-switch">Switch service</a>
     </div>
     <div class="grid-row">

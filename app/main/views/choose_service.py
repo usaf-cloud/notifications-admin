@@ -24,5 +24,5 @@ def show_all_services_or_dashboard():
         return redirect(url_for('.index'))
 
     services = service_api_client.get_active_services({'user_id': current_user.id})['data']
-    session['service_id'] = services[0]['id']
+    session['service_id'] = services[-1]['id']
     return redirect(url_for('.org_reports'))

@@ -39,12 +39,6 @@
             ''
         ),
         (
-            'Uploaded files',
-            'uploaded-files',
-            url_for('.reports', service_id=current_service.id, report='uploaded-files'),
-            ''
-        ),
-        (
             'Team members',
             'team-members',
             url_for('.reports', service_id=current_service.id, report='team-members'),
@@ -67,19 +61,19 @@
         (
             'Overview',
             'overview',
-            url_for('.org_reports', service_id=current_service.id),
+            url_for('.org_reports'),
             ''
         ),
         (
             'Weekly',
             'weekly',
-            url_for('.org_reports', service_id=current_service.id, report='weekly'),
+            url_for('.org_reports', report='weekly'),
             ''
         ),
         (
             'Monthly spend',
             'monthly',
-            url_for('.org_reports', service_id=current_service.id, report='monthly'),
+            url_for('.org_reports', report='monthly'),
             ''
         ),
       ],

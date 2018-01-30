@@ -41,6 +41,7 @@ from app.date_utils import (
 )
 
 from faker import Faker
+from faker.providers import BaseProvider
 
 
 # This is a placeholder view method to be replaced
@@ -196,6 +197,24 @@ teams = [
 ]
 
 
+# create new provider class
+class TemplateProvider(BaseProvider):
+    def template_name(self):
+        return self.random_element((
+            'Reminder',
+            'Confirmation',
+            'Reminder new wording',
+            'Confirmation new wording',
+            'Sign up flow v3.0',
+        ))
+
+    def template_type(self):
+        return self.random_element(('letter', 'sms'))
+
+
+fake.add_provider(TemplateProvider)
+
+
 @main.route("/organisations/test/redirect-to-service")
 @login_required
 def org_redirect():
@@ -209,68 +228,9 @@ def org_redirect():
 @main.route("/organisations/test/reports/<report>")
 @login_required
 def org_reports(report='overview'):
-    return render_template(
-        'views/reports/org-{}.html'.format(report),
-        selected=report,
-        jobs=[],
-        weeks=[],
-        months=[
-            {
-                'name': name,
-                'requested_sms': numbers[index] + numbers[index + 1] + numbers[index + 2] + numbers[index + 3],
-                'requested_letters': numbers[index] + numbers[index + 3],
-                'failure_rate': 0,
-            }
-            for index, name in enumerate(reversed(get_months_for_financial_year(2017)))
-        ],
-        numbers=numbers,
-        highest_number=max(numbers),
-        failures=failures,
-        names=sorted(
-            ({
-                'id': 'foo',
-                'name': '{} {}'.format(fake.first_name(), fake.last_name()),
-                'team': (teams * 1000)[int(i * 1.3)],
-                'requested_count': int(statistics.mean([numbers[i] / 2, 100])),
-                'failure_rate': int(failures[i] * 1.1)
-            } for i in range(60)),
-            key=lambda person: person['name']
-        ),
-        teams=[
-            {
-                'id': 'foo',
-                'name': team,
-                'type': 'sms',
-                'requested_count': numbers[index + 5] * 51,
-                'failure_rate': failures[index + 20],
-            }
-            for index, team in enumerate(teams)
-        ],
-        services=enumerate([
-          'Bulky waste',
-          'Council tax reminders',
-          'Bin collection',
-        ]),
-    )
-
-
-@main.route("/services/<service_id>/reports")
-@main.route("/services/<service_id>/reports/<report>")
-@login_required
-@user_has_permissions('view_activity', admin_override=True)
-def reports(service_id, report='overview'):
-
-    jobs = [
-        add_rate_to_job(job)
-        for job in job_api_client.get_jobs(
-            service_id,
-            statuses=job_api_client.JOB_STATUSES - {'scheduled', 'cancelled'}
-        )['data']
-    ]
 
     today = datetime.now()
     monday = today - timedelta(days=today.weekday())
-    day_of_year = today.timetuple().tm_yday
     weeks = list(reversed(list(reversed([
         (
             (monday - timedelta(days=i - 1)).strftime('%A %-d %B'),
@@ -285,15 +245,14 @@ def reports(service_id, report='overview'):
     ]))
 
     return render_template(
-        'views/reports/{}.html'.format(report),
+        'views/reports/org-{}.html'.format(report),
         selected=report,
-        jobs=jobs,
         weeks=weeks,
         months=[
             {
                 'name': name,
-                'requested_sms': numbers[index] + numbers[index + 1] + numbers[index + 2] + numbers[index + 3],
-                'requested_letters': numbers[index] + numbers[index + 3],
+                'requested_sms': (numbers[index] + numbers[index + 1] + numbers[index + 2] + numbers[index + 3]) * 7,
+                'requested_letters': int((numbers[index] + numbers[index + 3]) / 100),
                 'failure_rate': 0,
             }
             for index, name in enumerate(reversed(get_months_for_financial_year(2017)))
@@ -301,16 +260,107 @@ def reports(service_id, report='overview'):
         numbers=numbers,
         highest_number=max(numbers),
         failures=failures,
-        names=sorted(
-            ({
+        teams=[
+            {
                 'id': 'foo',
-                'name': '{} {}'.format(fake.first_name(), fake.last_name()),
-                'team': (teams * 1000)[int(i * 1.3)],
-                'requested_count': int(statistics.mean([numbers[i] / 2, 100])),
-                'failure_rate': int(failures[i] * 1.1)
-            } for i in range(60)),
-            key=lambda person: person['name']
-        ),
+                'name': team,
+                'type': 'sms',
+                'requested_count': numbers[index + 5] * 51,
+                'failure_rate': failures[index + 20],
+            }
+            for index, team in enumerate(teams)
+        ],
+        services=enumerate([
+            'Bin collection',
+            'Birth registrations',
+            'Bulky waste',
+            'Council tax reminders',
+        ]),
+    )
+
+
+@main.route("/services/<service_id>/reports")
+@main.route("/services/<service_id>/reports/<report>")
+@login_required
+@user_has_permissions('view_activity', admin_override=True)
+def reports(service_id, report='overview'):
+
+    fake.seed(session.get('fake_service_name'))
+
+    jobs = [
+        add_rate_to_job(job)
+        for job in job_api_client.get_jobs(
+            service_id,
+            statuses=job_api_client.JOB_STATUSES - {'scheduled', 'cancelled'}
+        )['data']
+    ]
+
+    today = datetime.now()
+    monday = today - timedelta(days=today.weekday())
+    weeks = list(reversed(list(reversed([
+        (
+            (monday - timedelta(days=i - 1)).strftime('%A %-d %B'),
+            (monday - timedelta(days=(i - 7))).strftime('%A %-d %B'),
+        )
+        for i in range(8, 373, 7)
+    ]))[:-1] + [
+        (
+            monday.strftime('%A %-m %B'),
+            'today'
+        )
+    ]))
+
+    templates = sorted([
+        {
+            'id': 'foo',
+            'name': fake.template_name(),
+            'type': fake.template_type(),
+            'requested_count': numbers[index],
+            'failure_rate': numbers[index + 3] / 100
+        }
+        for index in range(5)
+    ], key=lambda template: template['requested_count'], reverse=True)
+
+    most_used_template_count = max(
+        template['requested_count'] for template in templates
+    )
+
+    names = sorted(
+        ({
+            'id': 'foo',
+            'name': '{} {}'.format(fake.first_name(), fake.last_name()),
+            'team': (teams * 1000)[int(i * 1.3)],
+            'requested_count': int(statistics.mean([numbers[i] / 2, 100])),
+            'failure_rate': int(failures[i] * 1.1)
+        } for i in range(3)),
+        key=lambda person: person['name']
+    )
+
+    most_prolific_person = max(
+        person['requested_count'] for person in names
+    )
+
+    return render_template(
+        'views/reports/{}.html'.format(report),
+        selected=report,
+        jobs=jobs,
+        templates=templates,
+        most_used_template_count=most_used_template_count,
+        weeks=weeks,
+        months=[
+            {
+                'name': name,
+                'requested_sms': int((numbers[index] + numbers[index + 1] + numbers[index + 2] + numbers[index + 3]) / 10),
+                'requested_letters': int((numbers[index] + numbers[index + 3]) / 200),
+                'failure_rate': 0,
+            }
+            for index, name in enumerate(reversed(get_months_for_financial_year(2017)))
+        ],
+        numbers=numbers,
+        highest_number=max(numbers),
+        failures=failures,
+        names=names,
+        most_prolific_person=most_prolific_person,
         teams=[
             {
                 'id': 'foo',
@@ -492,6 +542,11 @@ def get_dashboard_partials(service_id):
 
 
 def get_dashboard_totals(statistics):
+    statistics = {
+        'email': {'failed': 3, 'requested': 1213, 'delivered': 1100},
+        'sms': {'failed': 33, 'requested': 2407, 'delivered': 2300},
+        'letter': {'failed': 0, 'requested': 0, 'delivered': 0}
+    }
     for msg_type in statistics.values():
         msg_type['failed_percentage'] = get_formatted_percentage(msg_type['failed'], msg_type['requested'])
         msg_type['show_warning'] = float(msg_type['failed_percentage']) > 3

@@ -15,16 +15,9 @@
 
     {{ report_nav(selected, current_service=current_service) }}
 
-    <div class="grid-row">
-      <div class="column-half">
-        {% include 'views/reports/_current-financial-year.html' %}
-      </div>
-      <div class="column-half">
-        {% include 'views/reports/_download.html' %}
-      </div>
-    </div>
+    {% include 'views/reports/_fy_and_download.html' %}
 
-    <div class="dashboard-table body-copy-table">
+    <div class="dashboard-table-1-3 body-copy-table">
       {% call(month, row_index) list_table(
         months,
         caption="Total spend",
@@ -40,15 +33,17 @@
           {{ month.name }}
         {% endcall %}
         {% call field(align='left') %}
+          <div style="position: relative; left: 30px;">
           {{ big_number(
             (0.0155 * month.requested_sms) + (0.33 * month.requested_letters),
             currency="£",
             smallest=True
           ) }}
           <ul class="tabular-numbers">
-            <li>{{ month.requested_sms }} text messages at 1.55p</li>
-            <li>{{ month.requested_letters }} letters at 33p</li>
+            <li>{{ "{:,}".format(month.requested_sms) }} text messages at 1.55p</li>
+            <li>{{ "{:,}".format(month.requested_letters) }} letters at 33p</li>
           </ul>
+          </div>
         {% endcall %}
       {% endcall %}
     </div>

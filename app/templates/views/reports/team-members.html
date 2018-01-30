@@ -19,7 +19,7 @@
 
     {% include 'views/reports/_download.html' %}
 
-    <div class='dashboard-table'>
+    <div class='dashboard-table-1-3'>
       {% call(item, row_number) list_table(
         names,
         caption='foo',
@@ -33,11 +33,8 @@
       ) %}
         {% call row_heading() %}
           <span class="file-list-filename" style="font-weight: normal;">{{ item.name }}</a>
-          <span class="file-list-hint">
-            {{ item.team }}
-          </span>
         {% endcall %}
-        {{ spark_bar_field(item.requested_count, 321, failure_rate=item.failure_rate) }}
+        {{ spark_bar_field(item.requested_count, most_prolific_person, failure_rate=item.failure_rate) }}
       {% endcall %}
     </div>
 
