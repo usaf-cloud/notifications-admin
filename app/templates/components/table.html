@@ -56,12 +56,12 @@
   </tbody>
 {%- endmacro %}
 
-{% macro field(align='left', status='', border=True) -%}
+{% macro field(align='left', status='', border=True, selected=False) -%}
 
     {% set field_alignment = 'table-field-right-aligned' if align == 'right' else 'table-field-center-aligned' %}
     {% set border = '' if border else 'table-field-noborder' %}
 
-    <td class="{{ [field_alignment, border]|join(' ') }}">
+    <td class="{{ [field_alignment, border]|join(' ') }}" {% if not selected %}style="border-right: 1px solid #bfc1c3; padding-right: 15px;"{% else %}style="padding-right: 15px;"{% endif %}>
       <div class="{{ 'table-field-status-' + status if status }}">{{ caller() }}</div>
     </td>
 {%- endmacro %}
@@ -126,34 +126,34 @@
 {%- endmacro %}
 
 
-{% macro notification_status_field(notification) %}
+{% macro notification_status_field(notification, selected=False) %}
   {% if not notification %}
-    {% call field(align='right') %}{% endcall %}
+    {% call field(align='right', selected=selected) %}{% endcall %}
   {% else %}
-    {% call field(status=notification.status|format_notification_status_as_field_status, align='right') %}
-      {% if notification.status in ['created', 'sending', 'delivered'] %}<span class="align-with-message-body">{% endif %}
-      {% if notification.status|format_notification_status_as_url %}
-        <a href="{{ notification.status|format_notification_status_as_url }}">
-      {% endif %}
-      {% if notification['notification_type'] != "letter" %}
-        {{ notification.status|format_notification_status(
-          notification.template.template_type
-        ) }}
-      {% endif %}
-      {% if notification.status|format_notification_status_as_url %}
-        </a>
-      {% endif %}
-      <span class="status-hint">
-        {% if notification['notification_type'] == "letter" %}
-          {{ notification.created_at|format_datetime_short }}
-        {% else %}
-          {{ notification.status|format_notification_status_as_time(
-            notification.created_at|format_datetime_short,
-            (notification.updated_at or notification.created_at)|format_datetime_short
+    {% call field(status=notification.status|format_notification_status_as_field_status, align='right', selected=selected) %}
+      <span class="casework-field-status">
+        {% if notification.status|format_notification_status_as_url %}
+          <a href="{{ notification.status|format_notification_status_as_url }}">
+        {% endif %}
+        {% if notification['notification_type'] != "letter" %}
+          {{ notification.status|format_notification_status(
+            notification.template.template_type
           ) }}
         {% endif %}
+        {% if notification.status|format_notification_status_as_url %}
+          </a>
+        {% endif %}
+        <span class="status-hint">
+          {% if notification['notification_type'] == "letter" %}
+            {{ notification.created_at|format_datetime_short }}
+          {% else %}
+            {{ notification.status|format_notification_status_as_time(
+              notification.created_at|format_datetime_short,
+              (notification.updated_at or notification.created_at)|format_datetime_short
+            )|safe }}
+          {% endif %}
+        </span>
       </span>
-      {% if notification.status in ['created', 'sending', 'delivered'] %}</span>{% endif %}
     {% endcall %}
   {% endif %}
 {% endmacro %}

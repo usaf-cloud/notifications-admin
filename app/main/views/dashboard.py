@@ -11,7 +11,7 @@ from flask import (
     abort,
     Response,
 )
-from flask_login import login_required
+from flask_login import login_required, current_user
 from notifications_utils.recipients import format_phone_number_human_readable
 from werkzeug.utils import redirect
 
@@ -57,10 +57,10 @@ def temp_service_history(service_id):
                            events=data['events'])
 
 
-@main.route("/services/<service_id>/dashboard")
+@main.route("/services/<service_id>/db")
 @login_required
 @user_has_permissions('view_activity', admin_override=True)
-def service_dashboard(service_id):
+def old_service_dashboard(service_id):
 
     if session.get('invited_user'):
         session.pop('invited_user', None)
@@ -93,11 +93,10 @@ def casework_dashboard_template(service_id, template_id=None):
     )
 
 
-@main.route("/services/<service_id>/casework-dashboard")
-@main.route("/services/<service_id>/casework-dashboard/<template_id>")
+@main.route("/services/<service_id>/dashboard")
 @login_required
 @user_has_permissions('view_activity', admin_override=True)
-def casework_dashboard(service_id, template_id=None):
+def service_dashboard(service_id, template_id=None):
 
     if session.get('invited_user'):
         session.pop('invited_user', None)
@@ -112,31 +111,28 @@ def casework_dashboard(service_id, template_id=None):
         template_type=['sms'],
         status=filter_args.get('status'),
         limit_days=current_app.config['ACTIVITY_STATS_LIMIT_DAYS'],
+        page_size=250,
     )['notifications']
 
-    if template_id:
-        template = service_api_client.get_service_template(service_id, template_id)
-        template = get_template(template['data'], current_service, show_recipient=True)
-        return render_template(
-            'views/dashboard/casework-template.html',
-            template=template,
-            notifications=list(add_preview_of_content_to_notifications(
-                notifications * 10
-            )),
-            form=get_placeholder_form_instance('phone number', dict()),
-            right_col_title=template.name,
+    notifications = [
+        notification
+        for notification in notifications
+        if (
+            notification['created_by'] and
+            notification['created_by']['id'] == current_user.id
         )
-    else:
-        return render_template(
-            'views/dashboard/casework-home.html',
-            templates=templates,
-            notifications=list(add_preview_of_content_to_notifications(
-                notifications * 10
-            )),
-            search_form=SearchNotificationsForm(),
-            show_search_box=len(templates) > 7,
-            right_col_title='New message',
-        )
+    ]
+
+    return render_template(
+        'views/dashboard/casework-home.html',
+        templates=templates,
+        notifications=list(add_preview_of_content_to_notifications(
+            notifications
+        )),
+        search_form=SearchNotificationsForm(),
+        show_search_box=len(templates) > 7,
+        right_col_title='New message',
+    )
 
 
 @main.route("/services/<service_id>/casework-dashboard/<template_id>/sent")

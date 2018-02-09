@@ -147,7 +147,7 @@ def choose_template(service_id, template_type='all'):
     ]
 
     return render_template(
-        'views/templates/choose.html',
+        'views/dashboard/casework-choose.html',
         templates=templates_on_page,
         show_search_box=(len(templates_on_page) > 7),
         show_template_nav=has_multiple_template_types and (len(templates) > 2),
