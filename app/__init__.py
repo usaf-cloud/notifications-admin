@@ -351,9 +351,9 @@ def format_notification_status(status, template_type):
 
 def format_notification_status_as_time(status, created, updated):
     return {
-        'sending': '<br> {}'.format(created),
-        'created': '<br> {}'.format(created),
-        'delivered': '<br> {}'.format(updated)
+        'sending': '{}'.format(created),
+        'created': '{}'.format(created),
+        'delivered': '{}'.format(updated)
     }.get(status, updated)
 
 

@@ -101,10 +101,7 @@
       }
 
       .status-hint {
-        display: block;
-        font-weight: normal;
         color: $red;
-        margin-top: 5px;
       }
 
     }
@@ -160,6 +157,12 @@
     margin: 0 0 5px 0;
   }
 
+}
+
+.status-hint {
+  display: block;
+  font-weight: normal;
+  margin-top: 3px;
 }
 
 .table-font-xsmall td.table-field-index {  // overrides GOV.UK Elements
