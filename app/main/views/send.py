@@ -746,9 +746,9 @@ def get_back_link(service_id, template_id, step_index):
             return None
     elif step_index == 0:
         return url_for(
-            '.view_template',
+            '.choose_template',
             service_id=service_id,
-            template_id=template_id,
+            template_type='sms',
         )
     else:
         return url_for(

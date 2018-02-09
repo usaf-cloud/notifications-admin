@@ -12,16 +12,14 @@
   Dashboard
 {% endblock %}
 
-{% block right_column %}
-  <div style="margin-top: 42px; text-align: right;">
-    <a href="{{ url_for('.casework_dashboard', service_id=current_service.id) }}">Back to home</a>
-  </div>
-{% endblock %}
-
 {% block left_column %}
-  <h2 class="heading-large">
-    Choose a template
-  </h2>
   {% include "views/templates/_search-box.html" %}
   {% include "views/templates/_list.html" %}
+  <div class="bottom-gutter-1-2">
+    &nbsp;
+  </div>
+  {{ page_footer(
+    back_link=url_for('main.service_dashboard', service_id=current_service.id),
+    back_link_text="Back"
+  ) }}
 {% endblock %}

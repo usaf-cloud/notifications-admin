@@ -97,3 +97,26 @@
   display: block;
   margin-top: $gutter * 5 / 6;
 }
+
+.casework-search {
+  padding: 0 15px 5px 0;
+  margin: 0 -1px -3px 0;
+  border-right: 1px solid $border-colour;
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+}
+
+.casework-bottom {
+  padding: 0 15px 5px 0;
+  margin: -30px -1px -90px 0;
+  border-right: 1px solid $border-colour;
+  height: 60px;
+  background: linear-gradient(15deg, $white, $white, $highlight-colour);
+}
+
+.casework-field-status {
+  position: relative;
+  top: 5px;
+}

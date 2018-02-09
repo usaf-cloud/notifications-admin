@@ -1,4 +1,4 @@
-{% extends "withnav_template.html" %}
+{% extends "views/dashboard/casework-base.html" %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/textbox.html" import textbox %}
@@ -10,28 +10,20 @@
 
 {% block maincolumn_content %}
 
-  <h1 class="heading-large">
-    {{ page_title }}
-  </h1>
-
-  <form method="post" class="js-stick-at-top-when-scrolling" data-module="autofocus" autocomplete="off" novalidate>
+  <form method="post" data-module="autofocus" autocomplete="off" novalidate>
     <div class="grid-row">
-      <div class="column-two-thirds {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}">
+      <div class="column-half {% if form.placeholder_value.label.text == 'phone number' %}extra-tracking{% endif %}">
         {{ textbox(
           form.placeholder_value,
           hint='Optional' if optional_placeholder else None,
           width='1-1',
         ) }}
+        {{ page_footer('Continue', back_link=back_link) }}
       </div>
-      {% if skip_link %}
-        <div class="column-one-third">
-          <a href="{{ skip_link[1] }}" class="top-gutter-4-3">{{ skip_link[0] }}</a>
-        </div>
-      {% endif %}
+      <div class="column-half">
+        {{ template|string }}
+      </div>
     </div>
-    {{ page_footer('Continue', back_link=back_link) }}
   </form>
-
-  {{ template|string }}
 
 {% endblock %}

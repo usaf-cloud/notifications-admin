@@ -329,8 +329,8 @@ def format_notification_status(status, template_type):
         'sms': {
             'failed': 'Failed',
             'technical-failure': 'Technical failure',
-            'temporary-failure': 'Phone not accepting messages right now',
-            'permanent-failure': 'Phone number doesn’t exist',
+            'temporary-failure': 'Not accepting messages',
+            'permanent-failure': 'Number doesn’t exist',
             'delivered': 'Delivered',
             'sending': 'Sending',
             'created': 'Sending',
@@ -351,8 +351,9 @@ def format_notification_status(status, template_type):
 
 def format_notification_status_as_time(status, created, updated):
     return {
-        'sending': ' since {}'.format(created),
-        'created': ' since {}'.format(created)
+        'sending': '<br> {}'.format(created),
+        'created': '<br> {}'.format(created),
+        'delivered': '<br> {}'.format(updated)
     }.get(status, updated)
 
 

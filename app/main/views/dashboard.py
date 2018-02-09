@@ -12,7 +12,7 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import login_required
+from flask_login import current_user, login_required
 from notifications_utils.recipients import format_phone_number_human_readable
 from werkzeug.utils import redirect
 
@@ -28,19 +28,23 @@ from app import (
     template_statistics_client,
 )
 from app.main import main
-from app.statistics_utils import add_rate_to_job, get_formatted_percentage
-from app.main.forms import SearchTemplatesForm, SearchNotificationsForm, get_placeholder_form_instance
+from app.main.forms import (
+    SearchNotificationsForm,
+    SearchTemplatesForm,
+    get_placeholder_form_instance,
+)
 from app.main.views.jobs import (
     add_preview_of_content_to_notifications,
     parse_filter_args,
     set_status_filters,
 )
+from app.statistics_utils import add_rate_to_job, get_formatted_percentage
 from app.utils import (
-    get_template,
-    get_current_financial_year,
     FAILURE_STATUSES,
     REQUESTED_STATUSES,
     Spreadsheet,
+    get_current_financial_year,
+    get_template,
     user_has_permissions,
 )
 
@@ -58,8 +62,9 @@ def temp_service_history(service_id):
                            events=data['events'])
 
 
-@main.route("/services/<service_id>/dashboard")
+@main.route("/services/<service_id>/db")
 @login_required
+<<<<<<< HEAD
 @user_has_permissions('view_activity')
 def old_service_dashboard(service_id):
     return redirect(url_for('.service_dashboard', service_id=service_id))
@@ -69,6 +74,10 @@ def old_service_dashboard(service_id):
 @login_required
 @user_has_permissions('view_activity')
 def service_dashboard(service_id):
+=======
+@user_has_permissions('view_activity', admin_override=True)
+def old_service_dashboard(service_id):
+>>>>>>> WAY TIGHTER
 
     if session.get('invited_user'):
         session.pop('invited_user', None)
@@ -101,11 +110,10 @@ def casework_dashboard_template(service_id, template_id=None):
     )
 
 
-@main.route("/services/<service_id>/casework-dashboard")
-@main.route("/services/<service_id>/casework-dashboard/<template_id>")
+@main.route("/services/<service_id>/dashboard")
 @login_required
 @user_has_permissions('view_activity', admin_override=True)
-def casework_dashboard(service_id, template_id=None):
+def service_dashboard(service_id, template_id=None):
 
     if session.get('invited_user'):
         session.pop('invited_user', None)
@@ -120,31 +128,28 @@ def casework_dashboard(service_id, template_id=None):
         template_type=['sms'],
         status=filter_args.get('status'),
         limit_days=current_app.config['ACTIVITY_STATS_LIMIT_DAYS'],
+        page_size=250,
     )['notifications']
 
-    if template_id:
-        template = service_api_client.get_service_template(service_id, template_id)
-        template = get_template(template['data'], current_service, show_recipient=True)
-        return render_template(
-            'views/dashboard/casework-template.html',
-            template=template,
-            notifications=list(add_preview_of_content_to_notifications(
-                notifications * 10
-            )),
-            form=get_placeholder_form_instance('phone number', dict()),
-            right_col_title=template.name,
+    notifications = [
+        notification
+        for notification in notifications
+        if (
+            notification['created_by'] and
+            notification['created_by']['id'] == current_user.id
         )
-    else:
-        return render_template(
-            'views/dashboard/casework-home.html',
-            templates=templates,
-            notifications=list(add_preview_of_content_to_notifications(
-                notifications * 10
-            )),
-            search_form=SearchNotificationsForm(),
-            show_search_box=len(templates) > 7,
-            right_col_title='New message',
-        )
+    ]
+
+    return render_template(
+        'views/dashboard/casework-home.html',
+        templates=templates,
+        notifications=list(add_preview_of_content_to_notifications(
+            notifications
+        )),
+        search_form=SearchNotificationsForm(),
+        show_search_box=len(templates) > 7,
+        right_col_title='New message',
+    )
 
 
 @main.route("/services/<service_id>/casework-dashboard/<template_id>/sent")

@@ -12,29 +12,55 @@
 {% endblock %}
 
 {% block left_column %}
-<div style="padding: 42px 0 0 0">
-  <a href="{{ url_for('.casework_dashboard_template', service_id=current_service.id) }}" class="pill-separate-item" style="text-align: center; padding: 37px 0; font-weight: bold;font-size: 24px;">Send new message</a>
-</div>
-  <div style="padding: 40px 0 0 0">
-    <form
-      method="post"
-      action="{{ url_for('.view_notifications', service_id=current_service.id, message_type=message_type) }}"
-      class="grid-row"
-    >
-      <div class="column-three-quarters {% if message_type == 'sms' %}extra-tracking{% endif %}">
-        {{ textbox(
-          search_form.to,
-          width='1-1',
-          label='Search by {}'.format('email address' if message_type == 'email' else 'phone number')
-        ) }}
-      </div>
-      <div class="column-one-quarter align-button-with-textbox">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="submit" class="button" value="Search">
-      </div>
-    </form>
-    {% include "views/activity/notifications.html" %}
+<div class="grid-row">
+  <div class="column-half">
+    <a
+      href="{{ url_for('.choose_template', service_id=current_service.id, template_type='sms') }}"
+      style="
+        display: block;
+        padding: 25px 30px 30px 0;
+        font-weight: bold;
+        font-size: 24px;
+        border-right: 1px solid #bfc1c3;
+        margin: -10px -1px -43px 0;
+        position: relative;
+        z-index: 100;
+      "
+    >New message</a>
   </div>
+</div>
+<div class="grid-row">
+  <div class="column-half">
+    <div style="padding: 40px 0 0 0">
+      <form
+        method="post"
+        action="{{ url_for('.view_notifications', service_id=current_service.id, message_type=message_type) }}"
+        class="grid-row"
+      >
+        <div
+          class="column-whole {% if message_type == 'sms' %}extra-tracking{% endif %}"
+        >
+          <div
+            class="casework-search"
+          >
+            {{ textbox(
+              search_form.to,
+              width='1-1',
+              label='Search by {}'.format('email address' if message_type == 'email' else 'phone number')
+            ) }}
+          </div>
+        </div>
+        <!--
+        <div class="column-one-quarter align-button-with-textbox">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="submit" class="button" value="Search">
+        </div>
+        -->
+      </form>
+      {% include "views/activity/notifications.html" %}
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block right_column %}
 
