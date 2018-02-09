@@ -190,14 +190,18 @@ cf-deploy: ## Deploys the app to Cloud Foundry
 	cf delete -f notify-admin-rollback
 
 .PHONY: cf-deploy-prototype
-cf-deploy-prototype: cf-target ## Deploys the app to Cloud Foundry
+cf-deploy-prototype: ## Deploys the app to Cloud Foundry
 	$(if ${CF_SPACE},,$(error Must specify CF_SPACE))
-	cf push -f <(make -s CF_MANIFEST_FILE=manifest-prototype-${CF_SPACE}.yml generate-manifest)
+	(make -s CF_MANIFEST_FILE=manifest-prototype-${CF_SPACE}.yml generate-manifest) > ../temp_manifest.yml
+	cf push -f ../temp_manifest.yml
+	rm ../temp_manifest.yml
 
 .PHONY: cf-deploy-prototype-2
 cf-deploy-prototype-2: cf-target ## Deploys the app to Cloud Foundry
 	$(if ${CF_SPACE},,$(error Must specify CF_SPACE))
-	cf push -f <(make -s CF_MANIFEST_FILE=manifest-prototype-2-${CF_SPACE}.yml generate-manifest)
+	(make -s CF_MANIFEST_FILE=manifest-prototype-2-${CF_SPACE}.yml generate-manifest) > ../temp_manifest.yml
+	cf push -f ../temp_manifest.yml
+	rm ../temp_manifest.yml
 
 .PHONY: cf-rollback
 cf-rollback: ## Rollbacks the app to the previous release
