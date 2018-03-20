@@ -65,13 +65,8 @@ def view_notification(service_id, notification_id):
             notification_id=notification_id,
             filetype='png',
         ),
-<<<<<<< HEAD
         page_count=page_count,
-        show_recipient=True,
-=======
-        page_count=get_page_count_for_letter(notification['template']),
         show_recipient=False,
->>>>>>> WAY TIGHTER
         redact_missing_personalisation=True,
     )
     template.values = get_all_personalisation_from_notification(notification)
@@ -109,17 +104,9 @@ def view_notification(service_id, notification_id):
             status=request.args.get('status'),
             help=get_help_argument()
         ),
-<<<<<<< HEAD
-        partials=get_single_notification_partials(notification),
-        created_by=notification.get('created_by'),
-        created_at=notification['created_at'],
         help=get_help_argument(),
         estimated_letter_delivery_date=get_letter_timings(notification['created_at']).earliest_delivery,
-        notification_id=notification['id'],
-        can_receive_inbound=('inbound_sms' in current_service['permissions']),
         is_precompiled_letter=notification['template']['is_precompiled_letter']
-=======
->>>>>>> WAY TIGHTER
     )
 
 

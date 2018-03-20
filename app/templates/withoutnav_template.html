@@ -4,14 +4,10 @@
   <div id="content">
     {% if current_service %}
     <div class="navigation-service">
-<<<<<<< HEAD
-      <a href="{{ url_for('main.show_accounts_or_dashboard') }}">Back to {{ current_service.name }}</a>
-=======
       <div class="navigation-service-name">
         {{ current_service.name }}
       </div>
       <a href="{{ url_for('main.choose_service') }}" class="navigation-service-switch">Switch service</a>
->>>>>>> WAY TIGHTER
     </div>
     {% endif %}
     <main role="main">

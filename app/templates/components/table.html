@@ -132,31 +132,6 @@
   {% if not notification %}
     {% call field(align='right', selected=selected) %}{% endcall %}
   {% else %}
-<<<<<<< HEAD
-    {% call field(
-      status=notification.status|format_notification_status_as_field_status(notification.notification_type),
-      align='right'
-    ) %}
-      {% if notification.status in ['created', 'sending', 'delivered'] %}<span class="align-with-message-body">{% endif %}
-      {% if notification.status|format_notification_status_as_url %}
-        <a href="{{ notification.status|format_notification_status_as_url }}">
-      {% endif %}
-      {% if notification['notification_type'] != "letter" %}
-        {{ notification.status|format_notification_status(
-          notification.template.template_type
-        ) }}
-      {% endif %}
-      {% if notification.status|format_notification_status_as_url %}
-        </a>
-      {% endif %}
-      <span class="status-hint">
-        {% if notification['notification_type'] == "letter" %}
-          {{ notification.created_at|format_datetime_short }}
-        {% else %}
-          {{ notification.status|format_notification_status_as_time(
-            notification.created_at|format_datetime_short,
-            (notification.updated_at or notification.created_at)|format_datetime_short
-=======
     {% call field(status=notification.status|format_notification_status_as_field_status, align='right', selected=selected) %}
       <span class="casework-field-status">
         {% if notification.status|format_notification_status_as_url %}
@@ -165,7 +140,6 @@
         {% if notification['notification_type'] != "letter" %}
           {{ notification.status|format_notification_status(
             notification.template.template_type
->>>>>>> WAY TIGHTER
           ) }}
         {% endif %}
         {% if notification.status|format_notification_status_as_url %}

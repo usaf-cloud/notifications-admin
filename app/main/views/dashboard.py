@@ -62,22 +62,17 @@ def temp_service_history(service_id):
                            events=data['events'])
 
 
-@main.route("/services/<service_id>/db")
+@main.route("/services/<service_id>/dashboard")
 @login_required
-<<<<<<< HEAD
 @user_has_permissions('view_activity')
-def old_service_dashboard(service_id):
+def rd_service_dashboard(service_id):
     return redirect(url_for('.service_dashboard', service_id=service_id))
 
 
-@main.route("/services/<service_id>")
+@main.route("/services/<service_id>/db")
 @login_required
 @user_has_permissions('view_activity')
-def service_dashboard(service_id):
-=======
-@user_has_permissions('view_activity', admin_override=True)
 def old_service_dashboard(service_id):
->>>>>>> WAY TIGHTER
 
     if session.get('invited_user'):
         session.pop('invited_user', None)
@@ -93,7 +88,7 @@ def old_service_dashboard(service_id):
 
 @main.route("/services/<service_id>/casework-dashboard/choose")
 @login_required
-@user_has_permissions('view_activity', admin_override=True)
+@user_has_permissions('view_activity')
 def casework_dashboard_template(service_id, template_id=None):
 
     if session.get('invited_user'):
@@ -110,9 +105,9 @@ def casework_dashboard_template(service_id, template_id=None):
     )
 
 
-@main.route("/services/<service_id>/dashboard")
+@main.route("/services/<service_id>")
 @login_required
-@user_has_permissions('view_activity', admin_override=True)
+@user_has_permissions('view_activity')
 def service_dashboard(service_id, template_id=None):
 
     if session.get('invited_user'):
@@ -154,7 +149,7 @@ def service_dashboard(service_id, template_id=None):
 
 @main.route("/services/<service_id>/casework-dashboard/<template_id>/sent")
 @login_required
-@user_has_permissions('view_activity', admin_override=True)
+@user_has_permissions('view_activity')
 def casework_sent(service_id, template_id):
 
     templates = service_api_client.get_service_templates(service_id)['data']
