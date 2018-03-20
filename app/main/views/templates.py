@@ -125,6 +125,45 @@ def choose_template(service_id, template_type='all'):
         template_nav_items=template_nav_items,
         template_type=template_type,
         search_form=SearchTemplatesForm(),
+        batch=False,
+    )
+
+
+@main.route("/services/<service_id>/batch-templates")
+@main.route("/services/<service_id>/batch-templates/<template_type>")
+@login_required
+@user_has_permissions('view_activity')
+def choose_template_for_batch(service_id, template_type='all'):
+    templates = service_api_client.get_service_templates(service_id)['data']
+
+    has_multiple_template_types = len({
+        template['template_type'] for template in templates
+    }) > 1
+
+    template_nav_items = [
+        (label, key, url_for('.choose_template', service_id=current_service['id'], template_type=key), '')
+        for label, key in filter(None, [
+            ('All', 'all'),
+            ('Text message', 'sms'),
+            ('Email', 'email'),
+            ('Letter', 'letter') if 'letter' in current_service['permissions'] else None,
+        ])
+    ]
+
+    templates_on_page = [
+        template for template in templates
+        if template_type in ['all', template['template_type']]
+    ]
+
+    return render_template(
+        'views/dashboard/casework-choose.html',
+        templates=templates_on_page,
+        show_search_box=(len(templates_on_page) > 7),
+        show_template_nav=has_multiple_template_types and (len(templates) > 2),
+        template_nav_items=template_nav_items,
+        template_type=template_type,
+        search_form=SearchTemplatesForm(),
+        batch=True,
     )
 
 

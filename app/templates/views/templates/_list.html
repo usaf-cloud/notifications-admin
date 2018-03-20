@@ -2,7 +2,11 @@
   {% for template in templates %}
     <div class="column-whole">
       <h2 class="message-name">
-        <a href="{{ url_for('.send_one_off', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
+        {% if batch %}
+          <a href="{{ url_for('.send_messages', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
+        {% else %}
+          <a href="{{ url_for('.send_one_off', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
+        {% endif %}
       </h2>
       <p class="message-type">
         {{ message_count_label(1, template.template_type, suffix='')|capitalize }} template

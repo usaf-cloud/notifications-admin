@@ -1,4 +1,4 @@
-{% extends "withnav_template.html" %}
+{% extends "views/dashboard/casework-base.html" %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/file-upload.html" import file_upload %}
 {% from "components/table.html" import list_table, text_field, index_field, index_field_heading %}
@@ -9,7 +9,7 @@
 
 {% block maincolumn_content %}
 
-  <h1 class="heading-large">Upload recipients</h1>
+  <h1 class="heading-large">Upload a file</h1>
 
   <div class="page-footer bottom-gutter">
     {{file_upload(

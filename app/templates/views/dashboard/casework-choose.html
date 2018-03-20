@@ -13,7 +13,8 @@
   Dashboard
 {% endblock %}
 
-{% block left_column %}
+{% block maincolumn_content %}
+  <h1 class="heading-large">Choose a template</h1>
   {% if show_template_nav %}
     <div class="bottom-gutter-2-3">
       {{ pill(template_nav_items, current_value=template_type, show_count=False) }}

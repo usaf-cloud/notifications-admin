@@ -11,26 +11,7 @@
   Dashboard
 {% endblock %}
 
-{% block left_column %}
-<div class="grid-row">
-  <div class="column-half">
-    <a
-      href="{{ url_for('.choose_template', service_id=current_service.id) }}"
-      style="
-        display: block;
-        padding: 25px 30px 30px 0;
-        font-weight: bold;
-        font-size: 24px;
-        border-right: 1px solid #bfc1c3;
-        margin: -10px -1px -43px 0;
-        position: relative;
-        z-index: 100;
-      "
-    >New message</a>
-  </div>
-</div>
-<div class="grid-row">
-  <div class="column-half">
+{% block maincolumn_content %}
     <div style="padding: 40px 0 0 0">
       <form
         method="post"
@@ -40,15 +21,11 @@
         <div
           class="column-whole {% if message_type == 'sms' %}extra-tracking{% endif %}"
         >
-          <div
-            class="casework-search"
-          >
             {{ textbox(
               search_form.to,
               width='1-1',
-              label='Search by {}'.format('email address' if message_type == 'email' else 'phone number')
+              label='Search by phone number or email address'
             ) }}
-          </div>
         </div>
         <!--
         <div class="column-one-quarter align-button-with-textbox">
@@ -59,9 +36,4 @@
       </form>
       {% include "views/activity/notifications.html" %}
     </div>
-  </div>
-</div>
-{% endblock %}
-{% block right_column %}
-
 {% endblock %}
