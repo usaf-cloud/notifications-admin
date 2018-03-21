@@ -7,7 +7,6 @@ from datetime import datetime
 from flask import (
     Response,
     abort,
-    current_app,
     jsonify,
     render_template,
     request,
@@ -23,12 +22,9 @@ from app import (
     format_date_numeric,
     job_api_client,
     notification_api_client,
-    service_api_client,
 )
 from app.main import main
-from app.main.forms import SearchNotificationsForm
-from app.main.views.jobs import add_preview_of_content_to_notifications
-from app.template_previews import TemplatePreview, get_page_count_for_letter
+from app.template_previews import get_page_count_for_letter
 from app.utils import (
     DELIVERED_STATUSES,
     FAILURE_STATUSES,
@@ -66,7 +62,7 @@ def view_notification(service_id, notification_id):
             filetype='png',
         ),
         page_count=page_count,
-        show_recipient=False,
+        show_recipient=True,
         redact_missing_personalisation=True,
     )
     template.values = get_all_personalisation_from_notification(notification)
@@ -75,28 +71,12 @@ def view_notification(service_id, notification_id):
     else:
         job = None
 
-    filter_args = parse_filter_args(request.args)
-    filter_args['status'] = set_status_filters(filter_args)
-    notifications = notification_api_client.get_notifications_for_service(
-        service_id=service_id,
-        template_type=['sms'],
-        status=filter_args.get('status'),
-        limit_days=current_app.config['ACTIVITY_STATS_LIMIT_DAYS'],
-    )['notifications']
-    templates = service_api_client.get_service_templates(service_id)['data']
     return render_template(
-        'views/dashboard/casework-home.html',
-        notification_id=notification['id'],
+        'views/notifications/notification.html',
+        finished=(notification['status'] in (DELIVERED_STATUSES + FAILURE_STATUSES)),
+        uploaded_file_name='Report',
         template=template,
-        partials=get_single_notification_partials(notification),
-        created_by=notification.get('created_by'),
-        created_at=notification['created_at'],
-        notifications=list(add_preview_of_content_to_notifications(
-            notifications
-        )),
-        search_form=SearchNotificationsForm(),
-        show_search_box=len(templates) > 7,
-        can_receive_inbound=('inbound_sms' in current_service['permissions']),
+        job=job,
         updates_url=url_for(
             ".view_notification_updates",
             service_id=service_id,
@@ -104,9 +84,15 @@ def view_notification(service_id, notification_id):
             status=request.args.get('status'),
             help=get_help_argument()
         ),
+        partials=get_single_notification_partials(notification),
+        created_by=notification.get('created_by'),
+        created_at=notification['created_at'],
         help=get_help_argument(),
         estimated_letter_delivery_date=get_letter_timings(notification['created_at']).earliest_delivery,
-        is_precompiled_letter=notification['template']['is_precompiled_letter']
+        notification_id=notification['id'],
+        can_receive_inbound=('inbound_sms' in current_service['permissions']),
+        is_precompiled_letter=notification['template']['is_precompiled_letter'],
+        selected_nav_item='one-off' if request.args.get('help') == '0' else ''
     )
 
 

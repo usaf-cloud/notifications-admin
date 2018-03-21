@@ -120,7 +120,6 @@ def service_dashboard(service_id, template_id=None):
     filter_args['status'] = set_status_filters(filter_args)
     notifications = notification_api_client.get_notifications_for_service(
         service_id=service_id,
-        template_type=['sms'],
         status=filter_args.get('status'),
         limit_days=current_app.config['ACTIVITY_STATS_LIMIT_DAYS'],
         page_size=250,
@@ -144,6 +143,40 @@ def service_dashboard(service_id, template_id=None):
         search_form=SearchNotificationsForm(),
         show_search_box=len(templates) > 7,
         right_col_title='New message',
+        selected_nav_item='your-messages',
+    )
+
+
+@main.route("/services/<service_id>/all")
+@login_required
+@user_has_permissions('view_activity')
+def all_messages(service_id, template_id=None):
+
+    if session.get('invited_user'):
+        session.pop('invited_user', None)
+        session['service_id'] = service_id
+
+    templates = service_api_client.get_service_templates(service_id)['data']
+
+    filter_args = parse_filter_args(request.args)
+    filter_args['status'] = set_status_filters(filter_args)
+    notifications = notification_api_client.get_notifications_for_service(
+        service_id=service_id,
+        status=filter_args.get('status'),
+        limit_days=current_app.config['ACTIVITY_STATS_LIMIT_DAYS'],
+        page_size=250,
+    )['notifications']
+
+    return render_template(
+        'views/dashboard/casework-home.html',
+        templates=templates,
+        notifications=list(add_preview_of_content_to_notifications(
+            notifications
+        )),
+        search_form=SearchNotificationsForm(),
+        show_search_box=len(templates) > 7,
+        right_col_title='New message',
+        selected_nav_item='all-messages',
     )
 
 

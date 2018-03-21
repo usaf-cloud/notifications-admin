@@ -62,6 +62,7 @@ def view_jobs(service_id):
         page=page,
         prev_page=prev_page,
         next_page=next_page,
+        selected_nav_item='jobs',
     )
 
 
@@ -101,7 +102,8 @@ def view_job(service_id, job_id):
         just_sent=bool(
             request.args.get('just_sent') == 'yes' and
             template['template_type'] == 'letter'
-        )
+        ),
+        selected_nav_item='jobs',
     )
 
 

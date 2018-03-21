@@ -4,6 +4,10 @@
   {% block service_page_title %}{% endblock %} – {{ current_service.name }}
 {% endblock %}
 
+{% macro selected(key) -%}
+  {% if selected_nav_item == key %}class="selected"{% endif %}
+{%- endmacro %}
+
 {% block fullwidth_content %}
   <div id="content">
     <div class="navigation-service">
@@ -20,10 +24,11 @@
       {% endif %}
         <nav class="navigation">
           <ul>
-            <li><a href="{{ url_for('.choose_template', service_id=current_service.id) }}">Send one message</a></li>
-            <li><a href="{{ url_for('.choose_template_for_batch', service_id=current_service.id) }}">Send lots of messages</a></li>
-            <li><a href="{{ url_for('.service_dashboard', service_id=current_service.id) }}">Your messages</a></li>
-            <li><a href="{{ url_for('.service_dashboard', service_id=current_service.id) }}">Your team’s messages</a></li>
+            <li {{ selected('one-off') }}><a href="{{ url_for('.choose_template', service_id=current_service.id) }}">Send one message</a></li>
+            <li {{ selected('upload') }}><a href="{{ url_for('.choose_template_for_batch', service_id=current_service.id) }}">Send many messages</a></li>
+            <li {{ selected('your-messages') }}><a href="{{ url_for('.service_dashboard', service_id=current_service.id) }}">Sent by you</a></li>
+            <li {{ selected('all-messages') }}><a href="{{ url_for('.all_messages', service_id=current_service.id) }}">Sent by your team</a></li>
+            <li {{ selected('jobs') }}><a href="{{ url_for('.view_jobs', service_id=current_service.id) }}">Uploaded files</a></li>
           </ul>
         </nav>
       </div>

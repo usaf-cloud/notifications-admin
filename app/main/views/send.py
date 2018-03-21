@@ -153,7 +153,8 @@ def send_messages(service_id, template_id):
         template=template,
         column_headings=list(ascii_uppercase[:len(column_headings)]),
         example=[column_headings, get_example_csv_rows(template)],
-        form=form
+        form=form,
+        selected_nav_item='upload'
     )
 
 

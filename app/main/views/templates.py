@@ -126,6 +126,7 @@ def choose_template(service_id, template_type='all'):
         template_type=template_type,
         search_form=SearchTemplatesForm(),
         batch=False,
+        selected_nav_item='one-off',
     )
 
 
@@ -164,6 +165,7 @@ def choose_template_for_batch(service_id, template_type='all'):
         template_type=template_type,
         search_form=SearchTemplatesForm(),
         batch=True,
+        selected_nav_item='upload',
     )
 
 

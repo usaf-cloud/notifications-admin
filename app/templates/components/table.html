@@ -61,7 +61,7 @@
     {% set field_alignment = 'table-field-right-aligned' if align == 'right' else 'table-field-center-aligned' %}
     {% set border = '' if border else 'table-field-noborder' %}
 
-    <td class="{{ [field_alignment, border]|join(' ') }}" {% if not selected %}style="border-right: 1px solid #bfc1c3; padding-right: 15px;"{% else %}style="padding-right: 15px;"{% endif %}>
+    <td class="{{ [field_alignment, border]|join(' ') }}">
       <div class="{{ 'table-field-status-' + status if status }}">{{ caller() }}</div>
     </td>
 {%- endmacro %}
@@ -132,7 +132,7 @@
   {% if not notification %}
     {% call field(align='right', selected=selected) %}{% endcall %}
   {% else %}
-    {% call field(status=notification.status|format_notification_status_as_field_status, align='right', selected=selected) %}
+    {% call field(status=notification.status|format_notification_status_as_field_status(notification_type=notification.template.template_type), align='right', selected=selected) %}
       <span class="casework-field-status">
         {% if notification.status|format_notification_status_as_url %}
           <a href="{{ notification.status|format_notification_status_as_url }}">

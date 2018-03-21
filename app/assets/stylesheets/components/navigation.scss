@@ -40,6 +40,10 @@
     @include core-19;
     margin: 0;
     list-style-type: none;
+
+    &.selected {
+      @include bold-19;
+    }
   }
 
   a {
@@ -99,7 +103,7 @@
 
   &__item--active {
     @include bold-16;
-    
+
     a:link, a:visited {
       color: $text-colour;
     }
