@@ -1,7 +1,7 @@
 {% from "components/checkbox.html" import checkbox %}
 {% from "components/radios.html" import radio, radios %}
 
-<div data-module="user-type" class="form-group">
+<div data-module="user-type" class="bottom-gutter-1-2">
   {% for option in form.user_type %}
     {{ radio(option) }}
     {% if loop.index == 2 %}

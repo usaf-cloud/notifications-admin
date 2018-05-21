@@ -262,6 +262,10 @@ details .arrow {
   padding-left: 26px;
   border-width: 3px;
 
+  /* CIRCLE MODE
+  padding-bottom: 15px;
+  */
+
   &:after {
     content: 0;
     position: absolute;
@@ -271,6 +275,12 @@ details .arrow {
     height: 3px;
     background: $border-colour;
     z-index: 100;
+
+    /* CIRCLE MODE
+    height: 20px;
+    bottom: -20px;
+    border-radius: 50%;
+    */
   }
 }
 
