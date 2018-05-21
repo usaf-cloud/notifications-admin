@@ -46,6 +46,15 @@
           }}
         {% endcall %}
 
+        {% call row() %}
+          {{ text_field('Caseworking') }}
+          {{ text_field(request.args.get('caseworking', 'Off')) }}
+          {{ edit_field(
+              'Change',
+              url_for('.service_set_caseworking', service_id=current_service.id)
+          )}}
+        {% endcall %}
+
       {% endcall %}
 
       {% call mapping_table(

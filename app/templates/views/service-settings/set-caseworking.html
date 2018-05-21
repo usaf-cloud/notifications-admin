@@ -1,0 +1,22 @@
+{% extends "withnav_template.html" %}
+{% from "components/radios.html" import radios %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block service_page_title %}
+  Text message sender
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <form class="grid-row" action="{{ url_for('main.service_settings', service_id=current_service.id) }}">
+    <div class="column-five-sixths">
+      <h1 class="heading-large">Caseworking</h1>
+      <p>Hi</p>
+      {{ radios(form.caseworking) }}
+      {{ page_footer(
+        'Save'
+      ) }}
+    </div>
+  </form>
+
+{% endblock %}

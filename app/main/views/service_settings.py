@@ -43,6 +43,7 @@ from app.main.forms import (
     ServiceSwitchLettersForm,
     SMSPrefixForm,
     branding_options_dict,
+    CaseworkingSettingsForm,
 )
 from app.utils import (
     AgreementInfo,
@@ -581,6 +582,16 @@ def service_set_letters(service_id):
 def service_set_auth_type(service_id):
     return render_template(
         'views/service-settings/set-auth-type.html',
+    )
+
+
+@main.route("/services/<service_id>/service-settings/set-caseworking", methods=['GET'])
+@login_required
+@user_has_permissions('manage_service')
+def service_set_caseworking(service_id):
+    return render_template(
+        'views/service-settings/set-caseworking.html',
+        form=CaseworkingSettingsForm(),
     )
 
 

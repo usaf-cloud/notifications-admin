@@ -1,25 +1,33 @@
 {% from "components/checkbox.html" import checkbox %}
-{% from "components/radios.html" import radios %}
+{% from "components/radios.html" import radio, radios %}
 
-<fieldset class="form-group">
-  <legend class="form-label">
-    Permissions
-  </legend>
-  {{ checkbox(form.send_messages) }}
-  {{ checkbox(form.manage_templates) }}
-  {{ checkbox(form.manage_service) }}
-  {{ checkbox(form.manage_api_keys) }}
-</fieldset>
-
-<div class="bottom-gutter">
-  <p class="form-label">
-    All team members can see
-  </p>
-  <ul class="list list-bullet">
-    <li>templates</li>
-    <li>history of sent messages</li>
-    <li>who the other team members are</li>
-  </ul>
+<div data-module="user-type" class="form-group">
+  {% for option in form.user_type %}
+    {{ radio(option) }}
+    {% if loop.index == 2 %}
+    <div class="js-hidden panel panel-border-wide" id="panel-user_type-1">
+      <fieldset class="form-group">
+        <div class="bottom-gutter">
+          <p class="form-label">
+            All admin can see
+          </p>
+          <ul class="list list-bullet">
+            <li>templates</li>
+            <li>history of sent messages</li>
+            <li>who the other team members are</li>
+          </ul>
+        </div>
+        <legend class="form-label">
+          Extra permissions
+        </legend>
+        {{ checkbox(form.send_messages) }}
+        {{ checkbox(form.manage_templates) }}
+        {{ checkbox(form.manage_service) }}
+        {{ checkbox(form.manage_api_keys) }}
+      </fieldset>
+    </div>
+    {%endif%}
+  {% endfor %}
 </div>
 
 {% if service_has_email_auth %}

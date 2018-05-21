@@ -257,6 +257,13 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
 
 
 class PermissionsForm(StripWhitespaceForm):
+    user_type = RadioField(
+        choices=(
+            ('caseworker', 'Caseworker'),
+            ('admin', 'Admin'),
+        ),
+        default='admin',
+    )
     send_messages = BooleanField("Send messages from existing templates")
     manage_templates = BooleanField("Add and edit templates")
     manage_service = BooleanField("Modify this service and its team")
@@ -947,6 +954,21 @@ class BrandingOptionsEmail(StripWhitespaceForm):
     options = RadioField(
         'Branding options',
         choices=branding_options,
+        validators=[
+            DataRequired()
+        ],
+    )
+
+
+class CaseworkingSettingsForm(StripWhitespaceForm):
+
+    caseworking = RadioField(
+        'Caseworking users',
+        choices=(
+            ('On', 'On'),
+            ('Off', 'Off'),
+        ),
+        default='Off',
         validators=[
             DataRequired()
         ],
