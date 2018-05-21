@@ -17,16 +17,16 @@
   </p>
 
   <div class="grid-row">
-    <form method="post" class="column-three-quarters">
+    <div class="column-three-quarters">
 
       {% include 'views/manage-users/permissions.html' %}
 
-        {{ page_footer(
-          'Save',
-          delete_link=url_for('.remove_user_from_service', service_id=current_service.id, user_id=user.id) if user or None,
-          delete_link_text='Remove user from service'
-        ) }}
+      {{ page_footer(
+        'Save',
+        delete_link=url_for('.remove_user_from_service', service_id=current_service.id, user_id=user.id) if user or None,
+        delete_link_text='Remove user from service'
+      ) }}
 
-    </form>
+    </div>
   </div>
 {% endblock %}

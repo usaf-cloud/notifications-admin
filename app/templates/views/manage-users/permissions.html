@@ -5,7 +5,7 @@
   {% for option in form.user_type %}
     {{ radio(option) }}
     {% if loop.index == 2 %}
-    <div class="js-hidden panel panel-border-wide" id="panel-user_type-1">
+    <div class="js-hidden panel panel-border-wide conditional-panel" id="panel-user_type-1">
       <fieldset class="form-group">
         <div class="bottom-gutter">
           <p class="form-label">
