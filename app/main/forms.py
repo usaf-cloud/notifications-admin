@@ -283,6 +283,7 @@ class InviteUserForm(PermissionsForm):
 
     def __init__(self, invalid_email_address, *args, **kwargs):
         super(InviteUserForm, self).__init__(*args, **kwargs)
+        self.user_type.default = None
         self.invalid_email_address = invalid_email_address.lower()
 
     def validate_email_address(self, field):

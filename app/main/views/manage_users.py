@@ -41,6 +41,7 @@ def manage_users(service_id):
 def invite_user(service_id):
 
     form = InviteUserForm(
+        user_type=None,
         invalid_email_address=current_user.email_address
     )
 

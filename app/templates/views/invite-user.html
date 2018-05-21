@@ -14,7 +14,7 @@
   </h1>
 
   <div class="grid-row">
-    <form method="post" class="column-three-quarters" novalidate>
+    <div class="column-three-quarters">
 
       {{ textbox(form.email_address, width='1-1', safe_error_message=True) }}
 
@@ -22,6 +22,6 @@
 
       {{ page_footer('Send invitation email') }}
 
-    </form>
+    </div>
   </div>
 {% endblock %}
