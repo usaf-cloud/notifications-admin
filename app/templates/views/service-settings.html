@@ -47,7 +47,7 @@
         {% endcall %}
 
         {% call row() %}
-          {{ text_field('Caseworking') }}
+          {{ text_field('Caseworking view') }}
           {{ text_field(request.args.get('caseworking', 'Off')) }}
           {{ edit_field(
               'Change',

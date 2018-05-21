@@ -10,8 +10,16 @@
 
   <form class="grid-row" action="{{ url_for('main.service_settings', service_id=current_service.id) }}">
     <div class="column-five-sixths">
-      <h1 class="heading-large">Caseworking</h1>
-      <p>Hi</p>
+      <h1 class="heading-large">Caseworking view</h1>
+      <p>
+        The caseworking view gives you the option to restrict some team
+        members to a simpler version of Notify. Team members with this
+        view will only be able to:
+      </p>
+      <ul class="list list-bullet">
+        <li>send messages</li>
+        <li>view sent messages (from all team members)</li>
+      </ul>
       {{ radios(form.caseworking) }}
       {{ page_footer(
         'Save'

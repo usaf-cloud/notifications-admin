@@ -7,21 +7,21 @@
     {% if loop.index == 2 %}
     <div class="js-hidden panel panel-border-wide conditional-panel" id="panel-user_type-1">
       <fieldset class="form-group">
-        <div class="bottom-gutter">
-          <p class="form-label">
-            All admin can see
-          </p>
-          <ul class="list list-bullet">
-            <li>templates</li>
-            <li>history of sent messages</li>
-            <li>who the other team members are</li>
-          </ul>
-        </div>
         {{ checkbox(form.send_messages) }}
         {{ checkbox(form.manage_templates) }}
         {{ checkbox(form.manage_service) }}
         {{ checkbox(form.manage_api_keys) }}
       </fieldset>
+      <div>
+        <p class="form-label">
+          All admins can see:
+        </p>
+        <ul class="list list-bullet">
+          <li>message templates</li>
+          <li>sent messages</li>
+          <li>who else is a team member</li>
+        </ul>
+      </div>
     </div>
     {%endif%}
   {% endfor %}

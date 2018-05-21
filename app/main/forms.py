@@ -259,8 +259,8 @@ class RegisterUserFromOrgInviteForm(StripWhitespaceForm):
 class PermissionsForm(StripWhitespaceForm):
     user_type = RadioField(
         choices=(
-            ('caseworker', 'Caseworker'),
-            ('admin', 'Admin'),
+            ('caseworker', 'Caseworking view'),
+            ('admin', 'Admin view'),
         ),
         default='admin',
     )
@@ -964,7 +964,7 @@ class BrandingOptionsEmail(StripWhitespaceForm):
 class CaseworkingSettingsForm(StripWhitespaceForm):
 
     caseworking = RadioField(
-        'Caseworking users',
+        'Caseworking view',
         choices=(
             ('On', 'On'),
             ('Off', 'Off'),
