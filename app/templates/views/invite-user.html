@@ -13,15 +13,13 @@
     Invite a team member
   </h1>
 
-  <div class="grid-row">
-    <form method="post" class="column-three-quarters" novalidate>
+  <form method="post" novalidate>
 
-      {{ textbox(form.email_address, width='1-1', safe_error_message=True) }}
+    {{ textbox(form.email_address, width='3-4', safe_error_message=True) }}
 
-      {% include 'views/manage-users/permissions.html' %}
+    {% include 'views/manage-users/permissions.html' %}
 
-      {{ page_footer('Send invitation email') }}
+    {{ page_footer('Send invitation email') }}
 
-    </form>
-  </div>
+  </form>
 {% endblock %}

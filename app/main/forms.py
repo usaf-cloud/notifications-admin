@@ -301,9 +301,9 @@ class CaseworkingPermissionsForm(AbstractPermissionsForm):
             self.send_messages.data = True
 
     user_type = RadioField(
-        'User type',
+        'Account type',
         choices=[
-            ('caseworker', 'Caseworker'),
+            ('caseworker', 'Basic'),
             ('admin', 'Admin'),
         ],
     )

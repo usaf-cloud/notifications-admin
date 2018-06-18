@@ -62,7 +62,7 @@ def go_basic(service_id):
 @login_required
 @user_has_permissions('view_activity', 'send_messages')
 def no_basic(service_id):
-    session.pop('basic')
+    session.pop('basic', None)
     return redirect(url_for('.service_dashboard', service_id=service_id))
 
 
