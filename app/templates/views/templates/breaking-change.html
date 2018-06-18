@@ -39,12 +39,14 @@
     ) }}
   </form>
 
+  <h2 class="heading-medium">Uploading recipients</h2>
   <p>
     When you send messages using this template you’ll need
     {{ column_headings|length }}
     column{{ 's' if column_headings|length > 1 else '' }} of data:
   </p>
 
+  <div class="bottom-gutter-2">
   <div class="spreadsheet">
     {% call(item, row_number) list_table(
       example_rows,
@@ -62,7 +64,32 @@
       {% endfor %}
     {% endcall %}
   </div>
+  </div>
 
-  <p>Developers, you’ll need to update your API calls</p>
+  <h2 class="heading-medium">Sending to one recipient</h2>
+  <p>
+    {% if template_change.placeholders_removed %}
+      <p>
+        You won’t be able to include this message in your
+      </p>
+    {% endif %}
+    {% if template_change.placeholders_added %}
+      <p>
+        You’ll have to go through {{ 'an extra step' if template_change.placeholders_added|length == 1 else 'extra steps' }}.
+      </p>
+    {% endif %}
+  </p>
+
+  <h2 class="heading-medium">Developers</h2>
+  {% if template_change.placeholders_removed %}
+    <p>
+      You can update your API calls (but nothing will break).
+    </p>
+  {% endif %}
+  {% if template_change.placeholders_added %}
+    <p>
+      You’ll need to update your API calls.
+    </p>
+  {% endif %}
 
 {% endblock %}
