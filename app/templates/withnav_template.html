@@ -9,6 +9,9 @@
     <div class="navigation-service">
       <div class="navigation-service-name">
         {{ current_service.name }}
+        {% if session.get('basic') %}
+          <span style="background: #DEE0E2; padding: 4px 10px 3px 10px; font-size: 16px; position: relative; top: -1px; left: 7px;">Basic mode</span>
+        {% endif %}
       </div>
       <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">Switch service</a>
     </div>

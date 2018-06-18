@@ -35,6 +35,8 @@ def translate_permissions_from_db_to_admin_roles(permissions):
 
     look them up in roles_by_permission, falling back to just passing through from the api if they aren't in the dict
     """
+    if session.get('basic'):
+        return {'send_messages'}
     return {roles_by_permission.get(permission, permission) for permission in permissions}
 
 
@@ -76,7 +78,6 @@ class User(UserMixin):
         between on the front end. So lets collapse them into "send_messages" and "manage_service". If we want to split
         them out later, we'll need to rework this function.
         """
-
         self._permissions = {
             service: translate_permissions_from_db_to_admin_roles(permissions)
             for service, permissions
@@ -118,6 +119,9 @@ class User(UserMixin):
         # Service id is always set on the request for service specific views.
         service_id = _get_service_id_from_view_args()
         org_id = _get_org_id_from_view_args()
+
+        if session.get('basic'):
+            return any(x in self._permissions.get(service_id, []) for x in permissions)
 
         if not service_id and not org_id:
             # we shouldn't have any pages that require permissions, but don't specify a service or organisation.

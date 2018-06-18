@@ -50,6 +50,22 @@ def temp_service_history(service_id):
                            events=data['events'])
 
 
+@main.route("/services/<service_id>/basic")
+@login_required
+@user_has_permissions('view_activity', 'send_messages')
+def go_basic(service_id):
+    session['basic'] = True
+    return redirect(url_for('.service_dashboard', service_id=service_id))
+
+
+@main.route("/services/<service_id>/no-basic")
+@login_required
+@user_has_permissions('view_activity', 'send_messages')
+def no_basic(service_id):
+    session.pop('basic')
+    return redirect(url_for('.service_dashboard', service_id=service_id))
+
+
 @main.route("/services/<service_id>/dashboard")
 @login_required
 @user_has_permissions('view_activity', 'send_messages')
