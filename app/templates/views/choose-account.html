@@ -18,8 +18,7 @@
             <ul class="browse-sub-list">
               {% for item in org.services %}
                 <li class="browse-list-sub-item">
-                  <a href="{{ url_for('.no_basic', service_id=item.id) }}" class="browse-list-link">{{ item.name }}</a>
-                  <span style="background: #DEE0E2; padding: 4px 10px 3px 10px; font-size: 19px; position: relative; top: -1px; margin-left: 10px"><a href="{{ url_for('.go_basic', service_id=item.id) }}">Basic mode</a></span>
+                  <a href="{{ url_for('.service_dashboard', service_id=item.id) }}" class="browse-list-link">{{ item.name }}</a>
                 </li>
               {% endfor %}
             </ul>
@@ -29,12 +28,9 @@
       {% endfor %}
       {% if services_without_organisations %}
         {% for item in services_without_organisations %}
-        <div class="bottom-gutter">
           <li class="browse-list-item">
-            <a href="{{ url_for('.no_basic', service_id=item.id) }}" class="browse-list-link">{{ item.name }}</a>
-            <span style="background: #DEE0E2; padding: 4px 10px 3px 10px; font-size: 19px; position: relative; top: -1px; margin-left: 10px"><a href="{{ url_for('.go_basic', service_id=item.id) }}">Basic mode</a></span>
+            <a href="{{ url_for('.service_dashboard', service_id=item.id) }}" class="browse-list-link">{{ item.name }}</a>
           </li>
-        </div>
         {% endfor %}
         <div class ="keyline-block"></div>
       {% endif %}
