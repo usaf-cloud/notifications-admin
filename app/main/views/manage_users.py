@@ -48,7 +48,7 @@ def manage_users(service_id):
 @user_has_permissions('manage_service')
 def invite_user(service_id):
 
-    if 'caseworking' in current_service['permissions']:
+    if 'caseworking' in current_service['permissions'] or True:
         form = CaseworkingInviteUserForm
     else:
         form = AdminInviteUserForm
@@ -89,7 +89,7 @@ def edit_user_permissions(service_id, user_id):
     user = user_api_client.get_user(user_id)
     user_has_no_mobile_number = user.mobile_number is None
 
-    if 'caseworking' in current_service['permissions']:
+    if 'caseworking' in current_service['permissions'] or True:
         form = partial(
             CaseworkingPermissionsForm,
             user_type='admin' if user.has_permission_for_service(service_id, 'view_activity') else 'caseworker',

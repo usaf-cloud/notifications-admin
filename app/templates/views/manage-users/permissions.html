@@ -1,7 +1,7 @@
 {% from "components/checkbox.html" import checkbox %}
 {% from "components/radios.html" import radio, radios, radios_wrapper, conditional_radio_panel %}
 
-{% if 'caseworking' in current_service.permissions %}
+{% if 'caseworking' in current_service.permissions or True %}
   <div class="conditional-radios" data-module='conditional-radios'>
     {% call radios_wrapper(form.user_type) %}
       {% for option in form.user_type %}
