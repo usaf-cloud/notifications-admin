@@ -25,6 +25,7 @@ from app import (
 )
 from app.main import main
 from app.main.forms import (
+    AdminViewForm,
     BrandingOptionsEmail,
     ConfirmPasswordForm,
     FreeSMSAllowance,
@@ -625,6 +626,21 @@ def service_set_letters(service_id):
 def service_set_auth_type(service_id):
     return render_template(
         'views/service-settings/set-auth-type.html',
+    )
+
+
+@main.route("/services/<service_id>/service-settings/set-admin-view", methods=['GET'])
+@login_required
+@user_has_permissions('manage_service', 'send_messages')
+def service_set_admin_view(service_id):
+    if session.get('basic'):
+        session.pop('basic')
+    if not current_user.has_permissions('manage_service'):
+        abort(403)
+    form = AdminViewForm()
+    return render_template(
+        'views/service-settings/set-admin-view.html',
+        form=form,
     )
 
 

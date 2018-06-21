@@ -399,6 +399,16 @@ class CreateServiceForm(StripWhitespaceForm):
     organisation_type = organisation_type()
 
 
+class AdminViewForm(StripWhitespaceForm):
+    enabled = RadioField(
+        'Who can see basic view?',
+        choices=[
+            ('everyone', 'No–one – everyone sees admin'),
+            ('choose', 'Let me choose who sees basic and who sees admin'),
+        ],
+    )
+
+
 class OrganisationTypeForm(StripWhitespaceForm):
     organisation_type = organisation_type()
 

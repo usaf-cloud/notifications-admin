@@ -46,6 +46,22 @@
           }}
         {% endcall %}
 
+        {% call row() %}
+          {{ text_field('Basic view') }}
+          {{ text_field(
+            'I can choose who has it'
+            if 'caseworking' in current_service.permissions
+            else 'Everyone sees admin view'
+          ) }}
+          {{ edit_field(
+              'Change',
+              url_for('.service_set_admin_view',
+              service_id=current_service.id),
+              permissions=['manage_service']
+            )
+          }}
+        {% endcall %}
+
         {% if 'upload_document' in current_service.permissions %}
         {% call row() %}
           {{ text_field('Contact link') }}
