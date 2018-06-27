@@ -14,7 +14,7 @@
         {% endif %}
       </div>
       {% if session.get('basic') %}
-      <a style="right: 115px" href="{{ url_for('main.service_set_admin_view', service_id=current_service.id) }}" class="navigation-service-switch">Back to settings</a>
+      <a style="right: auto; left: 310px;" href="{{ url_for('main.service_set_admin_view', service_id=current_service.id) }}" class="navigation-service-switch">Back to settings</a>
       {% endif %}
       <a href="{{ url_for('main.choose_account') }}" class="navigation-service-switch">Switch service</a>
     </div>

@@ -403,8 +403,8 @@ class AdminViewForm(StripWhitespaceForm):
     enabled = RadioField(
         'Who can see basic view?',
         choices=[
-            ('off', 'Admin view'),
-            ('on', 'Admin view and basic view '),
+            ('on', 'On'),
+            ('off', 'Off'),
         ],
     )
 

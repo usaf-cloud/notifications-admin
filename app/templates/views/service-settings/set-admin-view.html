@@ -3,31 +3,29 @@
 {% from "components/page-footer.html" import page_footer %}
 
 {% block service_page_title %}
-  Admin view
+  Basic view
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <form class="grid-row" method="post">
     <div class="column-five-sixths">
-      <h1 class="heading-large">Views</h1>
-      <p>
-        Which views do you want available to your team?
-      </p>
-      {{ radios(form.enabled, hide_legend=True, option_hints={
-        'everyone': ''
-      }) }}
+      <h1 class="heading-large">Basic view</h1>
       <p>
         Basic view lets you restrict a team member to only:
         <!-- If you give a team member basic view they can only: -->
       </p>
       <ul class="list list-bullet">
-        <li>send messages one at a time</li>
-        <li>see sent messages (from all team members)</li>
+        <li>send messages</li>
+        <li>see sent messages</li>
       </ul>
+      <p>You can choose which team members have basic view.</p>
       <p class="bottom-gutter">
-        See a <a href="{{ url_for(".go_basic", service_id=current_service.id) }}">preview of basic view</a>.
+        <a href="{{ url_for(".go_basic", service_id=current_service.id) }}">See a preview of basic view</a>.
       </p>
+      {{ radios(form.enabled, hide_legend=True, option_hints={
+        'everyone': ''
+      }) }}
       {{ page_footer(
         'Save',
         back_link=url_for('.service_settings', service_id=current_service.id),

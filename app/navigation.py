@@ -329,6 +329,7 @@ class MainNavigation(Navigation):
             'service_letter_contact_details',
             'service_name_change',
             'service_name_change_confirm',
+            'service_set_admin_view',
             'service_set_auth_type',
             'service_set_contact_link',
             'service_set_email',

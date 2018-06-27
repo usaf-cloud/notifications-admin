@@ -47,11 +47,11 @@
         {% endcall %}
 
         {% call row() %}
-          {{ text_field('Views') }}
+          {{ text_field('Basic view') }}
           {{ text_field(
-            'Admin view and basic view'
+            'On'
             if 'caseworking' in current_service.permissions
-            else 'Admin view'
+            else 'Off'
           ) }}
           {{ edit_field(
               'Change',
