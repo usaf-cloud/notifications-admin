@@ -8,19 +8,31 @@
 
 {% block maincolumn_content %}
 
-  <div class="grid-row">
+  <form class="grid-row" method="post">
     <div class="column-five-sixths">
-      <h1 class="heading-large">Basic view</h1>
+      <h1 class="heading-large">Views</h1>
       <p>
-        <a href="{{ url_for('.go_basic', service_id=current_service.id) }}">Preview</a>
+        Which views do you want available to your team?
       </p>
-      {{ radios(form.enabled) }}
+      {{ radios(form.enabled, hide_legend=True, option_hints={
+        'everyone': ''
+      }) }}
+      <p>
+        If you give a team member basic view they can only:
+      </p>
+      <ul class="list list-bullet">
+        <li>send messages one at a time</li>
+        <li>see sent messages (from all team members)</li>
+      </ul>
+      <p class="bottom-gutter">
+        See a <a href="{{ url_for(".go_basic", service_id=current_service.id) }}">preview of basic view</a>.
+      </p>
       {{ page_footer(
         'Save',
         back_link=url_for('.service_settings', service_id=current_service.id),
         back_link_text='Back to settings'
       ) }}
     </div>
-  </div>
+  </form>
 
 {% endblock %}

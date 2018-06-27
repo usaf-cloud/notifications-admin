@@ -629,7 +629,7 @@ def service_set_auth_type(service_id):
     )
 
 
-@main.route("/services/<service_id>/service-settings/set-admin-view", methods=['GET'])
+@main.route("/services/<service_id>/service-settings/set-admin-view", methods=['GET', 'POST'])
 @login_required
 @user_has_permissions('manage_service', 'send_messages')
 def service_set_admin_view(service_id):
@@ -637,7 +637,12 @@ def service_set_admin_view(service_id):
         session.pop('basic')
     if not current_user.has_permissions('manage_service'):
         abort(403)
-    form = AdminViewForm()
+    form = AdminViewForm(enabled=(
+        'on' if 'caseworking' in current_service['permissions'] else 'off'
+    ))
+    if form.validate_on_submit():
+        force_service_permission(service_id, 'caseworking', on=(form.enabled.data == 'on'))
+        return redirect(url_for('.service_settings', service_id=service_id))
     return render_template(
         'views/service-settings/set-admin-view.html',
         form=form,

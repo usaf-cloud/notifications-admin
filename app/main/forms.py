@@ -301,10 +301,10 @@ class CaseworkingPermissionsForm(AbstractPermissionsForm):
             self.send_messages.data = True
 
     user_type = RadioField(
-        'Account type',
+        'View',
         choices=[
-            ('caseworker', 'Basic'),
-            ('admin', 'Admin'),
+            ('caseworker', 'Basic view'),
+            ('admin', 'Admin view'),
         ],
     )
 
@@ -403,8 +403,8 @@ class AdminViewForm(StripWhitespaceForm):
     enabled = RadioField(
         'Who can see basic view?',
         choices=[
-            ('everyone', 'No–one – everyone sees admin'),
-            ('choose', 'Let me choose who sees basic and who sees admin'),
+            ('off', 'Admin view'),
+            ('on', 'Admin view and basic view '),
         ],
     )
 
