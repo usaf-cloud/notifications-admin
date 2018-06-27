@@ -53,7 +53,7 @@ def invite_user(service_id):
     else:
         form = AdminInviteUserForm
 
-    form = form(invalid_email_address=current_user.email_address)
+    form = form(invalid_email_address='foo')
 
     service_has_email_auth = 'email_auth' in current_service['permissions']
     if not service_has_email_auth:
