@@ -67,7 +67,7 @@
               {% if 'caseworking' in current_service.permissions %}
                 {{ tick_cross(
                   user.status != 'cancelled',
-                  'Admin'
+                  'Admin view'
                 ) }}
               {% endif %}
               {{ tick_cross(

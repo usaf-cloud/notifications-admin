@@ -18,8 +18,10 @@
         <li>send messages</li>
         <li>see sent messages</li>
       </ul>
-      <p>You can choose which team members have basic view.</p>
-      <p class="bottom-gutter">
+      <p>
+        You’ll get to choose which team members have basic view.
+      </p>
+      <p>
         <a href="{{ url_for(".go_basic", service_id=current_service.id) }}">See a preview of basic view</a>.
       </p>
       {{ radios(form.enabled, hide_legend=True, option_hints={
