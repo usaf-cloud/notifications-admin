@@ -38,6 +38,16 @@ $iso-paper-ratio: 141.42135624%;
     box-shadow: inset 0 0 0 1px $border-colour;
   }
 
+  &:first-of-type {
+    &:after {
+      background-image: file-url('envelope-2nd-class.svg');
+      background-size: auto 124px;
+      background-position: right 0px;
+      background-repeat: no-repeat;
+      background-origin: border-box;
+    }
+  }
+
   img {
     display: block;
     width: 100%;
