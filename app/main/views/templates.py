@@ -96,6 +96,36 @@ def start_tour(service_id, template_id):
     )
 
 
+FOLDERS = [
+    {
+        'is_folder': True,
+        'name': 'Foo',
+        'contains': [
+            'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
+            'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
+        ],
+    },
+    {
+        'is_folder': True,
+        'name': 'Bar',
+        'contains': [
+            {
+                'is_folder': True,
+                'name': 'Baz',
+                'contains': [
+                    'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
+                ]
+            }
+        ],
+    },
+    {
+        'is_folder': True,
+        'name': 'Zoo',
+        'contains': [],
+    },
+]
+
+
 @main.route("/services/<service_id>/templates")
 @main.route("/services/<service_id>/templates/<template_type>")
 @login_required
@@ -130,13 +160,16 @@ def choose_template(service_id, template_type='all'):
         ])
     ]
 
-    templates_on_page = [
-        template for template in templates
-        if (
-            template_type in ['all', template['template_type']] and
-            template['template_type'] in available_template_types
-        )
-    ]
+    templates_on_page = sorted(
+        [
+            template for template in templates
+            if (
+                template_type in ['all', template['template_type']] and
+                template['template_type'] in available_template_types
+            )
+        ] + FOLDERS,
+        key=lambda item: item['name'],
+    )
 
     return render_template(
         'views/templates/choose.html',
@@ -146,6 +179,7 @@ def choose_template(service_id, template_type='all'):
         template_nav_items=template_nav_items,
         template_type=template_type,
         search_form=SearchTemplatesForm(),
+        FOLDERS=FOLDERS,
     )
 
 
