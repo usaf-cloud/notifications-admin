@@ -1,7 +1,9 @@
 {% from "components/pill.html" import pill %}
 {% from "components/message-count-label.html" import message_count_label %}
 {% from "components/checkbox.html" import checkbox %}
+{% from "components/radios.html" import radio %}
 {% from "components/textbox.html" import textbox %}
+{% from "components/live-search.html" import live_search %}
 {% from "components/live-search.html" import live_search %}
 
 {% extends "withnav_template.html" %}
@@ -46,7 +48,7 @@
       </div>
       {% if current_user.has_permissions('manage_templates') %}
         <div class="column-one-third">
-          <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class="button align-with-heading">Add new template</a>
+          <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class="button align-with-heading">Add new</a>
         </div>
       {% endif %}
     </div>
@@ -69,20 +71,79 @@
                 <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
               </h2>
               <p class="message-type">
-                {{ template.contains|length }} template{{ 's' if template.contains|length > 1 else '' }}
+                {{ template.contains|length }} template{{ '' if template.contains|length == 1 else 's' }}
               </p>
             </div>
           {% else %}
-            <h2 class="message-name">
-              <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
-            </h2>
-            <p class="message-type">
-              {{ message_count_label(1, template.template_type, suffix='')|capitalize }} template
-            </p>
+            <div class="template">
+              <h2 class="message-name">
+                <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
+              </h2>
+              <p class="message-type">
+                {{ message_count_label(1, template.template_type, suffix='')|capitalize }} template
+              </p>
+            </div>
           {% endif %}
         </div>
       {% endfor %}
     </nav>
+    <div class='template-manager'>
+      <div class="template-manager-container">
+        <div class="grid-row">
+          <div class="column-one-quarter">
+            &nbsp;
+          </div>
+          <div class="column-three-quarters">
+            <div class='template-manager-bordered'>
+              <div class="template-manager-actions">
+                <div class='button-secondary' data-target-selector=".template-manager-new-group">Group</div>
+                <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
+              </div>
+              <div class='template-manager-move'>
+                <fieldset class="form-group">
+                  <legend class="form-label">
+                    Move templates where?
+                  </legend>
+                  {{ radio({
+                    'id': 'all',
+                    'name': 'groups',
+                    'data': all,
+                    'label': {'text': 'All templates'}
+                  }) }}
+                  <div style="margin-left: 30px;">
+                    {% for template in templates %}
+                      {% if template.is_folder %}
+                        {{ radio({
+                          'id': 'foo',
+                          'name': 'groups',
+                          'data': template.name,
+                          'label': {'text': template.name}
+                        }) }}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </fieldset>
+                <div class="form-group">
+                  <a href="" class="button">Move these templates</a>
+                </div>
+              </div>
+              <div class='template-manager-new-group'>
+                <div class="form-group">
+                  <label for="new_group" class="form-label">
+                    Name of group
+                  </label>
+                  <input type="text" class="form-control form-control-2-3" name="new_group" />
+                </div>
+                <div class="form-group">
+                  <a href="" class="button">Group these templates</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   {% endif %}
 
 {% endblock %}
