@@ -99,7 +99,7 @@ def start_tour(service_id, template_id):
 FOLDERS = [
     {
         'is_folder': True,
-        'name': 'Foo',
+        'name': 'Reminders',
         'contains': [
             'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
             'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
@@ -107,11 +107,11 @@ FOLDERS = [
     },
     {
         'is_folder': True,
-        'name': 'Bar',
+        'name': 'Drafts',
         'contains': [
             {
                 'is_folder': True,
-                'name': 'Baz',
+                'name': 'User research variations',
                 'contains': [
                     'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
                 ]
@@ -120,7 +120,7 @@ FOLDERS = [
     },
     {
         'is_folder': True,
-        'name': 'Zoo',
+        'name': 'In use LIVE',
         'contains': [],
     },
 ]
