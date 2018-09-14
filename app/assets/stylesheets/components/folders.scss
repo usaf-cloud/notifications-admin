@@ -8,24 +8,65 @@
   background: red;
 }
 
+.folder,
+.template {
+  padding: 0 0 15px 60px;
+
+  .message-name {
+    margin-top: 0;
+  }
+}
+
 #template-list {
   .multiple-choice [type=checkbox]+label::before {
-    top: 15px;
+    // top: 15px;
   }
   .multiple-choice [type=checkbox]+label::after {
-    top: 25px;
+    // top: 25px;
   }
 }
 
 .template-manager {
+
   position: fixed;
-  left: 0;
+  left: -$gutter-half;
   bottom: 0;
   width: 100%;
   background: $white;
-  height: $gutter;
-  border-top: 1px solid $border-colour;
-  box-shadow: 0 -2px 0 0 rgba($border-colour, 0.2);
-  padding: $gutter-half;
   z-index: 1000;
+  transition: all 0.2s ease-out;
+  opacity: 1;
+
+  &-container {
+    @extend %site-width-container;
+  }
+
+  &-bordered {
+    @extend %contain-floats;
+    border-top: 1px solid $border-colour;
+    box-shadow: 0 -2px 0 0 rgba($border-colour, 0.2);
+    padding: $gutter-half $gutter-half $gutter-half $gutter-half;
+  }
+
+  &-move,
+  &-new-group {
+    max-height: 0;
+    overflow-y: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+  &-actions {
+    position: relative;
+    transition: top 0.3s ease-out;
+  }
+
+  .button-secondary {
+    margin-right: $gutter-half;
+  }
+
+}
+
+.off-bottom {
+  bottom: -80px;
+  opacity: 0;
 }
