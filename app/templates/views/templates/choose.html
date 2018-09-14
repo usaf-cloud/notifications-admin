@@ -44,7 +44,7 @@
 
     <div class="grid-row bottom-gutter-2-3">
       <div class="column-two-thirds">
-        <h1 class="heading-large">{{ page_title }}</h1>
+        <h1 class="heading-large">{{ group_name or page_title }}</h1>
       </div>
       {% if current_user.has_permissions('manage_templates') %}
         <div class="column-one-third">
@@ -68,7 +68,7 @@
           {% if template.is_folder %}
             <div class="folder">
               <h2 class="message-name">
-                <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
+                <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, group_name=template.name) }}">{{ template.name }}</a>
               </h2>
               <p class="message-type">
                 {{ template.contains|length }} template{{ '' if template.contains|length == 1 else 's' }}
