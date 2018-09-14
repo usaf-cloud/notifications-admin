@@ -100,7 +100,7 @@
                 <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
               </div>
               <div class='template-manager-move'>
-                <fieldset class="form-group">
+                <fieldset class="bottom-gutter-1-2">
                   <legend class="form-label">
                     Move templates where?
                   </legend>
@@ -110,7 +110,7 @@
                     'data': all,
                     'label': {'text': 'All templates'}
                   }) }}
-                  <div style="margin-left: 30px;">
+                  <div class="conditional-radios-panel">
                     {% for template in templates %}
                       {% if template.is_folder %}
                         {{ radio({
@@ -119,12 +119,29 @@
                           'data': template.name,
                           'label': {'text': template.name}
                         }) }}
+                        {% if template.contains %}
+                          <div class="conditional-radios-panel">
+                        {% endif %}
+                          {% for sub in template.contains %}
+                              {% if sub.is_folder %}
+                                {{ radio({
+                                  'id': 'foo',
+                                  'name': 'groups',
+                                  'data': sub.name,
+                                  'label': {'text': sub.name}
+                                }) }}
+                              {% endif %}
+                          {% endfor %}
+                        {% if template.contains %}
+                          </div>
+                        {% endif %}
                       {% endif %}
                     {% endfor %}
                   </div>
                 </fieldset>
-                <div class="form-group">
+                <div class="bottom-gutter-1-3">
                   <a href="" class="button">Move these templates</a>
+                  <span class="template-manager-hide-action">Cancel</span>
                 </div>
               </div>
               <div class='template-manager-new-group'>
@@ -132,10 +149,11 @@
                   <label for="new_group" class="form-label">
                     Name of group
                   </label>
-                  <input type="text" class="form-control form-control-2-3" name="new_group" />
+                  <input type="text" class="form-control form-control-1-1" name="new_group" />
                 </div>
-                <div class="form-group">
+                <div class="bottom-gutter-1-3">
                   <a href="" class="button">Group these templates</a>
+                  <span class="template-manager-hide-action">Cancel</span>
                 </div>
               </div>
             </div>

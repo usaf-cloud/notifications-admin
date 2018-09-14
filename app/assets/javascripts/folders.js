@@ -1,6 +1,15 @@
 (function(Modules) {
   "use strict";
 
+  function hideActions() {
+    $('.template-manager-move, .template-manager-new-group').css('max-height', '0');
+    $('.template-manager-actions').css({
+      'top': '0',
+      'margin-bottom': '0',
+    });
+    $('.template-manager input').prop('checked', false);
+  }
+
   Modules.Folders = function() {
 
     this.start = function(component) {
@@ -14,11 +23,7 @@
 
         if (!$(component).has(':checked').length) {
           $bar.addClass('off-bottom');
-          $('.template-manager-move, .template-manager-new-group').css('max-height', '0');
-          $('.template-manager-actions').css({
-            'top': '0',
-            'margin-bottom': '0',
-          });
+          hideActions();
         } else {
           $bar.removeClass('off-bottom');
         }
@@ -35,11 +40,13 @@
         $($(this).data('target-selector')).css('max-height', '100vh');
 
         $('.template-manager-actions').css({
-          'top': '100vh',
+          'top': '-100vh',
           'margin-bottom': '-30px',
         });
 
       });
+
+      $('.template-manager-hide-action').on('click', hideActions);
 
     };
 
