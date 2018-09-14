@@ -128,9 +128,10 @@ FOLDERS = [
 
 @main.route("/services/<service_id>/templates")
 @main.route("/services/<service_id>/templates/<template_type>")
+@main.route("/services/<service_id>/templates/<template_type>/group/<group_name>")
 @login_required
 @user_has_permissions()
-def choose_template(service_id, template_type='all'):
+def choose_template(service_id, template_type='all', group_name=None):
     templates = service_api_client.get_service_templates(service_id)['data']
 
     letters_available = current_service.has_permission('letter')
@@ -160,6 +161,24 @@ def choose_template(service_id, template_type='all'):
         ])
     ]
 
+    folders_on_page = FOLDERS
+    if group_name:
+        try:
+            group = next(filter(
+                lambda folder: folder['name'] == group_name,
+                FOLDERS,
+            ))
+            folders_on_page = list(filter(
+                lambda item: isinstance(item, dict),
+                group['contains'],
+            ))
+            templates = [
+                template for template in templates
+                if template.get('id') in group['contains']
+            ]
+        except StopIteration:
+            folders_on_page, templates = [], []
+
     templates_on_page = sorted(
         [
             template for template in templates
@@ -167,7 +186,7 @@ def choose_template(service_id, template_type='all'):
                 template_type in ['all', template['template_type']] and
                 template['template_type'] in available_template_types
             )
-        ] + FOLDERS,
+        ] + folders_on_page,
         key=lambda item: item['name'],
     )
 
@@ -180,6 +199,7 @@ def choose_template(service_id, template_type='all'):
         template_type=template_type,
         search_form=SearchTemplatesForm(),
         FOLDERS=FOLDERS,
+        group_name=group_name,
     )
 
 
