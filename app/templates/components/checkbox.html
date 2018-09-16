@@ -1,11 +1,12 @@
 {% macro checkbox(
   field,
   hint=False,
-  width='2-3'
+  width='2-3',
+  value='y'
 ) %}
   <div class="multiple-choice">
     <input
-      id="{{ field.id }}" name="{{ field.name }}" type="checkbox" value="y"
+      id="{{ field.id }}" name="{{ field.name }}" type="checkbox" value="{{ value }}"
       {% if field.data %}
         checked
       {% endif %}

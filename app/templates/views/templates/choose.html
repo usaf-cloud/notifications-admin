@@ -60,11 +60,15 @@
     {% endif %}
 
     {{ live_search(target_selector='#template-list .column-whole', show=show_search_box, form=search_form) }}
-
+    <form method="post">
     <nav class="grid-row" id="template-list" data-module="folders">
       {% for template in templates %}
         <div class="column-whole">
-          {{ checkbox({'id':'', 'name': '', 'label': ''})}}
+          {{ checkbox({
+            'id':'t-{}'.format(template.id)
+            'name': 'template_or_folder',
+            'label': '',
+          }, value=template.id)}}
           {% if template.is_folder %}
             <div class="folder">
               <h2 class="message-name">
@@ -161,6 +165,7 @@
         </div>
       </div>
     </div>
+    </form>
 
   {% endif %}
 

@@ -126,13 +126,16 @@ FOLDERS = [
 ]
 
 
-@main.route("/services/<service_id>/templates")
-@main.route("/services/<service_id>/templates/<template_type>")
-@main.route("/services/<service_id>/templates/<template_type>/group/<group_name>")
+@main.route("/services/<service_id>/templates", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/templates/<template_type>", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/templates/<template_type>/group/<group_name>", methods=['GET', 'POST'])
 @login_required
 @user_has_permissions()
 def choose_template(service_id, template_type='all', group_name=None):
     templates = service_api_client.get_service_templates(service_id)['data']
+    folders = json.loads(service_api_client.redis_client.get(
+        'folders-{}'.format(service_id)
+    ).decode('utf-8')) or []
 
     letters_available = current_service.has_permission('letter')
 
