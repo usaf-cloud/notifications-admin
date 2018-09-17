@@ -91,6 +91,47 @@
         </div>
       {% endfor %}
     </nav>
+    <nav class="grid-row" id="template-list-flat" data-module="folders">
+      {% for template in templates %}
+        <div class="column-whole">
+          {% if template.is_folder %}
+            {% for sub in template.contains %}
+              {% set sub_template = get_template_from_id(sub) %}
+              {{ checkbox({
+                'id':'t-{}'.format(sub_template.id),
+                'name': 'template_or_folder',
+                'label': ''
+              }, value=sub_template.id)}}
+              <div class="folder">
+                <h2 class="message-name">
+                  <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=sub_template.id) }}">
+                    {{ template.name }} /
+                    {{ sub_template.name }}
+                  </a>
+                </h2>
+                <p class="message-type">
+                  {{ message_count_label(1, sub_template.template_type, suffix='')|capitalize }} template
+                </p>
+              </div>
+            {% endfor %}
+          {% else %}
+            {{ checkbox({
+              'id':'t-{}'.format(template.id),
+              'name': 'template_or_folder',
+              'label': ''
+            }, value=template.id)}}
+            <div class="template">
+              <h2 class="message-name">
+                <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
+              </h2>
+              <p class="message-type">
+                {{ message_count_label(1, template.template_type, suffix='')|capitalize }} template
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </nav>
     <div class='template-manager'>
       <div class="template-manager-container">
         <div class="grid-row">
