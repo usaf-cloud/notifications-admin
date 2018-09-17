@@ -4,12 +4,13 @@
     target_selector=None,
     show=False,
     form=None,
-    label=None
+    label=None,
+    variant=''
 ) %}
     {%- set search_label = label or form.search.label.text %}
     {% if show %}
       <div data-module="autofocus">
-        <div class="live-search" data-module="live-search" data-targets="{{ target_selector }}">
+        <div class="live-search" data-module="live-search{{ variant }}" data-targets="{{ target_selector }}">
           {{ textbox(
             form.search,
             width='1-1',
