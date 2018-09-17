@@ -250,7 +250,7 @@ def choose_template(service_id, template_type='all', group_name=None):
         'views/templates/choose.html',
         templates=templates_on_page,
         show_search_box=(len(templates_on_page) > 7),
-        show_template_nav=has_multiple_template_types and (len(templates) > 2),
+        show_template_nav=has_multiple_template_types and (len(all_templates) > 2),
         template_nav_items=template_nav_items,
         template_type=template_type,
         search_form=SearchTemplatesForm(),
