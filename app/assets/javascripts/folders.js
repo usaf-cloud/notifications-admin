@@ -33,7 +33,7 @@
           !$(component).has(':checked').length
         );
 
-      });
+      }).trigger('click');
 
       $(".template-manager-actions .button-secondary").on('click', function() {
 

@@ -859,6 +859,16 @@ class ChooseTemplateType(StripWhitespaceForm):
         ])
 
 
+class AddGroupForm(StripWhitespaceForm):
+
+    name = StringField(
+        'Name of group',
+        validators=[
+            DataRequired()
+        ]
+    )
+
+
 class SearchTemplatesForm(StripWhitespaceForm):
 
     search = SearchField('Search by name')
