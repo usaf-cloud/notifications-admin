@@ -216,12 +216,14 @@ def choose_template(service_id, template_type='all', group_name=None):
                 template for template in templates
                 if template.get('id') in group['contains']
             ]
+            all_templates = templates
         except StopIteration:
             folders_on_page, templates = [], []
     else:
         templates_in_groups = list(chain.from_iterable((
             group['contains'] for group in folders
         )))
+        all_templates = templates
         templates = [
             template for template in templates
             if template['id'] not in templates_in_groups
@@ -238,6 +240,12 @@ def choose_template(service_id, template_type='all', group_name=None):
         key=lambda item: item['name'],
     )
 
+    def _get_template_from_id(id):
+        return next(filter(
+            lambda template: template['id'] == id,
+            all_templates,
+        ))
+
     return render_template(
         'views/templates/choose.html',
         templates=templates_on_page,
@@ -248,6 +256,8 @@ def choose_template(service_id, template_type='all', group_name=None):
         search_form=SearchTemplatesForm(),
         folders=folders,
         group_name=group_name,
+        all_templates=templates,
+        get_template_from_id=_get_template_from_id,
     )
 
 
