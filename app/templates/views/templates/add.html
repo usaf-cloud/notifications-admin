@@ -10,10 +10,13 @@
 
 {% block maincolumn_content %}
 
-    <h1 class="heading-large">Add new template</h1>
+    <h1 class="heading-large">What do you want to add?</h1>
 
     {% call form_wrapper() %}
-      {{ radios(form.template_type) }}
+      {{ radios(
+        form.template_type,
+        hide_legend=true
+      ) }}
       {{ page_footer(
         'Continue'
       ) }}
