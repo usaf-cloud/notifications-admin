@@ -865,7 +865,7 @@ class ChooseTemplateType(StripWhitespaceForm):
             ('sms', 'Text message template'),
             ('letter', 'Letter template') if include_letters else None,
             ('copy-existing', 'Copy of an existing template') if include_copy else None,
-            ('group', 'A group') if include_copy else None,
+            ('group', 'Group') if include_copy else None,
         ])
 
 
