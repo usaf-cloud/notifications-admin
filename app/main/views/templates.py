@@ -128,6 +128,12 @@ def choose_template(service_id, template_type='all', group_name=None):
         folders = []
     if request.method == 'POST':
         if request.form.get('operation') == 'group':
+            for group in folders:
+                for template in request.form.getlist('template_or_folder'):
+                    try:
+                        group['contains'].remove(template)
+                    except ValueError:
+                        pass
             folders.append({
                 'is_folder': True,
                 'name': request.form.get('new_group'),
@@ -213,9 +219,9 @@ def choose_template(service_id, template_type='all', group_name=None):
         except StopIteration:
             folders_on_page, templates = [], []
     else:
-        templates_in_groups = chain.from_iterable((
+        templates_in_groups = list(chain.from_iterable((
             group['contains'] for group in folders
-        ))
+        )))
         templates = [
             template for template in templates
             if template['id'] not in templates_in_groups
