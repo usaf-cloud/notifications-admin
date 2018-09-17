@@ -1,7 +1,4 @@
 .folder {
-  //border-bottom: 1px solid $border-colour;
-  //border-top: 1px solid $border-colour;
-  //background: $highlight-colour;
   padding-top: 10px;
 
   .message-name {
@@ -12,8 +9,16 @@
     background-position: -1px 2px;
 
     a {
-      padding-left: 40px;
+      &:first-child {
+        padding-left: 40px;
+      }
+      display: inline-block;
+    }
 
+    .sep {
+      color: $secondary-text-colour;
+      padding: 0 5px;
+      font-weight: normal;
     }
   }
 
@@ -121,6 +126,7 @@
 }
 
 
-#template-list {
+#template-list,
+#template-list-flat {
   margin-top: 35px;
 }

@@ -59,156 +59,158 @@
       </div>
     {% endif %}
 
-    {{ live_search(target_selector='#template-list .column-whole', show=show_search_box, form=search_form) }}
-    <form method="post">
-    <nav class="grid-row" id="template-list" data-module="folders">
-      {% for template in templates %}
-        <div class="column-whole">
-          {{ checkbox({
-            'id':'t-{}'.format(template.id),
-            'name': 'template_or_folder',
-            'label': ''
-          }, value=template.id)}}
-          {% if template.is_folder %}
-            <div class="folder">
-              <h2 class="message-name">
-                <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, group_name=template.name) }}">{{ template.name }}</a>
-              </h2>
-              <p class="message-type">
-                {{ template.contains|length }} template{{ '' if template.contains|length == 1 else 's' }}
-              </p>
-            </div>
-          {% else %}
-            <div class="template">
-              <h2 class="message-name">
-                <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
-              </h2>
-              <p class="message-type">
-                {{ message_count_label(1, template.template_type, suffix='')|capitalize }} template
-              </p>
-            </div>
-          {% endif %}
-        </div>
-      {% endfor %}
-    </nav>
-    <nav class="grid-row" id="template-list-flat" data-module="folders">
-      {% for template in templates %}
-        <div class="column-whole">
-          {% if template.is_folder %}
-            {% for sub in template.contains %}
-              {% set sub_template = get_template_from_id(sub) %}
-              {{ checkbox({
-                'id':'t-{}'.format(sub_template.id),
-                'name': 'template_or_folder',
-                'label': ''
-              }, value=sub_template.id)}}
-              <div class="folder">
-                <h2 class="message-name">
-                  <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=sub_template.id) }}">
-                    {{ template.name }} /
-                    {{ sub_template.name }}
-                  </a>
-                </h2>
-                <p class="message-type">
-                  {{ message_count_label(1, sub_template.template_type, suffix='')|capitalize }} template
-                </p>
-              </div>
-            {% endfor %}
-          {% else %}
+    {{ live_search(target_selector='#template-list-flat .column-whole', show=True, form=search_form, variant='-folders') }}
+    <form method="post" data-module="folders">
+      <nav class="grid-row" id="template-list">
+        {% for template in templates %}
+          <div class="column-whole">
             {{ checkbox({
               'id':'t-{}'.format(template.id),
               'name': 'template_or_folder',
               'label': ''
             }, value=template.id)}}
-            <div class="template">
-              <h2 class="message-name">
-                <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
-              </h2>
-              <p class="message-type">
-                {{ message_count_label(1, template.template_type, suffix='')|capitalize }} template
-              </p>
+            {% if template.is_folder %}
+              <div class="folder">
+                <h2 class="message-name">
+                  <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, group_name=template.name) }}">{{ template.name }}</a>
+                </h2>
+                <p class="message-type">
+                  {{ template.contains|length }} template{{ '' if template.contains|length == 1 else 's' }}
+                </p>
+              </div>
+            {% else %}
+              <div class="template">
+                <h2 class="message-name">
+                  <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
+                </h2>
+                <p class="message-type">
+                  {{ message_count_label(1, template.template_type, suffix='')|capitalize }} template
+                </p>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </nav>
+      <nav class="grid-row" id="template-list-flat">
+        {% for template in templates %}
+          {% if template.is_folder %}
+            {% for sub in template.contains %}
+              {% set sub_template = get_template_from_id(sub) %}
+              <div class="column-whole">
+                {{ checkbox({
+                  'id':'t-{}'.format(sub_template.id),
+                  'name': 'template_or_folder',
+                  'label': ''
+                }, value=sub_template.id)}}
+                <div class="folder">
+                  <h2 class="message-name">
+                    <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, group_name=template.name) }}">
+                      {{ template.name }}</a> <span class="sep">/</span>
+                      <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=sub_template.id) }}">{{ sub_template.name }}</a>
+                    </a>
+                  </h2>
+                  <p class="message-type">
+                    {{ message_count_label(1, sub_template.template_type, suffix='')|capitalize }} template
+                  </p>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="column-whole">
+              {{ checkbox({
+                'id':'t-{}'.format(template.id),
+                'name': 'template_or_folder',
+                'label': ''
+              }, value=template.id)}}
+              <div class="template">
+                <h2 class="message-name">
+                  <a href="{{ url_for('.view_template', service_id=current_service.id, template_id=template.id) }}">{{ template.name }}</a>
+                </h2>
+                <p class="message-type">
+                  {{ message_count_label(1, template.template_type, suffix='')|capitalize }} template
+                </p>
+              </div>
             </div>
           {% endif %}
-        </div>
-      {% endfor %}
-    </nav>
-    <div class='template-manager'>
-      <div class="template-manager-container">
-        <div class="grid-row">
-          <div class="column-one-quarter">
-            &nbsp;
-          </div>
-          <div class="column-three-quarters">
-            <div class='template-manager-bordered'>
-              <div class="template-manager-actions">
-                <div class='button-secondary' data-target-selector=".template-manager-new-group">Group</div>
-                {% if folders %}
-                <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
-                {% endif %}
-              </div>
-              <div class='template-manager-move'>
-                <fieldset class="bottom-gutter-1-2">
-                  <legend class="form-label">
-                    Move templates where?
-                  </legend>
-                  {{ radio({
-                    'id': 'all',
-                    'name': 'move_to',
-                    'data': 'all',
-                    'label': {'text': 'All templates'}
-                  }) }}
-                  <div class="conditional-radios-panel">
-                    {% for template in templates %}
-                      {% if template.is_folder %}
-                        {{ radio({
-                          'id': 'foo',
-                          'name': 'move_to',
-                          'data': template.name,
-                          'label': {'text': template.name}
-                        }) }}
-                        {% if template.contains %}
-                          <div class="conditional-radios-panel">
+        {% endfor %}
+      </nav>
+      <div class='template-manager'>
+        <div class="template-manager-container">
+          <div class="grid-row">
+            <div class="column-one-quarter">
+              &nbsp;
+            </div>
+            <div class="column-three-quarters">
+              <div class='template-manager-bordered'>
+                <div class="template-manager-actions">
+                  <div class='button-secondary' data-target-selector=".template-manager-new-group">Group</div>
+                  {% if folders %}
+                  <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
+                  {% endif %}
+                </div>
+                <div class='template-manager-move'>
+                  <fieldset class="bottom-gutter-1-2">
+                    <legend class="form-label">
+                      Move templates where?
+                    </legend>
+                    {{ radio({
+                      'id': 'all',
+                      'name': 'move_to',
+                      'data': 'all',
+                      'label': {'text': 'All templates'}
+                    }) }}
+                    <div class="conditional-radios-panel">
+                      {% for template in templates %}
+                        {% if template.is_folder %}
+                          {{ radio({
+                            'id': 'foo',
+                            'name': 'move_to',
+                            'data': template.name,
+                            'label': {'text': template.name}
+                          }) }}
+                          {% if template.contains %}
+                            <div class="conditional-radios-panel">
+                          {% endif %}
+                            {% for sub in template.contains %}
+                                {% if sub.is_folder %}
+                                  {{ radio({
+                                    'id': 'foo',
+                                    'name': 'groups',
+                                    'data': sub.name,
+                                    'label': {'text': sub.name}
+                                  }) }}
+                                {% endif %}
+                            {% endfor %}
+                          {% if template.contains %}
+                            </div>
+                          {% endif %}
                         {% endif %}
-                          {% for sub in template.contains %}
-                              {% if sub.is_folder %}
-                                {{ radio({
-                                  'id': 'foo',
-                                  'name': 'groups',
-                                  'data': sub.name,
-                                  'label': {'text': sub.name}
-                                }) }}
-                              {% endif %}
-                          {% endfor %}
-                        {% if template.contains %}
-                          </div>
-                        {% endif %}
-                      {% endif %}
-                    {% endfor %}
+                      {% endfor %}
+                    </div>
+                  </fieldset>
+                  <div class="bottom-gutter-1-3">
+                    <button class="button" name="operation" value="move">Move these templates</button>
+                    <span class="template-manager-hide-action">Cancel</span>
                   </div>
-                </fieldset>
-                <div class="bottom-gutter-1-3">
-                  <button class="button" name="operation" value="move">Move these templates</button>
-                  <span class="template-manager-hide-action">Cancel</span>
                 </div>
-              </div>
-              <div class='template-manager-new-group'>
-                <div class="form-group">
-                  <label for="new_group" class="form-label">
-                    Name of group
-                  </label>
-                  <input type="text" class="form-control form-control-1-1" name="new_group" />
-                </div>
-                <div class="bottom-gutter-1-3">
-                  <button class="button" name="operation" value="group">Group these templates</button>
-                  <span class="template-manager-hide-action">Cancel</span>
+                <div class='template-manager-new-group'>
+                  <div class="form-group">
+                    <label for="new_group" class="form-label">
+                      Name of group
+                    </label>
+                    <input type="text" class="form-control form-control-1-1" name="new_group" />
+                  </div>
+                  <div class="bottom-gutter-1-3">
+                    <button class="button" name="operation" value="group">Group these templates</button>
+                    <span class="template-manager-hide-action">Cancel</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     </form>
 
   {% endif %}
