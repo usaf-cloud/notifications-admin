@@ -1,9 +1,12 @@
+import json
+
 from datetime import datetime, timedelta
 from string import ascii_uppercase
 
 from dateutil.parser import parse
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from itertools import chain
 from markupsafe import Markup
 from notifications_python_client.errors import HTTPError
 from notifications_utils.formatters import nl2br
@@ -17,6 +20,7 @@ from app import (
 )
 from app.main import main
 from app.main.forms import (
+    AddGroupForm,
     ChooseTemplateType,
     EmailTemplateForm,
     LetterTemplateForm,
@@ -24,6 +28,7 @@ from app.main.forms import (
     SetTemplateSenderForm,
     SMSTemplateForm,
 )
+from app.notify_client.cache import TTL
 from app.main.views.send import get_example_csv_rows, get_sender_details
 from app.template_previews import TemplatePreview, get_page_count_for_letter
 from app.utils import (
@@ -96,34 +101,16 @@ def start_tour(service_id, template_id):
     )
 
 
-FOLDERS = [
-    {
-        'is_folder': True,
-        'name': 'Reminders',
-        'contains': [
-            'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
-            'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
-        ],
-    },
-    {
-        'is_folder': True,
-        'name': 'Drafts',
-        'contains': [
-            {
-                'is_folder': True,
-                'name': 'User research variations',
-                'contains': [
-                    'e9c8b32e-84e4-43a2-ae47-0a8fbb903ae1',
-                ]
-            }
-        ],
-    },
-    {
-        'is_folder': True,
-        'name': 'In use LIVE',
-        'contains': [],
-    },
-]
+@main.route("/services/<service_id>/groups/delete")
+@login_required
+@user_has_permissions()
+def delete_groups(service_id):
+    FOLDERS_REDIS_KEY = 'folders-{}'.format(service_id)
+    service_api_client.redis_client.delete(FOLDERS_REDIS_KEY)
+    return redirect(url_for(
+        'main.choose_template',
+        service_id=current_service.id,
+    ))
 
 
 @main.route("/services/<service_id>/templates", methods=['GET', 'POST'])
@@ -132,10 +119,55 @@ FOLDERS = [
 @login_required
 @user_has_permissions()
 def choose_template(service_id, template_type='all', group_name=None):
+    FOLDERS_REDIS_KEY = 'folders-{}'.format(service_id)
     templates = service_api_client.get_service_templates(service_id)['data']
-    folders = json.loads(service_api_client.redis_client.get(
-        'folders-{}'.format(service_id)
-    ).decode('utf-8')) or []
+    folders = service_api_client.redis_client.get(FOLDERS_REDIS_KEY)
+    if folders:
+        folders = json.loads(folders.decode('utf-8'))
+    else:
+        folders = []
+    if request.method == 'POST':
+        if request.form.get('operation') == 'group':
+            folders.append({
+                'is_folder': True,
+                'name': request.form.get('new_group'),
+                'contains': request.form.getlist('template_or_folder'),
+            })
+        elif request.form.get('operation') == 'move':
+            for group in folders:
+                for template in request.form.getlist('template_or_folder'):
+                    try:
+                        group['contains'].remove(template)
+                    except ValueError:
+                        pass
+            if request.form.get('move_to') != 'all':
+                group = next(filter(
+                    lambda folder: folder['name'] == request.form.get('move_to'),
+                    folders,
+                ))
+                group_index = folders.index(group)
+                folders[group_index]['contains'] = (
+                    folders[group_index]['contains'] +
+                    request.form.getlist('template_or_folder')
+                )
+        service_api_client.redis_client.set(
+            FOLDERS_REDIS_KEY,
+            json.dumps(folders),
+            ex=TTL,
+        )
+        if request.form.get('move_to') == 'all':
+            return redirect(url_for(
+                'main.choose_template',
+                service_id=current_service.id,
+                template_type=template_type,
+            ))
+        else:
+            return redirect(url_for(
+                'main.choose_template',
+                service_id=current_service.id,
+                template_type=template_type,
+                group_name=request.form.get('new_group') or request.form.get('move_to'),
+            ))
 
     letters_available = current_service.has_permission('letter')
 
@@ -163,13 +195,12 @@ def choose_template(service_id, template_type='all', group_name=None):
             ('Letter', 'letter') if letters_available else None,
         ])
     ]
-
-    folders_on_page = FOLDERS
+    folders_on_page = folders
     if group_name:
         try:
             group = next(filter(
                 lambda folder: folder['name'] == group_name,
-                FOLDERS,
+                folders,
             ))
             folders_on_page = list(filter(
                 lambda item: isinstance(item, dict),
@@ -181,6 +212,14 @@ def choose_template(service_id, template_type='all', group_name=None):
             ]
         except StopIteration:
             folders_on_page, templates = [], []
+    else:
+        templates_in_groups = chain.from_iterable((
+            group['contains'] for group in folders
+        ))
+        templates = [
+            template for template in templates
+            if template['id'] not in templates_in_groups
+        ]
 
     templates_on_page = sorted(
         [
@@ -201,7 +240,7 @@ def choose_template(service_id, template_type='all', group_name=None):
         template_nav_items=template_nav_items,
         template_type=template_type,
         search_form=SearchTemplatesForm(),
-        FOLDERS=FOLDERS,
+        folders=folders,
         group_name=group_name,
     )
 
@@ -266,6 +305,12 @@ def add_template_by_type(service_id):
 
     if form.validate_on_submit():
 
+        if form.template_type.data == 'group':
+            return redirect(url_for(
+                '.new_group',
+                service_id=service_id,
+            ))
+
         if form.template_type.data == 'copy-existing':
             return redirect(url_for(
                 '.choose_template_to_copy',
@@ -303,6 +348,42 @@ def add_template_by_type(service_id):
             ))
 
     return render_template('views/templates/add.html', form=form)
+
+
+@main.route("/services/<service_id>/templates/new-group", methods=['GET', 'POST'])
+@login_required
+@user_has_permissions('manage_templates')
+def new_group(service_id):
+
+    form = AddGroupForm()
+    folders = None
+
+    if form.validate_on_submit():
+
+        FOLDERS_REDIS_KEY = 'folders-{}'.format(service_id)
+        folders = service_api_client.redis_client.get(FOLDERS_REDIS_KEY)
+        if folders:
+            folders = json.loads(folders.decode('utf-8'))
+        else:
+            folders = []
+        folders.append({
+            'is_folder': True,
+            'name': form.name.data,
+            'contains': [],
+        })
+        service_api_client.redis_client.set(
+            FOLDERS_REDIS_KEY,
+            json.dumps(folders),
+            ex=TTL,
+        )
+        return redirect(url_for(
+            'main.choose_template',
+            service_id=current_service.id,
+            template_type='all',
+            group_name=form.name.data,
+        ))
+
+    return render_template('views/templates/add-group.html', form=form)
 
 
 @main.route("/services/<service_id>/templates/copy")

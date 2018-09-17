@@ -18,7 +18,7 @@
 
   {% if not templates %}
 
-    <h1 class="heading-large">{{ page_title }}</h1>
+    <h1 class="heading-large">{{ group_name or page_title }}</h1>
     {% if current_user.has_permissions('manage_templates') %}
        <p class="bottom-gutter">
          You need a template before you can send
@@ -65,9 +65,9 @@
       {% for template in templates %}
         <div class="column-whole">
           {{ checkbox({
-            'id':'t-{}'.format(template.id)
+            'id':'t-{}'.format(template.id),
             'name': 'template_or_folder',
-            'label': '',
+            'label': ''
           }, value=template.id)}}
           {% if template.is_folder %}
             <div class="folder">
@@ -101,7 +101,9 @@
             <div class='template-manager-bordered'>
               <div class="template-manager-actions">
                 <div class='button-secondary' data-target-selector=".template-manager-new-group">Group</div>
+                {% if folders %}
                 <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
+                {% endif %}
               </div>
               <div class='template-manager-move'>
                 <fieldset class="bottom-gutter-1-2">
@@ -110,8 +112,8 @@
                   </legend>
                   {{ radio({
                     'id': 'all',
-                    'name': 'groups',
-                    'data': all,
+                    'name': 'move_to',
+                    'data': 'all',
                     'label': {'text': 'All templates'}
                   }) }}
                   <div class="conditional-radios-panel">
@@ -119,7 +121,7 @@
                       {% if template.is_folder %}
                         {{ radio({
                           'id': 'foo',
-                          'name': 'groups',
+                          'name': 'move_to',
                           'data': template.name,
                           'label': {'text': template.name}
                         }) }}
@@ -144,7 +146,7 @@
                   </div>
                 </fieldset>
                 <div class="bottom-gutter-1-3">
-                  <a href="" class="button">Move these templates</a>
+                  <button class="button" name="operation" value="move">Move these templates</button>
                   <span class="template-manager-hide-action">Cancel</span>
                 </div>
               </div>
@@ -156,7 +158,7 @@
                   <input type="text" class="form-control form-control-1-1" name="new_group" />
                 </div>
                 <div class="bottom-gutter-1-3">
-                  <a href="" class="button">Group these templates</a>
+                  <button class="button" name="operation" value="group">Group these templates</button>
                   <span class="template-manager-hide-action">Cancel</span>
                 </div>
               </div>
@@ -165,6 +167,7 @@
         </div>
       </div>
     </div>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     </form>
 
   {% endif %}
