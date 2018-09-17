@@ -7,6 +7,7 @@
     background-repeat: no-repeat;
     background-size: 30px 20px;
     background-position: -1px 2px;
+    z-index: 100;
 
     a {
       &:first-child {
@@ -129,4 +130,8 @@
 #template-list,
 #template-list-flat {
   margin-top: 35px;
+}
+
+#template-list-flat {
+  display: none;
 }
