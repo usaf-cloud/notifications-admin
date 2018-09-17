@@ -94,6 +94,25 @@
       <nav class="grid-row" id="template-list-flat">
         {% for template in templates %}
           {% if template.is_folder %}
+            {% if not template.contains %}
+              <div class="column-whole">
+                {{ checkbox({
+                  'id':'t-{}'.format(template.id),
+                  'name': 'template_or_folder',
+                  'label': ''
+                }, value=template.id)}}
+                <div class="folder">
+                  <h2 class="message-name">
+                    <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type=template_type, group_name=template.name) }}">
+                      {{ template.name }}</a>
+                    </a>
+                  </h2>
+                  <p class="message-type">
+                    0 templates
+                  </p>
+                </div>
+              </div>
+            {% endif %}
             {% for sub in template.contains %}
               {% set sub_template = get_template_from_id(sub) %}
               <div class="column-whole">
