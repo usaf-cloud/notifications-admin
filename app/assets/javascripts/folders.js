@@ -21,13 +21,6 @@
 
       $(component).find('.multiple-choice:has(:checkbox)').on('click', function() {
 
-        if (!$(component).has(':checked').length) {
-          $bar.addClass('off-bottom');
-          hideActions();
-        } else {
-          $bar.removeClass('off-bottom');
-        }
-
         $bar.toggleClass(
           'off-bottom',
           !$(component).has(':checked').length
@@ -47,6 +40,12 @@
       });
 
       $('.template-manager-hide-action').on('click', hideActions);
+
+      $('.template-manager-clear')
+        .on('click', function() {
+          $(component).find('input').prop('checked', false);
+          $bar.addClass('off-bottom');
+        });
 
     };
 

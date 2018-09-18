@@ -73,6 +73,15 @@
     transition: max-height 0.3s ease-out;
   }
 
+  &-clear {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    color: $link-colour;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
   &-actions {
     position: relative;
     transition: top 0.2s ease-out, margin 0.1s ease-in;
