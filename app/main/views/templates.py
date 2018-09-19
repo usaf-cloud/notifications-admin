@@ -396,7 +396,6 @@ def new_group(service_id):
             'main.choose_template',
             service_id=current_service.id,
             template_type='all',
-            group_name=form.name.data,
         ))
 
     return render_template('views/templates/add-group.html', form=form)
