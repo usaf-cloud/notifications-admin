@@ -161,19 +161,11 @@ def choose_template(service_id, template_type='all', group_name=None):
             json.dumps(folders),
             ex=TTL,
         )
-        if request.form.get('move_to') == 'all':
-            return redirect(url_for(
-                'main.choose_template',
-                service_id=current_service.id,
-                template_type=template_type,
-            ))
-        else:
-            return redirect(url_for(
-                'main.choose_template',
-                service_id=current_service.id,
-                template_type=template_type,
-                group_name=request.form.get('new_group') or request.form.get('move_to'),
-            ))
+        return redirect(url_for(
+            'main.choose_template',
+            service_id=current_service.id,
+            template_type=template_type,
+        ))
 
     letters_available = current_service.has_permission('letter')
 
