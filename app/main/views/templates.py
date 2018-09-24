@@ -229,7 +229,10 @@ def choose_template(service_id, template_type='all', group_name=None):
                 template['template_type'] in available_template_types
             )
         ] + folders_on_page,
-        key=lambda item: item['name'],
+        key=lambda item: (
+            not item.get('is_folder', False),
+            item['name'].lower(),
+        ),
     )
 
     def _get_template_from_id(id):
