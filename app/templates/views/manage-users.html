@@ -51,6 +51,9 @@
         </h3>
         <ul class="tick-cross-list">
           <div class="tick-cross-list-permissions">
+            <li class="user-folder">
+              Birkenhead
+            </li>
             {% for permission, label in permissions %}
               {{ tick_cross(
                 user.has_permission_for_service(current_service.id, permission),
