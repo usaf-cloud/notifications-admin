@@ -144,3 +144,11 @@
 #template-list-flat {
   display: none;
 }
+
+.user-folder {
+  background: file-url('folder.svg');
+  background-repeat: no-repeat;
+  background-size: auto 16px;
+  background-position: 0 6px;
+  padding: 5px 0 0 25px;
+}
