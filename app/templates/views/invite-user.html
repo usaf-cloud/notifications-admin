@@ -15,7 +15,8 @@
   </h1>
 
   <div class="grid-row">
-    {% call form_wrapper() %}
+
+    {% call form_wrapper(class="column-whole") %}
 
       {{ textbox(form.email_address, width='1-1', safe_error_message=True) }}
 

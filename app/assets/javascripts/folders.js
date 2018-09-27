@@ -10,6 +10,23 @@
     $('.template-manager input').prop('checked', false);
   }
 
+  let toggleHiddenCheckboxes = ($component, forceVisible) => event => {
+
+    if (event) {
+      event.preventDefault();
+    }
+
+    $('.group-select-hide').toggle(!!forceVisible);
+    $('.group-select-change').toggle(!forceVisible);
+
+    $component.find('.multiple-choice').each(function() {
+
+      $(this).toggle(forceVisible || !!$(this).has(':checked').length);
+
+    });
+
+  };
+
   Modules.Folders = function() {
 
     this.start = function(component) {
@@ -49,6 +66,21 @@
 
     };
 
+  };
+
+  Modules.GroupSelect = function() {
+
+    this.start = function(component) {
+
+      let $component = $(component);
+
+      $component.on('click', '.group-select-change', toggleHiddenCheckboxes($component, true));
+
+      $component.on('click', '.group-select-hide', toggleHiddenCheckboxes($component));
+
+      toggleHiddenCheckboxes($component, false)();
+
+    };
   };
 
 })(window.GOVUK.Modules);

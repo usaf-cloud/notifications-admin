@@ -1,3 +1,4 @@
+import json
 from itertools import chain
 
 from flask import request, session
@@ -380,3 +381,13 @@ class Service(dict):
     @property
     def go_live_checklist_completed_as_yes_no(self):
         return 'Yes' if self.go_live_checklist_completed else 'No'
+
+    @property
+    def folders(self):
+        from app import service_api_client
+        folders = service_api_client.redis_client.get(
+            'folders-{}'.format(self.id)
+        )
+        if folders:
+            return json.loads(folders.decode('utf-8'))
+        return []
