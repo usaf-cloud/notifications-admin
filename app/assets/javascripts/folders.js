@@ -18,6 +18,7 @@
 
     $('.group-select-hide').toggle(!!forceVisible);
     $('.group-select-change').toggle(!forceVisible);
+    $('.group-select').toggleClass('closed', !forceVisible);
 
     $component.find('.multiple-choice').each(function() {
 
@@ -26,6 +27,21 @@
     });
 
   };
+
+  let toggleAllChecked = $component => function(event) {
+
+    if ($(this).find('input').attr('id') == 't-all' || $component.find('.multiple-choice').has(':checked').length === 0) {
+      $component.find('.multiple-choice input').prop('checked', false);
+      $component.find('.multiple-choice input').eq(0).prop('checked', true)
+      $component.find('.group-select-subfolder .multiple-choice').addClass('selection-inferred');
+    } else {
+      if ($component.find('.multiple-choice').has(':checked').length > 1) {
+        $component.find('.multiple-choice input').eq(0).prop('checked', false)
+      }
+      $component.find('.group-select-subfolder .multiple-choice').removeClass('selection-inferred');
+    }
+
+  }
 
   Modules.Folders = function() {
 
@@ -78,7 +94,11 @@
 
       $component.on('click', '.group-select-hide', toggleHiddenCheckboxes($component));
 
+      $(component).find('.multiple-choice:has(:checkbox)').on('click', toggleAllChecked($component));
+
       toggleHiddenCheckboxes($component, false)();
+
+      toggleAllChecked($component).bind($('#t-all').parent()[0])();
 
     };
   };

@@ -5,13 +5,13 @@
     position: relative;
     background: file-url('folder.svg');
     background-repeat: no-repeat;
-    background-size: 30px 20px;
-    background-position: -1px 2px;
+    background-size: auto 25px;
+    background-position: 0px 2px;
     z-index: 100;
 
     a {
       &:first-child {
-        padding-left: 40px;
+        padding-left: 45px;
       }
       display: inline-block;
     }
@@ -154,18 +154,71 @@
 }
 
 .group-select {
+
   position: relative;
-  top: -15px;
-  margin-bottom: 15px;
+  padding-top: 10px;
 
   &-other {
-    padding-left: 50px;
+    //margin-top: -10px;
+  }
+
+  &-change {
+
+    padding-top: 5px;
+
+    a {
+      display: block;
+    }
   }
 
   &-hide {
+    padding-top: 15px;
+  }
 
-    position: absolute;
-    right: 0;
-    margin-top: -65px;
+  &-subfolder {
+    padding-left: 50px;
+  }
+
+  .multiple-choice [type=checkbox]+label::before {
+     //border-color: $white;
+  }
+
+}
+
+.closed {
+
+
+  .group-select-subfolder {
+    padding-left: 0;
+  }
+
+  .multiple-choice {
+     input {
+       display: none;
+     }
+     label {
+       background: file-url('folder-outlined.svg');
+       background-repeat: no-repeat;
+       background-size: 40px auto;
+       background-position: 0 0;
+       position: relative;
+       left: -38px;
+       top: -10px;
+       padding-left: 50px;
+       padding-top: 10px;
+
+       &:before,
+       &:after {
+         display: none;
+       }
+     }
+  }
+}
+
+.multiple-choice.selection-inferred {
+  label {
+    &:after {
+      opacity: 0.2;
+    }
   }
 }
