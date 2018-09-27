@@ -152,3 +152,20 @@
   background-position: 0 6px;
   padding: 5px 0 0 25px;
 }
+
+.group-select {
+  position: relative;
+  top: -15px;
+  margin-bottom: 15px;
+
+  &-other {
+    padding-left: 50px;
+  }
+
+  &-hide {
+
+    position: absolute;
+    right: 0;
+    margin-top: -65px;
+  }
+}

@@ -121,11 +121,8 @@ def delete_groups(service_id):
 def choose_template(service_id, template_type='all', group_name=None):
     FOLDERS_REDIS_KEY = 'folders-{}'.format(service_id)
     templates = service_api_client.get_service_templates(service_id)['data']
-    folders = service_api_client.redis_client.get(FOLDERS_REDIS_KEY)
-    if folders:
-        folders = json.loads(folders.decode('utf-8'))
-    else:
-        folders = []
+    folders = current_service.folders
+
     if request.method == 'POST':
         if request.form.get('operation') == 'group':
             for group in folders:

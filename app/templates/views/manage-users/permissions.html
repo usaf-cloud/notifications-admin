@@ -1,5 +1,30 @@
-{% from "components/checkbox.html" import checkbox %}
+{% from "components/checkbox.html" import checkbox, checkbox_group %}
 {% from "components/radios.html" import radio, radios, radios_wrapper, conditional_radio_panel %}
+
+
+{{ checkbox_group('Folders', [{
+  'id':'t-all',
+  'name': 'folders',
+  'label': {'text': 'All templates'},
+  'data': True
+}]) }}
+<div class="group-select" data-module="group-select">
+  <div class="group-select-other">
+    {% for folder in current_service.folders %}
+      {{ checkbox({
+        'id':'t-all',
+        'name': 'folders',
+        'label': {'text': folder.name}
+      }) }}
+    {% endfor %}
+  </div>
+  <div class="group-select-change">
+    <a href="#">Other folders</a>
+  </div>
+  <div class="group-select-hide js-stick-at-top-when-scrolling">
+    <a href="#">Hide unticked folders</a>
+  </div>
+</div>
 
 <fieldset class="form-group">
   <legend class="form-label">
