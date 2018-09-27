@@ -164,7 +164,10 @@
 
   &-change {
 
-    padding-top: 5px;
+    clear: both;
+    margin-top: -10px;
+    position: relative;
+    top: -5px;
 
     a {
       display: block;
@@ -173,6 +176,7 @@
 
   &-hide {
     padding-top: 15px;
+    clear: both;
   }
 
   &-subfolder {
@@ -193,9 +197,11 @@
   }
 
   .multiple-choice {
+
      input {
        display: none;
      }
+
      label {
        background: file-url('folder-outlined.svg');
        background-repeat: no-repeat;
@@ -203,7 +209,7 @@
        background-position: 0 0;
        position: relative;
        left: -38px;
-       top: -10px;
+       top: -3px;
        padding-left: 50px;
        padding-top: 10px;
 
@@ -211,6 +217,7 @@
        &:after {
          display: none;
        }
+
      }
   }
 }
