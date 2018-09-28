@@ -39,6 +39,7 @@
           'name': 'folders',
           'label': {'text': folder.name}
         }) }}
+        {#
         <div class="group-select-subfolder">
           {{ checkbox({
             'id':'tt-loose',
@@ -53,6 +54,7 @@
             }) }}
           {% endfor %}
         </div>
+        #}
       {% endfor %}
     </div>
   </div>
@@ -60,7 +62,7 @@
     <a href="#">See other folders</a>
   </div>
   <div class="group-select-hide">
-    <a href="#">Done</a>
+    <a href="#">Hide unticked folders</a>
   </div>
 </fieldset>
 {% endif %}
