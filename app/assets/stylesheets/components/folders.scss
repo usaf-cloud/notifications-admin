@@ -5,15 +5,18 @@
     position: relative;
     background: file-url('folder.svg');
     background-repeat: no-repeat;
-    background-size: auto 25px;
+    background-size: auto 20px;
     background-position: 0px 2px;
     z-index: 100;
 
     a {
+
       &:first-child {
-        padding-left: 45px;
+        padding-left: 40px;
       }
+
       display: inline-block;
+
     }
 
     .sep {
@@ -146,7 +149,7 @@
 }
 
 .user-folder {
-  background: file-url('folder.svg');
+  background: file-url('folder-green.svg');
   background-repeat: no-repeat;
   background-size: auto 16px;
   background-position: 0 6px;
@@ -177,6 +180,10 @@
   &-hide {
     padding-top: 15px;
     clear: both;
+
+    a {
+      @include button($grey-3);
+    }
   }
 
   &-subfolder {
@@ -227,5 +234,11 @@
     &:after {
       opacity: 0.2;
     }
+  }
+}
+
+.permissions {
+  legend {
+    @include bold-19;
   }
 }
