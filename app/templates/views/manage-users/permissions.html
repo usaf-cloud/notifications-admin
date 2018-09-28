@@ -2,7 +2,7 @@
 {% from "components/radios.html" import radio, radios, radios_wrapper, conditional_radio_panel %}
 
 {% if current_service.folders %}
-<fieldset class="group-select form-group" data-module="group-select">
+<fieldset class="group-select form-group permissions" data-module="group-select">
   <legend class="form-label">
     Folders
   </legend>
@@ -32,7 +32,7 @@
 </fieldset>
 {% endif %}
 
-<fieldset class="form-group">
+<fieldset class="form-group permissions">
   <legend class="form-label">
     Permissions
   </legend>
@@ -46,13 +46,15 @@
 </p>
 
 {% if service_has_email_auth %}
-  {% if user_has_no_mobile_number %}
-    {{ radios(
-      form.login_authentication,
-      disable=['sms_auth'],
-      option_hints={'sms_auth': 'Not available because this team member hasn’t added a phone&nbsp;number to their profile'|safe}
-    ) }}
-  {% else %}
-    {{ radios(form.login_authentication) }}
-  {% endif %}
+  <div class="permissions">
+    {% if user_has_no_mobile_number %}
+      {{ radios(
+        form.login_authentication,
+        disable=['sms_auth'],
+        option_hints={'sms_auth': 'Not available because this team member hasn’t added a phone&nbsp;number to their profile'|safe}
+      ) }}
+    {% else %}
+      {{ radios(form.login_authentication) }}
+    {% endif %}
+  </div>
 {% endif %}
