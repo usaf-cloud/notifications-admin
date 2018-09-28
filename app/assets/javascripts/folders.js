@@ -10,9 +10,9 @@
     $('.template-manager input').prop('checked', false);
   }
 
-  let toggleHiddenCheckboxes = ($component, forceVisible) => event => {
+  let toggleHiddenCheckboxes = ($component, forceVisible, allowDefault) => event => {
 
-    if (event) {
+    if (event && !allowDefault) {
       event.preventDefault();
     }
 
@@ -99,6 +99,8 @@
       toggleHiddenCheckboxes($component, false)();
 
       toggleAllChecked($component).bind($('#t-all').parent()[0])();
+
+      $('#t-all').parent('.multiple-choice').on('click', toggleHiddenCheckboxes($component, true, true));
 
     };
   };

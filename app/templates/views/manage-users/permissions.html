@@ -1,10 +1,24 @@
 {% from "components/checkbox.html" import checkbox, checkbox_group %}
 {% from "components/radios.html" import radio, radios, radios_wrapper, conditional_radio_panel %}
 
+
+<fieldset class="form-group permissions">
+  <legend class="form-label">
+    Permissions
+  </legend>
+  {% for field in form.permissions_fields %}
+    {{ checkbox(field) }}
+  {% endfor %}
+</fieldset>
+
+<p class="bottom-gutter">
+  All team members can see sent messages.
+</p>
+
 {% if current_service.folders %}
 <fieldset class="group-select form-group permissions" data-module="group-select">
   <legend class="form-label">
-    Folders
+    Templates
   </legend>
   <div class="group-select-other">
     {{ checkbox({
@@ -14,6 +28,11 @@
       'data': True
     }) }}
     <div class="group-select-subfolder">
+      {{ checkbox({
+        'id':'t-loose',
+        'name': 'folders',
+        'label': {'text': 'Templates here'}
+      }) }}
       {% for folder in current_service.folders %}
         {{ checkbox({
           'id':'t-{}'.format(loop.index),
@@ -31,19 +50,6 @@
   </div>
 </fieldset>
 {% endif %}
-
-<fieldset class="form-group permissions">
-  <legend class="form-label">
-    Permissions
-  </legend>
-  {% for field in form.permissions_fields %}
-    {{ checkbox(field) }}
-  {% endfor %}
-</fieldset>
-
-<p class="bottom-gutter">
-  All team members can see sent messages.
-</p>
 
 {% if service_has_email_auth %}
   <div class="permissions">
