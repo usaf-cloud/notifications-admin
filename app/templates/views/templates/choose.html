@@ -159,7 +159,7 @@
             <div class="column-three-quarters">
               <div class='template-manager-bordered'>
                 <div class="template-manager-actions">
-                  <div class='button-secondary' data-target-selector=".template-manager-new-group">Group</div>
+                  <div class='button-secondary' data-target-selector=".template-manager-new-group">Add to a new folder</div>
                   {% if folders %}
                   <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
                   {% endif %}
@@ -168,7 +168,7 @@
                 <div class='template-manager-move'>
                   <fieldset class="bottom-gutter-1-2">
                     <legend class="form-label">
-                      Choose a group
+                      Choose a folder
                     </legend>
                     {{ radio({
                       'id': 'all',
@@ -206,19 +206,19 @@
                     </div>
                   </fieldset>
                   <div class="bottom-gutter-1-3">
-                    <button class="button" name="operation" value="move">Move these templates</button>
+                    <button class="button" name="operation" value="move">Move to folder</button>
                     <span class="template-manager-hide-action">Cancel</span>
                   </div>
                 </div>
                 <div class='template-manager-new-group'>
                   <div class="form-group">
                     <label for="new_group" class="form-label">
-                      Name of group
+                      Folder name
                     </label>
                     <input type="text" class="form-control form-control-1-1" name="new_group" />
                   </div>
                   <div class="bottom-gutter-1-3">
-                    <button class="button" name="operation" value="group">Group these templates</button>
+                    <button class="button" name="operation" value="group">Add to folder</button>
                     <span class="template-manager-hide-action">Cancel</span>
                   </div>
                 </div>
