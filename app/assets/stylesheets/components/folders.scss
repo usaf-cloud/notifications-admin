@@ -161,6 +161,10 @@
   position: relative;
   padding-top: 10px;
 
+  &:focus {
+    outline: none;
+  }
+
   &-other {
     //margin-top: -10px;
   }
@@ -188,7 +192,14 @@
   }
 
   &-subfolder {
-    padding-left: 50px;
+
+    padding: 0 0 0 50px;
+    margin: 0 0 10px 0;
+
+    &:after {
+      content: " ";
+      display: block;
+    }
 
     label {
       background: file-url('folder-outlined-small.svg');
@@ -201,15 +212,16 @@
       padding-left: 85px;
       padding-top: 10px;
 
-      &[for='t-loose'] {
+      &[for='t-loose'],
+      &[for='tt-loose'] {
         background: none;
         padding-left: 50px;
       }
     }
   }
 
-  .multiple-choice [type=checkbox]+label::before {
-     //border-color: $white;
+  .multiple-choice:last-child {
+     margin-bottom: 10px;
   }
 
 }

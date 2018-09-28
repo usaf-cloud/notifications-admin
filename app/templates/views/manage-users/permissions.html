@@ -16,7 +16,7 @@
 </p>
 
 {% if current_service.folders %}
-<fieldset class="group-select form-group permissions" data-module="group-select">
+<fieldset class="group-select form-group permissions" data-module="group-select" tabindex="-1">
   <legend class="form-label">
     Templates
   </legend>
@@ -39,11 +39,25 @@
           'name': 'folders',
           'label': {'text': folder.name}
         }) }}
+        <div class="group-select-subfolder">
+          {{ checkbox({
+            'id':'tt-loose',
+            'name': 'folders',
+            'label': {'text': 'Templates here'}
+          }) }}
+          {% for folder in current_service.folders %}
+            {{ checkbox({
+              'id':'tt-{}'.format(loop.index),
+              'name': 'folders',
+              'label': {'text': folder.name}
+            }) }}
+          {% endfor %}
+        </div>
       {% endfor %}
     </div>
   </div>
   <div class="group-select-change">
-    <a href="#">Choose folders</a>
+    <a href="#">See other folders</a>
   </div>
   <div class="group-select-hide">
     <a href="#">Done</a>
