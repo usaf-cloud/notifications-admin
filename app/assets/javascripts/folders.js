@@ -26,6 +26,8 @@
 
     });
 
+    $component.focus();
+
   };
 
   let toggleAllChecked = $component => function(event) {
