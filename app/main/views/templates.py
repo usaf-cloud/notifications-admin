@@ -61,6 +61,7 @@ def view_template(service_id, template_id):
         )
     else:
         default_letter_contact_block_id = None
+
     return render_template(
         'views/templates/template.html',
         template=get_template(
@@ -77,6 +78,13 @@ def view_template(service_id, template_id):
             page_count=get_page_count_for_letter(template),
         ),
         default_letter_contact_block_id=default_letter_contact_block_id,
+        folder_name=next(
+            (
+                folder['name'] for folder in current_service.folders
+                if folder['contains'] and str(template_id) in folder['contains']
+            ),
+            None,
+        ),
     )
 
 

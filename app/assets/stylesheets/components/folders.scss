@@ -165,7 +165,23 @@
   }
 
   &-other {
-    //margin-top: -10px;
+    label {
+      background: file-url('folder-outlined-small.svg');
+      background-repeat: no-repeat;
+      background-size: auto 20px;
+      background-position: 50px 8px;
+      position: relative;
+      left: -38px;
+      top: -3px;
+      padding-left: 85px;
+      padding-top: 10px;
+
+      &[for='t-loose'],
+      &[for='tt-loose'] {
+        background: none;
+        padding-left: 50px;
+      }
+    }
   }
 
   &-change {
@@ -209,23 +225,7 @@
       display: block;
     }
 
-    label {
-      background: file-url('folder-outlined-small.svg');
-      background-repeat: no-repeat;
-      background-size: auto 20px;
-      background-position: 50px 8px;
-      position: relative;
-      left: -38px;
-      top: -3px;
-      padding-left: 85px;
-      padding-top: 10px;
 
-      &[for='t-loose'],
-      &[for='tt-loose'] {
-        background: none;
-        padding-left: 50px;
-      }
-    }
   }
 
   .multiple-choice:last-child {
@@ -258,4 +258,71 @@
   legend {
     @include bold-19;
   }
+}
+
+.folder-title {
+  @include bold-24;
+
+  .sep {
+    color: $secondary-text-colour;
+    padding: 0 5px 0 5px;
+    font-weight: normal;
+  }
+}
+
+.folder-back {
+  background: file-url('folder.svg');
+  background-repeat: no-repeat;
+  background-size: auto 30px;
+  text-indent: 60px;
+  max-width: 7.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+  padding: 5px 0 0 0;
+  position: relative;
+  top: 8px;
+}
+
+.govuk-back-link {
+
+  @include core-16;
+  display: inline-block;
+  position: relative;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-left: 14px;
+  border-bottom: 1px solid #0b0c0c;
+  text-decoration: none;
+
+
+  &:link,
+  &:visited,
+  &:hover,
+  &:active,
+  &:focus {
+    color: $text-colour;
+  }
+
+  &:before {
+    top: -1px;
+    bottom: 1px;
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    -webkit-clip-path: polygon(0% 50%, 100% 100%, 100% 0%);
+    clip-path: polygon(0% 50%, 100% 100%, 100% 0%);
+    border-width: 5px 6px 5px 0;
+    border-right-color: inherit;
+    content: "";
+    position: absolute;
+    top: -1px;
+    bottom: 1px;
+    left: 0;
+    margin: auto;
+  }
+
 }
