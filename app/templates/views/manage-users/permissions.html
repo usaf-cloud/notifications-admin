@@ -18,7 +18,7 @@
 {% if current_service.folders %}
 <fieldset class="group-select form-group permissions" data-module="group-select" tabindex="-1">
   <legend class="form-label">
-    Templates
+    Available templates
   </legend>
   <div class="group-select-other">
     {{ checkbox({
@@ -31,7 +31,7 @@
       {{ checkbox({
         'id':'t-loose',
         'name': 'folders',
-        'label': {'text': 'Templates here'}
+        'label': {'text': '9 templates'}
       }) }}
       {% for folder in current_service.folders %}
         {{ checkbox({
@@ -39,12 +39,13 @@
           'name': 'folders',
           'label': {'text': folder.name}
         }) }}
+
         {#
         <div class="group-select-subfolder">
           {{ checkbox({
             'id':'tt-loose',
             'name': 'folders',
-            'label': {'text': 'Templates here'}
+            'label': {'text': 'Unsorted templates'}
           }) }}
           {% for folder in current_service.folders %}
             {{ checkbox({
@@ -55,6 +56,7 @@
           {% endfor %}
         </div>
         #}
+
       {% endfor %}
     </div>
   </div>
@@ -62,7 +64,7 @@
     <a href="#">See other folders</a>
   </div>
   <div class="group-select-hide">
-    <a href="#">Hide unticked folders</a>
+    <a href="#">Done</a>
   </div>
 </fieldset>
 {% endif %}

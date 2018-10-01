@@ -159,7 +159,6 @@
 .group-select {
 
   position: relative;
-  padding-top: 10px;
 
   &:focus {
     outline: none;
@@ -172,13 +171,15 @@
   &-change {
 
     clear: both;
-    margin-top: -10px;
+    //margin-top: -10px;
     position: relative;
-    top: -5px;
-    padding-left: 50px;
+    //top: -5px;
+    //padding-left: 50px;
+    padding-top: 5px;
+
 
     a {
-      display: block;
+      @include button($grey-3);
     }
   }
 
