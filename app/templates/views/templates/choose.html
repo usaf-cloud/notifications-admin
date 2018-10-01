@@ -56,7 +56,9 @@
       </div>
     {% endif %}
 
-    {{ live_search(target_selector='#template-list-flat .column-whole', show=True, form=search_form, variant='-folders') }}
+    {% if show_search_box %}
+      {{ live_search(target_selector='#template-list-flat .column-whole', show=True, form=search_form, variant='-folders') }}
+    {% endif %}
     <form method="post" data-module="folders">
       <nav class="grid-row" id="template-list">
         {% for template in templates %}
