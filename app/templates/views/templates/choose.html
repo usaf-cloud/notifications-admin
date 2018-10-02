@@ -179,30 +179,14 @@
                       'label': {'text': 'All templates'}
                     }) }}
                     <div class="conditional-radios-panel">
-                      {% for template in templates %}
-                        {% if template.is_folder %}
+                      {% for folder in current_service.folders %}
+                        {% if folder.name != group_name %}
                           {{ radio({
-                            'id': 'foo',
+                            'id': 'foo-{}'.format(loop.index),
                             'name': 'move_to',
-                            'data': template.name,
-                            'label': {'text': template.name}
+                            'data': folder.name,
+                            'label': {'text': folder.name}
                           }) }}
-                          {% if template.contains %}
-                            <div class="conditional-radios-panel">
-                          {% endif %}
-                            {% for sub in template.contains %}
-                                {% if sub.is_folder %}
-                                  {{ radio({
-                                    'id': 'foo',
-                                    'name': 'groups',
-                                    'data': sub.name,
-                                    'label': {'text': sub.name}
-                                  }) }}
-                                {% endif %}
-                            {% endfor %}
-                          {% if template.contains %}
-                            </div>
-                          {% endif %}
                         {% endif %}
                       {% endfor %}
                     </div>
