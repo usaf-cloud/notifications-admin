@@ -38,7 +38,7 @@ from tests.conftest import (
 
 @pytest.fixture
 def mock_get_service_settings_page_common(
-    mock_get_letter_email_branding,
+    mock_get_all_letter_brandings,
     mock_get_inbound_number_for_service,
     mock_get_free_sms_fragment_limit,
     mock_get_service_data_retention,
@@ -1121,7 +1121,7 @@ def test_route_for_platform_admin_update_service(
         client,
         platform_admin_user,
         service_one,
-        mock_get_letter_email_branding,
+        mock_get_all_letter_brandings,
         route,
 ):
     mocker.patch('app.service_api_client.archive_service')
@@ -2042,7 +2042,7 @@ def test_set_letter_contact_block_has_max_10_lines(
 
 def test_request_letter_branding(
     client_request,
-    mock_get_letter_email_branding,
+    mock_get_all_letter_brandings,
 ):
     request_page = client_request.get(
         'main.request_letter_branding',
@@ -2073,7 +2073,7 @@ def test_set_letter_branding_platform_admin_only(
 def test_set_letter_branding_prepopulates(
     logged_in_platform_admin_client,
     service_one,
-    mock_get_letter_email_branding,
+    mock_get_all_letter_brandings,
     current_dvla_org_id,
     expected_selected,
 ):
@@ -2089,7 +2089,7 @@ def test_set_letter_branding_saves(
     logged_in_platform_admin_client,
     service_one,
     mock_update_service,
-    mock_get_letter_email_branding,
+    mock_get_all_letter_brandings,
 ):
     response = logged_in_platform_admin_client.post(
         url_for('main.set_letter_branding', service_id=service_one['id']),
@@ -2961,7 +2961,7 @@ def test_service_settings_when_inbound_number_is_not_set(
     mock_get_service_organisation,
     single_sms_sender,
     mocker,
-    mock_get_letter_email_branding,
+    mock_get_all_letter_brandings,
     mock_get_free_sms_fragment_limit,
     mock_get_service_data_retention,
 ):
@@ -2979,7 +2979,7 @@ def test_set_inbound_sms_when_inbound_number_is_not_set(
     single_reply_to_email_address,
     single_letter_contact_block,
     mocker,
-    mock_get_letter_email_branding,
+    mock_get_all_letter_brandings,
 ):
     mocker.patch('app.inbound_number_client.get_inbound_sms_number_for_service',
                  return_value={'data': {}})

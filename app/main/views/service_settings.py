@@ -20,6 +20,7 @@ from app import (
     current_service,
     email_branding_client,
     inbound_number_client,
+    letter_branding_client,
     organisations_client,
     service_api_client,
     user_api_client,
@@ -66,7 +67,7 @@ from app.utils import (
 @login_required
 @user_has_permissions('manage_service', 'manage_api_keys')
 def service_settings(service_id):
-    letter_branding_organisations = email_branding_client.get_letter_email_branding()
+    letter_branding_organisations = letter_branding_client.get_all_letter_brandings()
     organisation = organisations_client.get_service_organisation(service_id).get('name', None)
 
     if current_service.email_branding:
@@ -936,7 +937,7 @@ def service_preview_email_branding(service_id):
 @user_is_platform_admin
 def set_letter_branding(service_id):
 
-    form = LetterBranding(choices=email_branding_client.get_letter_email_branding().items())
+    form = LetterBranding(choices=letter_branding_client.get_all_letter_brandings().items())
 
     if form.validate_on_submit():
         service_api_client.update_service(
@@ -959,7 +960,7 @@ def set_letter_branding(service_id):
 def request_letter_branding(service_id):
     return render_template(
         'views/service-settings/request-letter-branding.html',
-        letter_branding=email_branding_client.get_letter_email_branding()[
+        letter_branding=letter_branding_client.get_all_letter_brandings()[
             current_service.get('dvla_organisation', '001')
         ]
     )

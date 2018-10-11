@@ -67,7 +67,6 @@ def test_edit_email_branding_shows_the_correct_branding_info(
 
 def test_create_email_branding_does_not_show_any_branding_info(
     logged_in_platform_admin_client,
-    mock_no_email_branding
 ):
 
     response = logged_in_platform_admin_client.get(
