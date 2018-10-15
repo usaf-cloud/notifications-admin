@@ -8,3 +8,6 @@ class LetterBrandingClient(NotifyAdminAPIClient):
 
     def get_all_letter_brandings(self):
         return self.get(url='/dvla_organisations')
+
+    def get_letter_branding(self, dvla_org_id):
+        return self.get(url='/dvla_organisations/{}'.format(dvla_org_id))
