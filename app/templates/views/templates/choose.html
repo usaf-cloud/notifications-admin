@@ -40,11 +40,11 @@
   {% else %}
 
     <div class="grid-row bottom-gutter-2-3">
-      <div class="column-three-quarters">
+      <div class="column-two-thirds">
         <h1 class="heading-large {% if group_name %}folder-title{% endif %}">{% if group_name %}<a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep">/</span> {% endif %}{{ group_name or page_title }}</h1>
       </div>
       {% if current_user.has_permissions('manage_templates') %}
-        <div class="column-one-quarter">
+        <div class="column-one-third">
           <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class="button align-with-heading">Add new</a>
         </div>
       {% endif %}
