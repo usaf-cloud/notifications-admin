@@ -3,7 +3,7 @@
 
   .message-name {
     position: relative;
-    background: file-url('folder.svg');
+    background: file-url('folder-blue.svg');
     background-repeat: no-repeat;
     background-size: auto 20px;
     background-position: 0px 2px;
@@ -166,7 +166,7 @@
 
   &-other {
     label {
-      background: file-url('folder-outlined-small.svg');
+      background: file-url('folder-black.svg');
       background-repeat: no-repeat;
       background-size: auto 20px;
       background-position: 50px 8px;
@@ -271,9 +271,10 @@
 }
 
 .folder-back {
-  background: file-url('folder.svg');
+  background: file-url('folder-blue-thin.svg');
   background-repeat: no-repeat;
-  background-size: auto 30px;
+  background-size: 38px auto;
+  background-position: 0 1px;
   text-indent: 60px;
   max-width: 7.5em;
   overflow: hidden;

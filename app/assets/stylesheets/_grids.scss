@@ -90,6 +90,7 @@
 }
 
 .align-with-heading {
+  @include button($grey-3);
   display: block;
   text-align: center;
   margin-top: 13px;

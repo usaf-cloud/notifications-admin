@@ -185,10 +185,6 @@ def choose_template(service_id, template_type='all', group_name=None):
         if template['template_type'] in available_template_types
     ]
 
-    has_multiple_template_types = len({
-        template['template_type'] for template in templates
-    }) > 1
-
     template_nav_items = [
         (label, key, url_for('.choose_template', service_id=current_service.id, template_type=key), '')
         for label, key in filter(None, [
@@ -240,6 +236,15 @@ def choose_template(service_id, template_type='all', group_name=None):
         ),
     )
 
+    has_multiple_template_types = len(
+        set(
+            filter(
+                None,
+                (template.get('template_type') for template in templates),
+            )
+        )
+    ) > 1
+
     def _get_template_from_id(id):
         return next(filter(
             lambda template: template['id'] == id,
@@ -250,7 +255,7 @@ def choose_template(service_id, template_type='all', group_name=None):
         'views/templates/choose.html',
         templates=templates_on_page,
         show_search_box=(len(templates_on_page) > 7),
-        show_template_nav=has_multiple_template_types and (len(all_templates) > 2),
+        show_template_nav=has_multiple_template_types and (len(templates_on_page) > 2),
         template_nav_items=template_nav_items,
         template_type=template_type,
         search_form=SearchTemplatesForm(),
