@@ -62,6 +62,20 @@
     {% endwith %}
   </div>
 
+  <h2 class="heading-small">
+    Visible in
+  </h2>
+  <div class="folder-list">
+    <div class="folder-list-item">
+      {{ folder_name or 'Templates'}}
+    </div>
+    {% if folder_name %}
+      <a class="folder-list-change-link" href="{{ url_for('main.manage_template_visibility', service_id=current_service.id, template_id=template.id, group_name=folder_name)}}">Change</a>
+    {% else %}
+      <a class="folder-list-change-link" href="{{ url_for('main.manage_template_visibility', service_id=current_service.id, template_id=template.id)}}">Change</a>
+    {% endif %}
+  </div>
+
   <div class="bottom-gutter-1-2">
     {{ api_key(template.id, name="Template ID", thing='template ID') }}
   </div>

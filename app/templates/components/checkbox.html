@@ -2,11 +2,13 @@
   field,
   hint=False,
   width='2-3',
-  value='y'
+  value='y',
+  disabled=False
 ) %}
   <div class="multiple-choice">
     <input
       id="{{ field.id }}" name="{{ field.name }}" type="checkbox" value="{{ value }}"
+      {% if disabled %}disabled="disabled"{% endif %}
       {% if field.data %}
         checked
       {% endif %}

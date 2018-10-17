@@ -266,6 +266,42 @@ def choose_template(service_id, template_type='all', group_name=None):
     )
 
 
+@main.route("/services/<service_id>/templates/manage-group/<group_name>", methods=['GET', 'POST'])
+@login_required
+@user_has_permissions()
+def manage_template_group(service_id, group_name):
+    if request.method == 'POST':
+        return redirect(url_for(
+            'main.choose_template',
+            service_id=current_service.id,
+            template_type='all',
+            group_name=group_name,
+        ))
+    return render_template(
+        'views/templates/manage-group.html',
+        group_name=group_name,
+    )
+
+
+@main.route("/services/<service_id>/templates/manage-template/<template_id>", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/templates/manage-template/<group_name>/<template_id>", methods=['GET', 'POST'])
+@login_required
+@user_has_permissions()
+def manage_template_visibility(service_id, template_id, group_name=None):
+    template = service_api_client.get_service_template(service_id, str(template_id))['data']
+    if request.method == 'POST':
+        return redirect(url_for(
+            'main.view_template',
+            service_id=current_service.id,
+            template_id=template_id,
+        ))
+    return render_template(
+        'views/templates/manage-template.html',
+        group_name=group_name,
+        template=template,
+    )
+
+
 @main.route("/services/<service_id>/templates/<template_id>.<filetype>")
 @login_required
 @user_has_permissions()

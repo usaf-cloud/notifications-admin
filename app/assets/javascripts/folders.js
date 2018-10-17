@@ -33,12 +33,12 @@
   let toggleAllChecked = $component => function(event) {
 
     if ($(this).find('input').attr('id') == 't-all' || $component.find('.multiple-choice').has(':checked').length === 0) {
-      $component.find('.multiple-choice input').prop('checked', false);
+      $component.find('.multiple-choice input').not(':disabled').prop('checked', false);
       $component.find('.multiple-choice input').eq(0).prop('checked', true)
       $component.find('.group-select-subfolder .multiple-choice').addClass('selection-inferred');
     } else {
       if ($component.find('.multiple-choice').has(':checked').length > 1) {
-        $component.find('.multiple-choice input').eq(0).prop('checked', false)
+        $component.find('.multiple-choice input').eq(0).not(':disabled').prop('checked', false)
       }
       $component.find('.group-select-subfolder .multiple-choice').removeClass('selection-inferred');
     }

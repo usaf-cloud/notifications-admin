@@ -152,6 +152,7 @@
           {% endif %}
         {% endfor %}
       </nav>
+
       <div class='template-manager'>
         <div class="template-manager-container">
           <div class="grid-row">
@@ -215,6 +216,13 @@
       </div>
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     </form>
+
+    {% if group_name %}
+      <div class="group-select-hide">
+      <!-- <div class="keyline-block top-gutter-2-3"> -->
+        <a href="{{ url_for('main.manage_template_group', service_id=current_service.id, group_name=group_name) }}">Manage this folder</a>&emsp;
+      </div>
+    {% endif %}
 
   {% endif %}
 

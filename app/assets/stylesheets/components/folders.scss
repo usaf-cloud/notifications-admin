@@ -255,7 +255,8 @@
 }
 
 .permissions {
-  legend {
+  legend,
+  .bold-label {
     @include bold-19;
   }
 }
@@ -324,6 +325,42 @@
     bottom: 1px;
     left: 0;
     margin: auto;
+  }
+
+}
+
+.folder-list {
+
+  margin: 0 0 $gutter-two-thirds 0;
+
+  &-item {
+    background: file-url('folder-black.svg');
+    background-repeat: no-repeat;
+    background-size: auto 20px;
+    background-position: 0 0;
+    padding: 1px 0 0 40px;
+    margin: 10px 0 0 0;
+  }
+
+  &-change-link {
+    display: block;
+    padding-top: 10px;
+  }
+
+}
+
+.multiple-choice input:disabled+label {
+
+  color: $black !important;
+
+  &:before {
+    background-color: $grey-3;
+    border-color: darken($grey-3, 1%);
+  }
+
+  &:after {
+    border-bottom-color: $black;
+    border-left-color: $black;
   }
 
 }
