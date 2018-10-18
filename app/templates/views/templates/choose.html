@@ -41,7 +41,7 @@
 
     <div class="grid-row bottom-gutter-2-3">
       <div class="column-two-thirds">
-        <h1 class="heading-large {% if group_name %}folder-title{% endif %}">{% if group_name %}<a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep">/</span> {% endif %}{{ group_name or page_title }}</h1>
+        <h1 class="heading-large folder-title">{% if group_name %}<a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep">/</span> {{ group_name }}{% else %}<span class="folder-root">{{ page_title }}</span>{% endif %}</h1>
       </div>
       {% if current_user.has_permissions('manage_templates') %}
         <div class="column-one-third">

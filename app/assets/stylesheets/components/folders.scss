@@ -270,7 +270,8 @@
   }
 }
 
-.folder-back {
+.folder-back,
+.folder-root {
   background: file-url('folder-blue-thin.svg');
   background-repeat: no-repeat;
   background-size: 38px auto;
@@ -284,6 +285,10 @@
   padding: 5px 0 0 0;
   position: relative;
   top: 8px;
+}
+
+.folder-root {
+  background-image: file-url('folder-black.svg');
 }
 
 .govuk-back-link {
