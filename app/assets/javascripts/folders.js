@@ -77,7 +77,7 @@
 
       }).trigger('click');
 
-      $(".template-manager-actions .button-secondary").on('click', function() {
+      $(".template-manager-actions-specific .button-secondary").on('click', function() {
 
         $($(this).data('target-selector')).css('max-height', '100vh');
 
