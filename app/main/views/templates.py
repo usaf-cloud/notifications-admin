@@ -14,6 +14,7 @@ from notifications_utils.recipients import first_column_headings
 
 from app import (
     current_service,
+    invite_api_client,
     service_api_client,
     template_statistics_client,
     user_api_client,
@@ -263,6 +264,21 @@ def choose_template(service_id, template_type='all', group_name=None):
         group_name=group_name,
         all_templates=templates,
         get_template_from_id=_get_template_from_id,
+    )
+
+
+@main.route("/services/<service_id>/templates/manage-folder/<group_name>", methods=['GET', 'POST'])
+@login_required
+@user_has_permissions()
+def manage_folder(service_id, group_name=''):
+    users = sorted(
+        user_api_client.get_users_for_service(service_id=service_id),
+        key=lambda user: user.email_address,
+    )
+    return render_template(
+        'views/templates/manage-folder.html',
+        group_name=group_name,
+        users=[user.name for user in users],
     )
 
 

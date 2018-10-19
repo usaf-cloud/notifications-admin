@@ -1,0 +1,47 @@
+{% from "components/radios.html" import radios %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+
+{% extends "withnav_template.html" %}
+
+{% block service_page_title %}
+  Manage folder
+{% endblock %}
+
+{% block maincolumn_content %}
+
+    <div class="grid-row bottom-gutter-2-3">
+      <div class="column-whole">
+        <h1 class="heading-large folder-title"><a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep"></span> <a href="{{ url_for('.choose_template', service_id=current_service.id, template_type='all', group_name=group_name) }}">{{ group_name }}</a></h1>
+      </div>
+    </div>
+
+    {% call form_wrapper(method='get', action=url_for('.choose_template', service_id=current_service.id, template_type='all', group_name=group_name)) %}
+
+    <div class="form-group" data-module="">
+        <label class="form-label" for="name">
+            Folder name
+        </label>
+
+        <input class="form-control form-control-3-4 " data-module="" id="name" name="name" required="" rows="8" type="text" value="{{ group_name }}">
+
+
+      </div>
+
+      {{ page_footer(
+        'Save',
+        delete_link='#',
+        delete_link_text='Delete this folder',
+      ) }}
+
+    {% endcall %}
+
+
+      <div class="form-label">Team members who can see this folder</div>
+      <ul class="list list-bullet">
+        {% for user in users %}
+          <li>{{ user }}</li>
+        {% endfor %}
+      </ul>
+
+{% endblock %}

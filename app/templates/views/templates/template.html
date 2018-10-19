@@ -43,13 +43,13 @@
     </div>
   {% else %}
     {% if current_service.folders %}
-      <h1 class="heading-large folder-title">
+      <h1 class="heading-large folder-title template-folder-title">
         {% if folder_name %}
           <a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id, group_name=folder_name, template_type='all') }}">{{ folder_name }}</a>
         {% else %}
           <a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a>
         {% endif %}
-        <span class="sep">/</span> {{ template.name }}</h1>
+        <span class="sep"></span> {{ template.name }}</h1>
       </h1>
     {% else %}
       <h1 class="heading-large">{{ template.name }}</h1>

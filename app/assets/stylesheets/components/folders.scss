@@ -81,10 +81,16 @@
     transition: max-height 0.3s ease-out;
   }
 
-  &-clear {
+  &-selected-count {
     position: absolute;
     top: 5px;
     right: 0;
+    color: $secondary-text-colour;
+    whitespace: no-wrap;
+  }
+
+  &-clear {
+    display: inline;
     color: $link-colour;
     text-decoration: underline;
     cursor: pointer;
@@ -93,6 +99,8 @@
   &-actions {
     position: relative;
     transition: top 0.2s ease-out, margin 0.1s ease-in;
+
+
   }
 
   &-hide-action {
@@ -266,6 +274,7 @@
 }
 
 .folder-title {
+
   @include bold-24;
 
   .sep {
@@ -280,6 +289,10 @@
     font-weight: normal;
 
   }
+}
+
+.template-folder-title {
+  margin-bottom: $gutter !important;
 }
 
 .folder-back,
@@ -343,4 +356,10 @@
     margin: auto;
   }
 
+}
+
+.folder-manage {
+  display: block;
+  text-align: right;
+  padding-top: $gutter;
 }

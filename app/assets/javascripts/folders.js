@@ -52,14 +52,28 @@
       $bar = $(".template-manager");
       $(component).append($bar);
 
-      $bar.addClass('off-bottom');
-
       $(component).find('.multiple-choice:has(:checkbox)').on('click', function() {
 
-        $bar.toggleClass(
-          'off-bottom',
-          !$(component).has(':checked').length
-        );
+        let selectedCount = $(component).find(':checked').length;
+
+        if (selectedCount) {
+
+          $('.template-manager-actions-specific').show();
+          $('.template-manager-actions-general').hide();
+
+          $('.template-manager-selected-count', component).html(
+            selectedCount + ' selected&emsp;' + '<div class="template-manager-clear">Clear</div>'
+          )
+
+        } else {
+
+          $('.template-manager-actions-specific').hide();
+          $('.template-manager-actions-general').show();
+
+          $('.template-manager-selected-count', component).html(
+            'Nothing selected'
+          )
+        }
 
       }).trigger('click');
 
@@ -76,11 +90,15 @@
 
       $('.template-manager-hide-action').on('click', hideActions);
 
-      $('.template-manager-clear')
-        .on('click', function() {
-          $(component).find('input').prop('checked', false);
-          $bar.addClass('off-bottom');
-        });
+      $(component)
+        .on(
+          'click',
+          '.template-manager-clear',
+          () => {
+            $(component).find('input').prop('checked', false);
+            $(component).find('.multiple-choice:has(:checkbox)').trigger('click');
+          }
+        );
 
     };
 

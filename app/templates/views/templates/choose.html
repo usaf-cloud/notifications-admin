@@ -16,15 +16,25 @@
 
 {% block maincolumn_content %}
 
+  <div class="grid-row bottom-gutter-2-3">
+    <div class="column-five-sixths">
+      <h1 class="heading-large folder-title">{% if group_name %}<a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep"></span> {{ group_name }}{% else %}<span class="folder-root">{{ page_title }}</span>{% endif %}</h1>
+    </div>
+    {% if current_user.has_permissions('manage_templates') and group_name %}
+      <div class="column-one-sixth">
+        <a href="{{ url_for('.manage_folder', service_id=current_service.id, group_name=group_name) }}" class="folder-manage">Manage</a>
+      </div>
+    {% endif %}
+  </div>
+
   {% if not templates %}
 
-    <h1 class="heading-large {% if group_name %}folder-title{% endif %}">{% if group_name %}<a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep"></span> {% endif %}{{ group_name or page_title }}</h1>
     {% if current_user.has_permissions('manage_templates') %}
        <p class="hint keyline-block">
-         No templates here yet…
+         Nothing here yet…
        </p>
        <div class="keyline-block bottom-gutter">
-        <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class="button">Add a new template</a>
+        <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class="button-secondary">Add new</a>
       </div>
     {% else %}
       <p>
@@ -38,17 +48,6 @@
     {% endif %}
 
   {% else %}
-
-    <div class="grid-row bottom-gutter-2-3">
-      <div class="column-two-thirds">
-        <h1 class="heading-large folder-title">{% if group_name %}<a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep"></span> {{ group_name }}{% else %}<span class="folder-root">{{ page_title }}</span>{% endif %}</h1>
-      </div>
-      {% if current_user.has_permissions('manage_templates') %}
-        <div class="column-one-third">
-          <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class="button align-with-heading">Add new</a>
-        </div>
-      {% endif %}
-    </div>
 
     {% if show_template_nav %}
       <div class="bottom-gutter-2-3">
@@ -161,11 +160,17 @@
             <div class="column-three-quarters">
               <div class='template-manager-bordered'>
                 <div class="template-manager-actions">
-                  <div class='button-secondary' data-target-selector=".template-manager-new-group">Add to a new folder</div>
-                  {% if folders %}
-                  <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
-                  {% endif %}
-                  <div class="template-manager-clear">Untick all</div>
+                  <div class="template-manager-actions-specific">
+                    <div class='button-secondary' data-target-selector=".template-manager-new-group">Add to a new folder</div>
+                    {% if folders %}
+                    <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
+                    {% endif %}
+                  </div>
+                  <div class="template-manager-actions-general">
+                    <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class='button-secondary' data-target-selector=".template-manager-move">Add new</a>
+                  </div>
+                  <div class="template-manager-selected-count">
+                  </div>
                 </div>
                 <div class='template-manager-move'>
                   <fieldset class="bottom-gutter-1-2">
