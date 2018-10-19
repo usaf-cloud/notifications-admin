@@ -20,6 +20,11 @@
     }
 
     .sep {
+
+      &:before {
+        content: "/";
+      }
+
       color: $secondary-text-colour;
       padding: 0 5px;
       font-weight: normal;
@@ -264,9 +269,16 @@
   @include bold-24;
 
   .sep {
+
+    &:before {
+      content: "/";
+    }
+
     color: $secondary-text-colour;
-    padding: 0 5px 0 5px;
+    padding: 0 4px 0 5px;
+    height: 16px;
     font-weight: normal;
+
   }
 }
 
