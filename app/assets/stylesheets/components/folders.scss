@@ -99,8 +99,6 @@
   &-actions {
     position: relative;
     transition: top 0.2s ease-out, margin 0.1s ease-in;
-
-
   }
 
   &-hide-action {
@@ -362,4 +360,12 @@
   display: block;
   text-align: right;
   padding-top: $gutter;
+}
+
+.user-folder {
+  background: file-url('folder-black.svg');
+  background-repeat: no-repeat;
+  background-size: auto 20px;
+  background-position: 0 3px;
+  padding-left: 35px;
 }

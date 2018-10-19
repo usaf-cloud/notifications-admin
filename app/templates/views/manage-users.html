@@ -57,6 +57,11 @@
                 label
               ) }}
             {% endfor %}
+            {% if current_service.folders %}
+              <div class="user-folder">
+                All templates
+              </div>
+            {% endif %}
             {% if current_service.has_permission('email_auth') %}
               <div class="tick-cross-list-hint">
                 {% if user.auth_type == 'sms_auth' %}
