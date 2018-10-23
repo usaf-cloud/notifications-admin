@@ -158,66 +158,59 @@
       </nav>
       <div class='template-manager'>
         <div class="template-manager-container">
-          <div class="grid-row">
-            <div class="column-one-quarter">
-              &nbsp;
+          <div class='template-manager-bordered'>
+            <div class="template-manager-actions">
+              <div class="template-manager-actions-specific">
+                <div class='button-secondary' data-target-selector=".template-manager-new-group">Add to a new folder</div>
+                {% if folders %}
+                <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
+                {% endif %}
+              </div>
+              <div class="template-manager-actions-general">
+                <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class='button-secondary' data-target-selector=".template-manager-move">Add new</a>
+              </div>
+              <div class="template-manager-selected-count">
+              </div>
             </div>
-            <div class="column-three-quarters">
-              <div class='template-manager-bordered'>
-                <div class="template-manager-actions">
-                  <div class="template-manager-actions-specific">
-                    <div class='button-secondary' data-target-selector=".template-manager-new-group">Add to a new folder</div>
-                    {% if folders %}
-                    <div class='button-secondary' data-target-selector=".template-manager-move">Move</div>
+            <div class='template-manager-move'>
+              <fieldset class="bottom-gutter-1-2">
+                <legend class="form-label">
+                  Choose a folder
+                </legend>
+                {{ radio({
+                  'id': 'all',
+                  'name': 'move_to',
+                  'data': 'all',
+                  'label': {'text': 'All templates'}
+                }) }}
+                <div class="conditional-radios-panel">
+                  {% for folder in current_service.folders %}
+                    {% if folder.name != group_name %}
+                      {{ radio({
+                        'id': 'foo-{}'.format(loop.index),
+                        'name': 'move_to',
+                        'data': folder.name,
+                        'label': {'text': folder.name}
+                      }) }}
                     {% endif %}
-                  </div>
-                  <div class="template-manager-actions-general">
-                    <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class='button-secondary' data-target-selector=".template-manager-move">Add new</a>
-                  </div>
-                  <div class="template-manager-selected-count">
-                  </div>
+                  {% endfor %}
                 </div>
-                <div class='template-manager-move'>
-                  <fieldset class="bottom-gutter-1-2">
-                    <legend class="form-label">
-                      Choose a folder
-                    </legend>
-                    {{ radio({
-                      'id': 'all',
-                      'name': 'move_to',
-                      'data': 'all',
-                      'label': {'text': 'All templates'}
-                    }) }}
-                    <div class="conditional-radios-panel">
-                      {% for folder in current_service.folders %}
-                        {% if folder.name != group_name %}
-                          {{ radio({
-                            'id': 'foo-{}'.format(loop.index),
-                            'name': 'move_to',
-                            'data': folder.name,
-                            'label': {'text': folder.name}
-                          }) }}
-                        {% endif %}
-                      {% endfor %}
-                    </div>
-                  </fieldset>
-                  <div class="bottom-gutter-1-3">
-                    <button class="button" name="operation" value="move">Move to folder</button>
-                    <span class="template-manager-hide-action">Cancel</span>
-                  </div>
-                </div>
-                <div class='template-manager-new-group'>
-                  <div class="form-group">
-                    <label for="new_group" class="form-label">
-                      Folder name
-                    </label>
-                    <input type="text" class="form-control form-control-1-1" name="new_group" />
-                  </div>
-                  <div class="bottom-gutter-1-3">
-                    <button class="button" name="operation" value="group">Add to folder</button>
-                    <span class="template-manager-hide-action">Cancel</span>
-                  </div>
-                </div>
+              </fieldset>
+              <div class="bottom-gutter-1-3">
+                <button class="button" name="operation" value="move">Move to folder</button>
+                <span class="template-manager-hide-action">Cancel</span>
+              </div>
+            </div>
+            <div class='template-manager-new-group'>
+              <div class="form-group">
+                <label for="new_group" class="form-label">
+                  Folder name
+                </label>
+                <input type="text" class="form-control form-control-1-1" name="new_group" />
+              </div>
+              <div class="bottom-gutter-1-3">
+                <button class="button" name="operation" value="group">Add to folder</button>
+                <span class="template-manager-hide-action">Cancel</span>
               </div>
             </div>
           </div>

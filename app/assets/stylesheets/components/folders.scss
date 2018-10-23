@@ -53,10 +53,10 @@
 
 .template-manager {
 
-  position: fixed;
-  left: -$gutter-half;
+  position: sticky;
   bottom: 0;
   width: 100%;
+  margin-left: -$gutter-half;
   z-index: 1000;
   transition: all 0.2s ease-out;
   opacity: 1;
