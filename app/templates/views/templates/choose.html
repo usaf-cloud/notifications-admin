@@ -16,16 +16,21 @@
 
 {% block maincolumn_content %}
 
-  <div class="grid-row bottom-gutter-2-3">
-    <div class="column-five-sixths">
-      <h1 class="heading-large folder-title">{% if group_name %}<a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep"></span> {{ group_name }}{% else %}<span class="folder-root">{{ page_title }}</span>{% endif %}</h1>
-    </div>
-    {% if current_user.has_permissions('manage_templates') and group_name %}
-      <div class="column-one-sixth">
-        <a href="{{ url_for('.manage_folder', service_id=current_service.id, group_name=group_name) }}" class="folder-manage">Manage</a>
+  {% if current_service.folders %}
+    <div class="grid-row bottom-gutter-2-3">
+      <div class="column-five-sixths">
+        <h1 class="heading-large folder-title">{% if group_name %}<a class="folder-back" href="{{ url_for('.choose_template', service_id=current_service.id) }}">Templates</a> <span class="sep"></span> {{ group_name }}{% else %}<span class="folder-root">{{ page_title }}</span>{% endif %}</h1>
       </div>
-    {% endif %}
-  </div>
+      {% if current_user.has_permissions('manage_templates') and group_name %}
+        <div class="column-one-sixth">
+          <a href="{{ url_for('.manage_folder', service_id=current_service.id, group_name=group_name) }}" class="folder-manage">Manage</a>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <h1 class="heading-large">Templates</h1>
+  {% endif %}
+
 
   {% if not templates %}
 
