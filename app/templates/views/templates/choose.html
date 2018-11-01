@@ -35,13 +35,17 @@
   {% if not templates %}
 
     {% if current_user.has_permissions('manage_templates') %}
-       <p class="hint keyline-block" style="padding-top: 20px">
-         You need a template before you can send
-         {% if 'letter' in current_service.permissions %}
-           emails, text messages or letters
-         {%- else -%}
-           emails or text messages
-         {%- endif %}.
+      <p class="hint keyline-block" style="padding-top: 20px">
+        {% if group_name %}
+          This folder is empty
+        {% else %}
+          You need a template before you can send
+          {% if 'letter' in current_service.permissions %}
+            emails, text messages or letters
+          {%- else -%}
+            emails or text messages
+          {%- endif %}
+        {% endif %}
        </p>
        <div class="keyline-block bottom-gutter">
          <div style="padding-top: 5px;">
