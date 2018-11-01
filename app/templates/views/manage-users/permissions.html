@@ -28,11 +28,6 @@
       'data': True
     }) }}
     <div class="group-select-subfolder">
-      {{ checkbox({
-        'id':'t-loose',
-        'name': 'folders',
-        'label': {'text': 'Templates not in a folder'}
-      }) }}
       {% for folder in current_service.folders %}
         {{ checkbox({
           'id':'t-{}'.format(loop.index),
