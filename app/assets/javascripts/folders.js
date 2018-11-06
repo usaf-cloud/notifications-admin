@@ -52,7 +52,7 @@
       $bar = $(".template-manager");
       $(component).append($bar);
 
-      $(component).find('.multiple-choice:has(:checkbox)').on('click', function() {
+      let determineActions = function() {
 
         let selectedCount = $(component).find(':checked').length;
 
@@ -70,12 +70,23 @@
           $('.template-manager-actions-specific').hide();
           $('.template-manager-actions-general').show();
 
-          $('.template-manager-selected-count', component).html(
-            'Nothing selected'
-          )
+          if ($(component).find('[type=checkbox]').length) {
+            $('.template-manager-selected-count', component).html(
+              'Nothing selected'
+            )
+          } else {
+            $('.template-manager-selected-count', component).html(
+              ''
+            )
+          }
+
         }
 
-      }).trigger('click');
+      };
+
+      $(component).find('.multiple-choice:has(:checkbox)').on('click', determineActions);
+
+      determineActions();
 
       $(".template-manager-actions-specific .button-secondary, .template-manager-actions-general .button-secondary").on('click', function() {
 

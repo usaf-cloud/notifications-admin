@@ -48,12 +48,6 @@
           {%- endif %}
         {% endif %}
        </p>
-       <div class="keyline-block bottom-gutter">
-         <div style="padding-top: 5px;">
-          <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class="button-secondary">New template</a>
-          <a href="{{ url_for('.add_template_by_type', service_id=current_service.id) }}" class="button-secondary">New folder</a>
-        </div>
-      </div>
     {% else %}
       <p>
         You need to ask your service manager to add templates before you can send
@@ -76,6 +70,8 @@
     {% if show_search_box %}
       {{ live_search(target_selector='#template-list-flat .column-whole', show=True, form=search_form, variant='-folders') }}
     {% endif %}
+
+  {% endif %}
     <form method="post" data-module="folders">
       <nav class="grid-row" id="template-list">
         {% for template in templates %}
@@ -254,6 +250,6 @@
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     </form>
 
-  {% endif %}
+
 
 {% endblock %}
