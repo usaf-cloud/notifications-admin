@@ -865,13 +865,12 @@ class ChooseTemplateType(StripWhitespaceForm):
             ('sms', 'Text message template'),
             ('letter', 'Letter template') if include_letters else None,
             ('copy-existing', 'Copy of an existing template') if include_copy else None,
-            ('group', 'Folder'),
         ])
 
 
 class AddGroupForm(StripWhitespaceForm):
 
-    name = StringField(
+    folder_name = StringField(
         'Folder name',
         validators=[
             DataRequired()

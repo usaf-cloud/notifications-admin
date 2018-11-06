@@ -75,7 +75,9 @@
   }
 
   &-move,
-  &-new-group {
+  &-new-group,
+  &-new-folder,
+  &-new-template {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out;

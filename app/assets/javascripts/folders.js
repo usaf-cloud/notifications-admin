@@ -2,7 +2,7 @@
   "use strict";
 
   function hideActions() {
-    $('.template-manager-move, .template-manager-new-group').css('max-height', '0');
+    $('.template-manager-move, .template-manager-new-group, .template-manager-new-folder, .template-manager-new-template').css('max-height', '0');
     $('.template-manager-actions').css({
       'top': '0',
       'margin-bottom': '0',
@@ -77,7 +77,7 @@
 
       }).trigger('click');
 
-      $(".template-manager-actions-specific .button-secondary").on('click', function() {
+      $(".template-manager-actions-specific .button-secondary, .template-manager-actions-general .button-secondary").on('click', function() {
 
         $($(this).data('target-selector')).css('max-height', '100vh');
 

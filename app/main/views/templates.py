@@ -14,7 +14,6 @@ from notifications_utils.recipients import first_column_headings
 
 from app import (
     current_service,
-    invite_api_client,
     service_api_client,
     template_statistics_client,
     user_api_client,
@@ -133,6 +132,10 @@ def choose_template(service_id, template_type='all', group_name=None):
     folders = current_service.folders
 
     if request.method == 'POST':
+        if request.form.get('operation') == 'new_template':
+            return add_template_by_type(service_id)
+        if request.form.get('operation') == 'new_folder':
+            return new_group(service_id)
         if request.form.get('operation') == 'group':
             for group in folders:
                 for template in request.form.getlist('template_or_folder'):
@@ -264,6 +267,14 @@ def choose_template(service_id, template_type='all', group_name=None):
         group_name=group_name,
         all_templates=templates,
         get_template_from_id=_get_template_from_id,
+        new_template_form=ChooseTemplateType(
+            include_letters=current_service.has_permission('letter'),
+            include_copy=any((
+                service_api_client.count_service_templates(service_id) > 0,
+                len(user_api_client.get_service_ids_for_user(current_user)) > 1,
+            )),
+        ),
+        new_folder_form=AddGroupForm(),
     )
 
 
@@ -342,12 +353,6 @@ def add_template_by_type(service_id):
 
     if form.validate_on_submit():
 
-        if form.template_type.data == 'group':
-            return redirect(url_for(
-                '.new_group',
-                service_id=service_id,
-            ))
-
         if form.template_type.data == 'copy-existing':
             return redirect(url_for(
                 '.choose_template_to_copy',
@@ -405,7 +410,7 @@ def new_group(service_id):
             folders = []
         folders.append({
             'is_folder': True,
-            'name': form.name.data,
+            'name': form.folder_name.data,
             'contains': [],
         })
         service_api_client.redis_client.set(
