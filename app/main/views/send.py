@@ -765,7 +765,12 @@ def get_send_test_page_title(template_type, help_argument, entering_recipient, n
     if template_type == 'letter':
         return 'Print a test letter'
     if entering_recipient:
-        return 'Send ‘{}’'.format(name)
+        if template_type == 'email':
+            return 'Recipient email address'
+        elif template_type == 'sms':
+            return 'Recipient phone number'
+        elif template_type == 'letter':
+            return 'Recipient address'
     return 'Personalise this message'
 
 

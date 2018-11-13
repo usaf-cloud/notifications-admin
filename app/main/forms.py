@@ -850,7 +850,7 @@ class DateFilterForm(StripWhitespaceForm):
 class ChooseTemplateType(StripWhitespaceForm):
 
     template_type = RadioField(
-        'What do you want to add?',
+        'Add new',
         validators=[
             DataRequired()
         ]
