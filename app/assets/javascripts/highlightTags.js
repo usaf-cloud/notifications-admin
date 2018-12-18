@@ -37,7 +37,7 @@
         this.initialHeight,
         this.$background.outerHeight()
       )
-    );
+    ) && GOVUK.stickAtBottomWhenScrolling.recalculate();
 
     this.escapedMessage = () => $('<div/>').text(this.$textbox.val()).html();
 

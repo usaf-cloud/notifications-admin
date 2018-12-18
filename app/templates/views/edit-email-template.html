@@ -20,12 +20,17 @@
           {{ textbox(form.name, width='1-1', hint='Your recipients won’t see this', rows=10) }}
           {{ textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }}
           {{ textbox(form.template_content, highlight_tags=True, width='1-1', rows=8) }}
+          <div class="section-add">
+            <a class="button-secondary" href="{{ url_for('main.add_template_section', service_id=current_service.id, template_id=template_id) }}">Add new section</a>
+          </div>
           {% if current_user.platform_admin %}
              {{ radios(form.process_type) }}
           {% endif %}
-          {{ page_footer(
-            'Save'
-          ) }}
+          <div class="js-stick-at-bottom-when-scrolling">
+            {{ page_footer(
+              'Save'
+            ) }}
+          </div>
         </div>
         <aside class="column-whole">
           {% include "partials/templates/guidance-formatting.html" %}
