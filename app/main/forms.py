@@ -910,6 +910,23 @@ class ChooseTemplateType(StripWhitespaceForm):
         ])
 
 
+class ChooseLetterTemplateType(ChooseTemplateType):
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        self.template_type.choices = filter(None, [
+            ('normal', 'Normal'),
+            ('blank', 'Blank'),
+        ])
+
+
+class NameBlankLetterTemplate(StripWhitespaceForm):
+
+    name = StringField('Name')
+
+
 class SearchTemplatesForm(StripWhitespaceForm):
 
     search = SearchField('Search by name')

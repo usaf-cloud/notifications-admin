@@ -1,0 +1,26 @@
+{% from "components/radios.html" import radios %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/textbox.html" import textbox %}
+
+{% extends "withnav_template.html" %}
+
+{% block service_page_title %}
+  Name this template
+{% endblock %}
+
+{% block maincolumn_content %}
+
+    <h1 class="heading-large">Name this template</h1>
+
+    {% call form_wrapper(
+      method='get',
+      action=url_for('main.blank_letter', service_id=current_service.id),
+    ) %}
+      {{ textbox(form.name) }}
+      {{ page_footer(
+        'Continue'
+      ) }}
+    {% endcall %}
+
+{% endblock %}

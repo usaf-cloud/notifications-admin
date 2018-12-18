@@ -18,9 +18,11 @@ from app import (
 )
 from app.main import main
 from app.main.forms import (
+    ChooseLetterTemplateType,
     ChooseTemplateType,
     EmailTemplateForm,
     LetterTemplateForm,
+    NameBlankLetterTemplate,
     SearchTemplatesForm,
     SetTemplateSenderForm,
     SMSTemplateForm,
@@ -279,19 +281,10 @@ def _add_template_by_type(template_type, template_folder_id):
         ))
 
     if template_type == 'letter':
-        blank_letter = service_api_client.create_service_template(
-            'Untitled',
-            'letter',
-            'Body',
-            current_service.id,
-            'Main heading',
-            'normal',
-            template_folder_id
-        )
         return redirect(url_for(
-            '.view_template',
+            '.add_letter_template',
             service_id=current_service.id,
-            template_id=blank_letter['data']['id'],
+            template_folder_id=template_folder_id,
         ))
 
     if email_or_sms_not_enabled(template_type, current_service.permissions):
@@ -309,6 +302,61 @@ def _add_template_by_type(template_type, template_folder_id):
             template_type=template_type,
             template_folder_id=template_folder_id,
         ))
+
+
+@main.route("/services/<service_id>/templates/add-letter", methods=['GET', 'POST'])
+@main.route("/services/<service_id>/templates/folders/<template_folder_id>/add-letter", methods=['GET', 'POST'])
+@login_required
+@user_has_permissions('manage_templates')
+def add_letter_template(service_id, template_folder_id=None):
+
+    form = ChooseLetterTemplateType()
+
+    if form.validate_on_submit():
+
+        if form.template_type.data == 'normal':
+            blank_letter = service_api_client.create_service_template(
+                'Untitled',
+                'letter',
+                'Body',
+                current_service.id,
+                'Main heading',
+                'normal',
+                template_folder_id
+            )
+            return redirect(url_for(
+                '.view_template',
+                service_id=current_service.id,
+                template_id=blank_letter['data']['id'],
+            ))
+
+        if form.template_type.data == 'blank':
+            return redirect(url_for(
+                '.name_blank_letter',
+                service_id=current_service.id,
+            ))
+
+    return render_template('views/templates/add-letter.html', form=form)
+
+
+@main.route("/services/<service_id>/name-blank-letter")
+@login_required
+@user_has_permissions('manage_templates')
+def name_blank_letter(service_id):
+    return render_template(
+        'views/templates/name-blank-letter.html',
+        form=NameBlankLetterTemplate(),
+    )
+
+
+@main.route("/services/<service_id>/blank-letter")
+@login_required
+@user_has_permissions('manage_templates')
+def blank_letter(service_id):
+    return render_template(
+        'views/templates/blank-letter.html',
+        name=request.args.get('name', 'Untitled'),
+    )
 
 
 @main.route("/services/<service_id>/templates/copy")
