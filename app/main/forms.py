@@ -444,6 +444,7 @@ class EmailTemplateForm(BaseTemplateForm):
     subject = TextAreaField(
         u'Subject',
         validators=[DataRequired(message="Can’t be empty")])
+    document = StringField('Document name', validators=[])
 
 
 class LetterTemplateForm(EmailTemplateForm):
@@ -459,6 +460,49 @@ class LetterTemplateForm(EmailTemplateForm):
             NoCommasInPlaceHolders()
         ]
     )
+
+
+class TemplateSectionForm(StripWhitespaceForm):
+
+    _choices = (
+        ('Text', (
+            'Add another piece of content.'
+        )),
+        ('Optional text', (
+            'Add a single piece of content. The sender can choose '
+            'whether to show or hide it.'
+        )),
+        ('Relevant text', (
+            'Add several pieces of optional content. The sender can '
+            'pick which ones to include.'
+        )),
+        ('Alternative text', (
+            'Add 2 or more pieces of content. The sender must choose '
+            'between them.'
+        )),
+        ('Reusable text', (
+            'The sender can choose from a library of commonly used '
+            'content. For example, the phone numbers of regional offices.'
+        )),
+        ('Document', (
+            'Add a link to download a document'
+        )),
+    )
+
+    new_content_type = RadioField(
+        'Add another content type',
+        default='',
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.new_content_type.choices = [
+            (c, c) for c, _ in self._choices
+        ]
+        self._option_hints = dict(self._choices)
 
 
 class ForgotPasswordForm(StripWhitespaceForm):
@@ -917,8 +961,8 @@ class ChooseLetterTemplateType(ChooseTemplateType):
         super().__init__(*args, **kwargs)
 
         self.template_type.choices = filter(None, [
-            ('normal', 'edit the template manually'),
-            ('blank', 'upload a PDF'),
+            ('normal', 'create it in Notify'),
+            ('blank', 'upload your own PDF'),
         ])
 
 

@@ -29,6 +29,7 @@ from app.main.forms import (
     SMSTemplateForm,
     TemplateAndFoldersSelectionForm,
     TemplateFolderForm,
+    TemplateSectionForm,
 )
 from app.main.views.send import get_example_csv_rows, get_sender_details
 from app.models.service import Service
@@ -367,6 +368,7 @@ def blank_letter(service_id):
             form=CsvUploadForm(),
         )
 
+
 @main.route("/services/<service_id>/templates/copy")
 @login_required
 @user_has_permissions('manage_templates')
@@ -702,9 +704,11 @@ def edit_service_template(service_id, template_id):
 @login_required
 @user_has_permissions('manage_templates')
 def add_template_section(service_id, template_id):
+    form = TemplateSectionForm()
     return render_template(
         'views/add-template-section.html',
         template_id=template_id,
+        form=form,
     )
 
 

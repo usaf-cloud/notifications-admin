@@ -1,4 +1,5 @@
 {% extends "withnav_template.html" %}
+{% from "components/banner.html" import banner_wrapper %}
 {% from "components/textbox.html" import textbox %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/radios.html" import radios %}
@@ -20,12 +21,24 @@
           {{ textbox(form.name, width='1-1', hint='Your recipients won’t see this', rows=10) }}
           {{ textbox(form.subject, width='1-1', highlight_tags=True, rows=2) }}
           {{ textbox(form.template_content, highlight_tags=True, width='1-1', rows=8) }}
-          <div class="section-add">
-            <a class="button-secondary" href="{{ url_for('main.add_template_section', service_id=current_service.id, template_id=template_id) }}">Add new section</a>
-          </div>
-          {% if current_user.platform_admin %}
-             {{ radios(form.process_type) }}
+          {% if request.args.new_content_type == 'Document' %}
+            <h3 id="document">Document</h3>
+            <div class="section-add">
+              {{ textbox(form.document, width='1-1', label='Document name', hint='This is how the person sending the email will know what they should upload') }}
+            </div>
+          {% elif request.args.get('new_content_type') != None %}
+            {% call banner_wrapper(type='dangerous') %}
+              <h1 class='banner-title'>
+                This content type is not available yet
+              </h1>
+            {% endcall %}
           {% endif %}
+          <div class="section-add">
+            <div class="section-add-button">
+              <a class="button-secondary" href="{{ url_for('main.add_template_section', service_id=current_service.id, template_id=template_id) }}">Add another content type</a>
+            </div>
+          </div>
+
           <div class="js-stick-at-bottom-when-scrolling">
             {{ page_footer(
               'Save'

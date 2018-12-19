@@ -25,17 +25,20 @@
     <div class="letter">
       <div class="letter-blank">
 
-        {{ file_upload(
-          form.file,
-          button_text='Choose a file'
-        ) }}
+        <div class="bottom-gutter">
+          {{ file_upload(
+            form.file,
+            button_text='Choose a file'
+          ) }}
+        </div>
 
-        <ul class="list list-bullet">
-        <li>Save your letter as a PDF, no bigger than 2MB</li>
-        <li>the letter is no more than 10 pages long</li>
+        <p>
+          You can only upload a PDF. It must be no more than 10 pages long and less than 2MB in size.
+        </p>
 
-        </ul>
-        <p>Download the <a href="{{ asset_url('images/precompiled-spec.pdf') }}">letter specification document</a> and check that:</p>
+        <p>
+          Download the <a href="{{ asset_url('images/precompiled-spec.pdf') }}" target="_blank">letter specification</a> for more information.
+        </p>
 
       </div>
     </div>

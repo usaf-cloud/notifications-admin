@@ -57,6 +57,7 @@ $iso-paper-ratio: 141.42135624%;
     box-sizing: border-box;
     border: 1px solid transparent;
     box-shadow: inset 0 0 0 500px $white;
+    padding: $gutter * 2;
 
     .button {
       margin: $gutter auto;
