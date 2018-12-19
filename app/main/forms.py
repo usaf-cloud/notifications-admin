@@ -917,8 +917,8 @@ class ChooseLetterTemplateType(ChooseTemplateType):
         super().__init__(*args, **kwargs)
 
         self.template_type.choices = filter(None, [
-            ('normal', 'Normal'),
-            ('blank', 'Blank'),
+            ('normal', 'edit the template manually'),
+            ('blank', 'upload a PDF'),
         ])
 
 

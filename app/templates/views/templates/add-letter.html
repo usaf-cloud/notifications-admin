@@ -10,7 +10,9 @@
 
 {% block maincolumn_content %}
 
-    <h1 class="heading-large">What kind of letter template do you want to add?</h1>
+    <h1 class="heading-large">
+      How do you want to add content to your letter?
+    </h1>
 
     {% call form_wrapper() %}
       {{ radios(form.template_type) }}

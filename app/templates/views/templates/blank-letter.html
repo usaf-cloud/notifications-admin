@@ -12,10 +12,23 @@
 
     <h1 class="heading-large">{{ name }}</h1>
 
-    <div style="border: 1px solid red; padding: 100px;">
-      {{ page_footer(
-        'Upload'
-      ) }}
+    <div class="letter">
+      <div class="letter-blank">
+        {{ page_footer(
+          'Choose a file'
+        ) }}
+
+        <p>Download the letter specification document and check that:</p>
+        <ul class="list list-bullet">
+        <li><i style="font-size: italic">it’s a PDF</i></li>
+        <li>the content in your PDF is inside the printable area ❌</li>
+        <li>the recipient address is correct ❌</li>
+        <li>the letter is no more than 10 pages long</li>
+        <li>the page size is A4 portrait ❌</li>
+        <li>the PDF is no bigger than 2MB ❌</li>
+        </ul>
+
+      </div>
     </div>
 
 {% endblock %}
