@@ -20,6 +20,7 @@ from app.main import main
 from app.main.forms import (
     ChooseLetterTemplateType,
     ChooseTemplateType,
+    CsvUploadForm,
     EmailTemplateForm,
     LetterTemplateForm,
     NameBlankLetterTemplate,
@@ -349,15 +350,22 @@ def name_blank_letter(service_id):
     )
 
 
-@main.route("/services/<service_id>/blank-letter")
+@main.route("/services/<service_id>/blank-letter", methods=['GET', 'POST'])
 @login_required
 @user_has_permissions('manage_templates')
 def blank_letter(service_id):
-    return render_template(
-        'views/templates/blank-letter.html',
-        name=request.args.get('name', 'Untitled'),
-    )
-
+    if request.method == 'GET':
+        return render_template(
+            'views/templates/blank-letter.html',
+            name=request.args.get('name', 'Untitled'),
+            form=CsvUploadForm(),
+        )
+    else:
+        return render_template(
+            'views/templates/blank-letter-uploaded.html',
+            name=request.args.get('name', 'Untitled'),
+            form=CsvUploadForm(),
+        )
 
 @main.route("/services/<service_id>/templates/copy")
 @login_required

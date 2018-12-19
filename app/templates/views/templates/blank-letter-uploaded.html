@@ -1,0 +1,24 @@
+{% from "components/radios.html" import radios %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/file-upload.html" import file_upload %}
+
+{% extends "withnav_template.html" %}
+
+{% block service_page_title %}
+  Add new template or folder
+{% endblock %}
+
+{% block maincolumn_content %}
+
+    <h1 class="heading-medium">Preview of ‘{{ form.file.data.filename }}’</h1>
+
+    <div class="letter">
+      <img src="{{ asset_url('images/dbs.png') }}" alt="">
+    </div>
+
+    <div class="js-stick-at-bottom-when-scrolling">
+      {{ page_footer('Send 1 letter', back_link=request.url) }}
+    </div>
+
+{% endblock %}
