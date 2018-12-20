@@ -961,8 +961,8 @@ class ChooseLetterTemplateType(ChooseTemplateType):
         super().__init__(*args, **kwargs)
 
         self.template_type.choices = filter(None, [
-            ('normal', 'create it in Notify'),
-            ('blank', 'upload your own PDF'),
+            ('normal', 'Create it in Notify'),
+            ('blank', 'Upload your own PDF'),
         ])
 
 
