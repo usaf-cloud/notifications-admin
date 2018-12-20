@@ -24,7 +24,7 @@
           {% if request.args.new_content_type == 'Document' %}
             <h3 id="document">Document</h3>
             <div class="section-add">
-              {{ textbox(form.document, width='1-1', label='Document name', hint='This is how the person sending the email will know what they should upload') }}
+              {{ textbox(form.document, width='1-1', label='Description', hint='Tell the sender which document to upload') }}
             </div>
           {% elif request.args.get('new_content_type') != None %}
             {% call banner_wrapper(type='dangerous') %}
