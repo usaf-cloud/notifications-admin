@@ -481,8 +481,8 @@ class TemplateSectionForm(StripWhitespaceForm):
             'between them.'
         )),
         ('Reusable text', (
-            'The sender can choose from a library of commonly used '
-            'content. For example, the phone numbers of regional offices.'
+            'Choose from a library of commonly used content. For '
+            'example, the phone numbers of regional offices.'
         )),
         ('Document', (
             'Add a link to download a document'
