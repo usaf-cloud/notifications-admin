@@ -95,6 +95,7 @@ class Development(Config):
     ANTIVIRUS_API_HOST = 'http://localhost:6016'
     ANTIVIRUS_API_KEY = 'test-key'
 
+    ASSET_DOMAIN = ''
     ASSET_PATH = '/static/'
 
 
@@ -112,8 +113,8 @@ class Test(Development):
     ANTIVIRUS_API_HOST = 'https://test-antivirus'
     ANTIVIRUS_API_KEY = 'test-antivirus-secret'
 
-    ASSET_DOMAIN = 'static.example.com'
-    ASSET_PATH = 'https://static.example.com/'
+    ASSET_DOMAIN = ''
+    ASSET_PATH = '/static/'
 
 
 class Preview(Config):
@@ -139,8 +140,8 @@ class Staging(Config):
     MOU_BUCKET_NAME = 'staging-notify.works-mou'
     NOTIFY_ENVIRONMENT = 'staging'
     CHECK_PROXY_HEADER = False
-    ASSET_DOMAIN = 'static.staging-notify.works'
-    ASSET_PATH = 'https://static.staging-notify.works/'
+    ASSET_DOMAIN = ''
+    ASSET_PATH = '/static/'
 
 
 class Live(Config):
@@ -153,8 +154,8 @@ class Live(Config):
     MOU_BUCKET_NAME = 'notifications.service.gov.uk-mou'
     NOTIFY_ENVIRONMENT = 'live'
     CHECK_PROXY_HEADER = False
-    ASSET_DOMAIN = 'static.notifications.service.gov.uk'
-    ASSET_PATH = 'https://static.notifications.service.gov.uk/'
+    ASSET_DOMAIN = ''
+    ASSET_PATH = '/static/'
 
 
 class CloudFoundryConfig(Config):
