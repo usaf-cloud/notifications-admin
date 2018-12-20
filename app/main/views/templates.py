@@ -700,10 +700,11 @@ def edit_service_template(service_id, template_id):
         )
 
 
+@main.route("/services/<service_id>/templates/add-section", methods=['GET', 'POST'])
 @main.route("/services/<service_id>/templates/<template_id>/add-section", methods=['GET', 'POST'])
 @login_required
 @user_has_permissions('manage_templates')
-def add_template_section(service_id, template_id):
+def add_template_section(service_id, template_id=None):
     form = TemplateSectionForm()
     return render_template(
         'views/add-template-section.html',

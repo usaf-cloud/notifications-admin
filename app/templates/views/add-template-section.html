@@ -16,14 +16,23 @@
 
     <div class="grid-row">
       <div class="column-five-sixths">
-        {% call form_wrapper(method='get', action=url_for('main.edit_service_template', service_id=current_service.id, template_id=template_id, _anchor='document')) %}
-          {{ radios(form.new_content_type, option_hints=form._option_hints, hide_legend=True) }}
-          {{ page_footer(
-            'Save',
-            secondary_link=url_for('main.edit_service_template', service_id=current_service.id, template_id=template_id),
-            secondary_link_text='Back to template'
-          ) }}
-        {% endcall %}
+        {% if template_id %}
+          {% call form_wrapper(method='get', action=url_for('main.edit_service_template', service_id=current_service.id, template_id=template_id, _anchor='document')) %}
+            {{ radios(form.new_content_type, option_hints=form._option_hints, hide_legend=True) }}
+            {{ page_footer(
+              'Save',
+              secondary_link=url_for('main.edit_service_template', service_id=current_service.id, template_id=template_id),
+              secondary_link_text='Back to template'
+            ) }}
+          {% endcall %}
+        {% else %}
+          {% call form_wrapper(method='get', action=url_for('main.add_service_template', service_id=current_service.id, template_type='email', _anchor='document')) %}
+            {{ radios(form.new_content_type, option_hints=form._option_hints, hide_legend=True) }}
+            {{ page_footer(
+              'Save'
+            ) }}
+          {% endcall %}
+        {% endif %}
       </div>
     </div>
 

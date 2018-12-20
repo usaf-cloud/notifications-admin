@@ -35,7 +35,11 @@
           {% endif %}
           <div class="section-add">
             <div class="section-add-button">
-              <a class="button-secondary" href="{{ url_for('main.add_template_section', service_id=current_service.id, template_id=template_id) }}">Add another content type</a>
+              {% if template_id %}
+                <a class="button-secondary" href="{{ url_for('main.add_template_section', service_id=current_service.id, template_id=template_id) }}">Add another content type</a>
+              {% else %}
+                <a class="button-secondary" href="{{ url_for('main.add_template_section', service_id=current_service.id) }}">Add another content type</a>
+              {% endif %}
             </div>
           </div>
 

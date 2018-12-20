@@ -13,4 +13,4 @@ flask_app = Flask('app')
 
 create_app(flask_app)
 
-application = WhiteNoise(flask_app.wsgi_app, STATIC_ROOT, STATIC_URL, max_age=WhiteNoise.FOREVER)
+application = flask_app
