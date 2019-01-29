@@ -18,13 +18,13 @@
 {% if current_service.folders %}
 <fieldset class="group-select form-group permissions" data-module="group-select" tabindex="-1">
   <legend class="form-label">
-    Templates to display
+    Folders this team member can see
   </legend>
   <div class="group-select-other">
     {{ checkbox({
       'id':'t-all',
       'name': 'folders',
-      'label': {'text': 'All templates'},
+      'label': {'text': 'All folders'},
       'data': True
     }) }}
     <div class="group-select-subfolder">
@@ -56,7 +56,7 @@
     </div>
   </div>
   <div class="group-select-change">
-    <a href="#">Choose folders</a>
+    <a href="#">Choose other folders</a>
   </div>
   <div class="group-select-hide">
     <a href="#">Done</a>
