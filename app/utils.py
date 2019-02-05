@@ -332,7 +332,7 @@ def get_template(
                 image_url=letter_preview_url,
                 page_count=int(page_count),
                 contact_block=template['reply_to_text'],
-                postage=template['postage'] or service.postage
+                postage=template.get('postage', service.postage),
             )
         else:
             return LetterPreviewTemplate(

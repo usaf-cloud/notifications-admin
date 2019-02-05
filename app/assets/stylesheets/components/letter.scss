@@ -40,18 +40,27 @@ $iso-paper-ratio: 141.42135624%;
 
   &-postage {
 
+    $art-width: 97.83;
+    $art-height: 82.27;
+    $fold-height: 124px;
+    $envelope-colour: #c4b186;
+
     position: absolute;
     top: 0;
     right: 0;
     z-index: 10;
-    width: 200px;
-    height: 124px;
+    width: $fold-height * ($art-width / $art-height);
+    height: $fold-height;
     margin: 0;
-    background-size: auto 124px;
-    background-position: right 0px;
+    background-color: mix($envelope-colour, $grey-1);
+    background-size: auto $fold-height;
+    background-position: right 0;
     background-repeat: no-repeat;
     background-origin: border-box;
     text-indent: -1000em;
+    border-bottom: 1px solid $border-colour;
+    border-left: 1px solid $border-colour;
+    box-shadow: 0 2px 0 0 rgba($border-colour, 0.2);
 
     &-first {
       background-image: file-url('envelope-1st-class.svg');
