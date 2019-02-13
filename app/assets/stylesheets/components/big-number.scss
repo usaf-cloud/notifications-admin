@@ -59,7 +59,6 @@
     padding: $gutter-half;
     position: relative;
     background: $black;
-    color: $white;
   }
 
   .big-number-label {
@@ -76,18 +75,20 @@
   .big-number-link {
 
     text-decoration: none;
-    background: $link-colour;
-    color: $white;
+    background: $grey-4;
+    color: $link-colour;
     display: block;
-    border: 2px solid $link-colour;
+    border: 1px solid $border-colour;
     margin-bottom: 5px;
 
     &:hover {
 
-      color: $light-blue-25;
+      color: $link-hover-colour;
+      border: 1px solid $link-colour;
+      box-shadow: inset 0 0 0 1px $link-colour;
 
       .big-number {
-        color: $light-blue-25;
+        color: $link-colour;
       }
 
     }

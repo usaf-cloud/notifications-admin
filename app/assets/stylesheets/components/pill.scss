@@ -14,6 +14,13 @@
       See: https://www.w3.org/TR/css-flexbox-1/#flex-containers
     */
     float: left;
+
+    &:last-child {
+      a {
+        border-right: 1px solid $border-colour;
+      }
+    }
+
   }
 
   a,
@@ -26,10 +33,11 @@
   }
 
   a {
-    $background: $link-colour;
-    background: $background;
-    color: $white;
-    border: 2px solid $background;
+    background: $grey-4;
+    color: $link-colour;
+    border: 1px solid $border-colour;
+    border-right: none;
+    border-left: none;
     position: relative;
     text-decoration: none;
     cursor: pointer;
@@ -40,11 +48,11 @@
 
     &:link,
     &:visited {
-      color: $white;
+      color: $link-colour;
     }
 
     &:hover {
-      color: $light-blue-25;
+      color: $link-hover-colour;
     }
 
     &:active,
@@ -54,11 +62,13 @@
   }
 
   &-selected-item {
-    border: 2px solid $black;
-    outline: 1px solid rgba($white, 0.1);
+    border-top: 1px solid $black;
+    border-bottom: 1px solid $black;
+    box-shadow: inset 0 0 0 1px $black, -1px 0 0 0 $black, 1px 0 0 0 $black;
     position: relative;
     z-index: 10;
     color: $text-colour;
+    margin-right: -1px;
 
     &:focus {
       z-index: 1000;
@@ -81,18 +91,20 @@
     text-align: left;
     padding: 10px $gutter-half;
     text-align: center;
+    border: 1px solid $border-colour;
 
     &:link,
     &:visited {
-      background: $link-colour;
-      color: $white;
+      background: $grey-4;
+      color: $link-colour;
       text-decoration: underline;
     }
 
     &:hover,
     &:focus,
     &:link:focus {
-      color: $light-blue-25;
+      color: $link-hover-colour;
+      border: 2px solid $link-colour;
     }
 
   }
