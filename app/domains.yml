@@ -400,11 +400,11 @@ angus.gov.uk:
   owner: Angus Council
   crown: false
   agreement_signed: false
-antrimandnewtownabbey.gov.uk: antrim.gov.uk
-antrim.gov.uk:
+antrim.gov.uk: antrimandnewtownabbey.gov.uk
+antrimandnewtownabbey.gov.uk:
   owner: Antrim Borough Council
   crown: false
-  agreement_signed: false
+  agreement_signed: true
 archifaugwent.gov.uk: blaenau-gwent.gov.uk
 archifaumorgannwg.gov.uk: cardiff.gov.uk
 ardsandnorthdown.gov.uk:
