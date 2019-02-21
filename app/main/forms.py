@@ -1288,3 +1288,36 @@ class ClearCacheForm(StripWhitespaceForm):
         'What do you want to clear today',
         validators=[DataRequired()]
     )
+
+
+class FileUploadForm(StripWhitespaceForm):
+    file = FileField_wtf(
+        'New upload',
+        validators=[FileAllowed(['pdf'], 'PDF files only')],
+    )
+
+
+class FileUploadForm(StripWhitespaceForm):
+    file = FileField_wtf(
+        'New upload',
+        validators=[FileAllowed(['pdf'], 'PDF files only')],
+    )
+
+
+class FileSendForm(StripWhitespaceForm):
+    sending_options = RadioField(
+        'What do you want to do with this file?',
+        choices=[
+            ('post', 'Send by first class post'),
+            ('post', 'Send by second class post'),
+            ('save', 'Save for later'),
+        ],
+        validators=[DataRequired()],
+    )
+
+
+class NewFileCollectionForm(StripWhitespaceForm):
+    name = StringField(
+        'name',
+        validators=[DataRequired()],
+    )

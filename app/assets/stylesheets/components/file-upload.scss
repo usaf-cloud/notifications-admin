@@ -34,6 +34,12 @@
       margin-right: 5px;
     }
 
+    &-button-secondary {
+      @include button($grey-3);
+      display: inline-block;
+      margin-right: 5px;
+    }
+
     &-button-cancel {
       @include button($error-colour);
       display: inline-block;

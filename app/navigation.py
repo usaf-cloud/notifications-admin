@@ -334,6 +334,9 @@ class MainNavigation(Navigation):
         'usage': {
             'usage',
         },
+        'files': {
+            'files',
+        },
         'settings': {
             'branding_request',
             'link_service_to_organisation',

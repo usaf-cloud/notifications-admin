@@ -1,0 +1,28 @@
+{% extends "withnav_template.html" %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/file-upload.html" import file_upload %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block service_page_title %}
+  {{ name }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <h1 class="heading-large">
+    New list
+  </h1>
+
+  <p>
+    Lists let you save recipients for later.
+  </p>
+
+  <div class='bottom-gutter-2'>
+    {{ file_upload(
+      form.file,
+      button_text='Choose a file'
+    ) }}
+  </div>
+
+{% endblock %}

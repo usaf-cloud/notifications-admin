@@ -1,0 +1,25 @@
+{% extends "withnav_template.html" %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/form.html" import form_wrapper %}
+{% from "components/textbox.html" import textbox %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block service_page_title %}
+  {{ name }}
+{% endblock %}
+
+{% block maincolumn_content %}
+
+  <h1 class="heading-large">
+    {{ name }}
+  </h1>
+
+  <div class='bottom-gutter-2'>
+
+  </div>
+
+  <div class="js-stick-at-bottom-when-scrolling">
+    <a class="button-secondary" href="#">Add a file to this collection</a>
+  </div>
+
+{% endblock %}
