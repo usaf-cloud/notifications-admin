@@ -1,0 +1,38 @@
+{% extends "withnav_template.html" %}
+{% from "components/banner.html" import banner %}
+{% from "components/ajax-block.html" import ajax_block %}
+{% from "components/message-count-label.html" import message_count_label %}
+{% from "components/page-footer.html" import page_footer %}
+
+{% block service_page_title %}
+  Letter
+{% endblock %}
+
+{% block maincolumn_content %}
+
+    <h1 class="heading-large">
+      Letter
+    </h1>
+
+    <p>
+      Sent today by {{ current_user.name }}
+    </p>
+
+    <p>
+      Estimated delivery date: Friday 1 March
+    </p>
+
+    <div class="letter letter-sent">
+      <img src="none.png" />
+    </div>
+
+    <div class="js-stick-at-bottom-when-scrolling">
+      <div class="page-footer">
+        <span class="page-footer-delete-link page-footer-delete-link-without-button">
+          <a href="#">Cancel sending this letter</a>
+        </span>
+        <a class="page-footer-right-aligned-link" href="#" download>Download as a PDF</a>
+      </div>
+    </div>
+
+{% endblock %}

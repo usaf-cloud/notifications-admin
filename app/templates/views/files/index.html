@@ -2,21 +2,45 @@
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/file-upload.html" import file_upload %}
+{% from "components/pill.html" import pill %}
 
 {% block service_page_title %}
-  Uploads
+  Documents
 {% endblock %}
 
 {% block maincolumn_content %}
 
   <h1 class="heading-large">
-    Uploads
+    Documents
   </h1>
 
+  <div>
+    {{ pill([
+      ('All', None, url_for('main.files', service_id=current_service.id), 0),
+      ('Sent', 'sent', url_for('main.files', service_id=current_service.id, file_type='sent'), 0),
+      ('Saved', 'saved', url_for('main.files', service_id=current_service.id, file_type='saved'), 0),
+    ], current_value=file_type, show_count=False) }}
+  </div>
+
+  {% if request.args.get('original_file_name') %}
+    <div class="keyline-block top-gutter bottom-gutter">
+      <div class="file-list">
+        <a class="file-list-filename" href="#">{{ request.args.get('original_file_name') }}</a>
+        <span class="file-list-hint">
+          Never used
+        </span>
+      </div>
+    </div>
+    <div class="keyline-block" style="margin: -20px 0 20px 0"></div>
+  {% else %}
+    <p class="template-list-empty">
+      No documents yet
+    </p>
+  {% endif %}
+
   <div class="js-stick-at-bottom-when-scrolling">
-    {{ file_upload(form.file, button_class='file-upload-button-secondary', button_text='Upload document') }}
-    <a href="{{ url_for('main.files_new_collection', service_id=current_service.id) }}" class="button-secondary">New collection</a>
-    <a href="{{ url_for('main.files_new_list', service_id=current_service.id) }}" class="button-secondary">New list</a>
+    <a href="{{ url_for('main.files_new_letter', service_id=current_service.id) }}" class="button-secondary">Upload a letter</a>
+    <a href="{{ url_for('main.files_new_other', service_id=current_service.id) }}" class="button-secondary">Upload another kind of document</a>
   </div>
 
 {% endblock %}

@@ -1306,7 +1306,7 @@ class FileUploadForm(StripWhitespaceForm):
 
 class FileSendForm(StripWhitespaceForm):
     sending_options = RadioField(
-        'What do you want to do with this file?',
+        'What do you want to do with this letter?',
         choices=[
             ('post', 'Send by first class post'),
             ('post', 'Send by second class post'),

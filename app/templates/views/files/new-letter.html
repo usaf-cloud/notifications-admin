@@ -1,0 +1,42 @@
+{% from "components/radios.html" import radios %}
+{% from "components/page-footer.html" import page_footer %}
+{% from "components/file-upload.html" import file_upload %}
+
+{% extends "withnav_template.html" %}
+
+{% block service_page_title %}
+  Add new template or folder
+{% endblock %}
+
+{% block maincolumn_content %}
+
+    <h1 class="heading-large">Upload a letter</h1>
+
+    <div class="letter">
+      <div class="letter-blank">
+
+        <div class="bottom-gutter">
+          {{ file_upload(
+            form.file,
+            button_text='Choose a file'
+          ) }}
+        </div>
+
+        <p>
+          Your file must be:
+        </p>
+
+        <ul class="list list-bullet">
+          <li>a PDF</li>
+          <li>no more than 10 pages long</li>
+          <li>less than 2MB</li>
+        </ul>
+
+        <p>
+          Download the <a href="{{ asset_url('images/precompiled-spec.pdf') }}" target="_blank">letter specification</a> for more information.
+        </p>
+
+      </div>
+    </div>
+
+{% endblock %}

@@ -16,9 +16,21 @@ from app.utils import user_has_permissions
 
 
 @main.route("/service/<service_id>/files", methods=['GET', 'POST'])
+@main.route("/service/<service_id>/files/<file_type>", methods=['GET', 'POST'])
 @login_required
 @user_has_permissions('send_messages')
-def files(service_id):
+def files(service_id, file_type=None):
+
+    return render_template(
+        'views/files/index.html',
+        file_type=file_type,
+    )
+
+
+@main.route("/service/<service_id>/files/new-letter", methods=['GET', 'POST'])
+@login_required
+@user_has_permissions('send_messages')
+def files_new_letter(service_id):
 
     form = FileUploadForm()
 
@@ -26,7 +38,7 @@ def files(service_id):
         return redirect(url_for('.files_check', service_id=current_service.id, original_file_name=form.file.data.filename))
 
     return render_template(
-        'views/files/index.html',
+        'views/files/new-letter.html',
         form=form,
     )
 
@@ -38,6 +50,9 @@ def files_check(service_id):
 
     form = FileSendForm()
 
+    if form.validate_on_submit():
+        return redirect(url_for('.files_sent', service_id=current_service.id, original_file_name=request.args.get('original_file_name')))
+
     return render_template(
         'views/files/check.html',
         filename=request.args.get('original_file_name'),
@@ -45,24 +60,30 @@ def files_check(service_id):
     )
 
 
-@main.route("/service/<service_id>/files/new-collection", methods=['GET', 'POST'])
+@main.route("/service/<service_id>/files/new-other", methods=['GET', 'POST'])
 @login_required
 @user_has_permissions('send_messages')
-def files_new_collection(service_id):
+def files_new_other(service_id):
 
-    form = NewFileCollectionForm()
+    form = FileUploadForm()
 
     if form.validate_on_submit():
-        return redirect(url_for(
-            'main.files_collection',
-            service_id=service_id,
-            name=form.name.data,
-        ))
+        return redirect(url_for('.files_check_other', service_id=current_service.id, original_file_name=form.file.data.filename))
 
     return render_template(
-        'views/files/new-collection.html',
-        filename=request.args.get('original_file_name'),
+        'views/files/new-other.html',
         form=form,
+    )
+
+
+@main.route("/service/<service_id>/files/check-other", methods=['GET', 'POST'])
+@login_required
+@user_has_permissions('send_messages')
+def files_check_other(service_id):
+
+    return render_template(
+        'views/files/check-other.html',
+        filename=request.args.get('original_file_name'),
     )
 
 
@@ -77,14 +98,12 @@ def files_collection(service_id):
     )
 
 
-@main.route("/service/<service_id>/files/new-list", methods=['GET', 'POST'])
+@main.route("/service/<service_id>/files/letter-sent", methods=['GET'])
 @login_required
 @user_has_permissions('send_messages')
-def files_new_list(service_id):
-
-    form = FileUploadForm()
+def files_sent(service_id):
 
     return render_template(
-        'views/files/new-list.html',
-        form=form,
+        'views/files/sent.html',
+        filename=request.args.get('original_file_name'),
     )

@@ -1,0 +1,23 @@
+{% from "components/radios.html" import radios %}
+{% from "components/file-upload.html" import file_upload %}
+
+{% extends "withnav_template.html" %}
+
+{% block service_page_title %}
+  Add new template or folder
+{% endblock %}
+
+{% block maincolumn_content %}
+
+    <h1 class="heading-large">Upload another document</h1>
+
+    <div class="bottom-gutter">
+      {{ file_upload(
+        form.file,
+        button_text='Choose a file'
+      ) }}
+    </div>
+
+    <p>Stuff</p>
+
+{% endblock %}
