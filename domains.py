@@ -30,12 +30,29 @@ with open('{}/app/domains.yml'.format(_dir_path)) as source:
             data[AgreementInfo(domain).canonical_domain]['domains'].append(domain)
 
     out_data = [
-        details for domain, details in data.items()
+        '\t'.join(
+            '"{}"'.format(domain) for domain in [
+                details['owner'],
+                details.get('crown', ''),
+                details.get('agreement_signed', ''),
+            ] + details['domains']
+        )
+        for domain, details in data.items()
         if isinstance(details, dict)
     ]
 
     if argv[1] == 'orgs':
-        print(yaml.dump(out_data))  # noqa
+        print('\t'.join(
+            '"{}"'.format(col) for col in [
+                'owner',
+                'crown',
+                'agreement signed',
+            ] + [
+                'domain {}'.format(i) for i in range(1, 21)
+            ]
+        ))
+        for line in sorted(out_data):
+            print(line)  # noqa
     elif argv[1] == 'domains':
         print(  # noqa
             sorted(
