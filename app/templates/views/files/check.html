@@ -1,4 +1,5 @@
 {% extends "withnav_template.html" %}
+{% from "components/banner.html" import banner %}
 {% from "components/page-footer.html" import page_footer %}
 {% from "components/form.html" import form_wrapper %}
 {% from "components/radios.html" import radios %}
@@ -13,17 +14,40 @@
   <h1 class="heading-large">
     {{ filename }}
   </h1>
+  {% if filename[-5:] == 'p.pdf' %}
+    {{ banner('Too many pages', 'dangerous')}}
+    <p>
+      <a href="{{ url_for('main.files_new_letter', service_id=current_service.id) }}" class="page-footer-back-link">Back</a>
+    </p>
+    {% for i in [1, 2, 3, 4, 5, 3, 4, 5, 3, 4, 5] %}
+      <div class="letter">
+        <img src="/static/images/letter-examples/good/{{ i }}.png" />
+      </div>
+    {% endfor %}
+  {% elif filename[-5:] == 'v.pdf' %}
+    {{ banner('Content is outside the printable area on pages 1, 2, 3, 4 and 5', 'dangerous')}}
+    <p>
+      <a href="{{ url_for('main.files_new_letter', service_id=current_service.id) }}" class="page-footer-back-link">Back</a>
+    </p>
+    {% for i in range(1, 6) %}
+      <div class="letter">
+        <img src="/static/images/letter-examples/bad-margins-with-overlay/{{ i }}.png" />
+      </div>
+    {% endfor %}
 
-  <div class='bottom-gutter-2'>
-    <div class="letter">
+  {% else %}
+    {% for i in range(1, 6) %}
+      <div class="letter">
+        <img src="/static/images/letter-examples/good/{{ i }}.png" />
+      </div>
+    {% endfor %}
+    <div class="js-stick-at-bottom-when-scrolling">
+      {% call form_wrapper() %}
+        {{ radios(form.sending_options) }}
+        {{ page_footer('Continue') }}
+      {% endcall %}
     </div>
-  </div>
+  {% endif %}
 
-  <div class="js-stick-at-bottom-when-scrolling">
-    {% call form_wrapper() %}
-      {{ radios(form.sending_options) }}
-      {{ page_footer('Continue') }}
-    {% endcall %}
-  </div>
 
 {% endblock %}
