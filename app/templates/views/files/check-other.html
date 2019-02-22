@@ -22,7 +22,7 @@
   <div class="js-stick-at-bottom-when-scrolling">
     {% call form_wrapper(action=url_for('main.files', service_id=current_service.id, file_type='saved'), method='get') %}
       <input type='hidden' name='original_file_name' value="{{ filename }}">
-      {{ page_footer('Save to documents', secondary_link=url_for('main.files', service_id=current_service.id), secondary_link_text='Cancel') }}
+      {{ page_footer('Save to documents') }}
     {% endcall %}
   </div>
 

@@ -9,7 +9,7 @@
 
 {% block maincolumn_content %}
 
-    <h1 class="heading-large">Upload another document</h1>
+    <h1 class="heading-large">Add a file to send by email</h1>
 
     <div class="bottom-gutter">
       {{ file_upload(
@@ -18,6 +18,12 @@
       ) }}
     </div>
 
-    <p>Stuff</p>
+    <p>The file you upload must be a PDF smaller than 2MB.</p>
+
+    <h2 class="heading-medium">Before you upload a file</h2>
+    <p>You must have an email template with a placeholder for a secure link.</p>
+    <p><a href="{{ url_for('main.choose_template', service_id=current_service.id) }}">Add a new email template</a> if you need to.</p>
+    <p>Then upload your file again.</p>
+
 
 {% endblock %}

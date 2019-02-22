@@ -22,8 +22,17 @@
       Estimated delivery date: Friday 1 March
     </p>
 
-    <div class="letter letter-sent">
-      <img src="none.png" />
+    <div class="letter-sent">
+      {% for i in range(1, 6) %}
+        <div class="letter">
+          {% if loop.first %}
+            <p class="letter-postage letter-postage-{{ request.args.get('sending_options') }}">
+              Postage: {{ request.args.get('sending_options') }} class
+            </p>
+          {% endif %}
+          <img src="/static/images/letter-examples/good/{{ i }}.png" />
+        </div>
+      {% endfor %}
     </div>
 
     <div class="js-stick-at-bottom-when-scrolling">
@@ -31,7 +40,7 @@
         <span class="page-footer-delete-link page-footer-delete-link-without-button">
           <a href="#">Cancel sending this letter</a>
         </span>
-        <a class="page-footer-right-aligned-link" href="#" download>Download as a PDF</a>
+        <a class="page-footer-right-aligned-link" href="#">Download as a PDF</a>
       </div>
     </div>
 

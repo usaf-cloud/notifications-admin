@@ -10,7 +10,7 @@
 
 {% block maincolumn_content %}
 
-    <h1 class="heading-large">Upload a letter</h1>
+    <h1 class="heading-large">Send a file as a letter</h1>
 
     <div class="letter">
       <div class="letter-blank">
@@ -21,6 +21,10 @@
             button_text='Choose a file'
           ) }}
         </div>
+
+        <h3 class="heading-medium">
+          Check your file meets the letter specification
+        </h3>
 
         <p>
           Your file must be:
@@ -33,7 +37,11 @@
         </ul>
 
         <p>
-          Download the <a href="{{ asset_url('images/precompiled-spec.pdf') }}" target="_blank">letter specification</a> for more information.
+          The content of your letter must appear inside the printable area.
+        </p>
+
+        <p>
+          <a href="{{ asset_url('images/precompiled-spec.pdf') }}" target="_blank">Download the letter specification</a> for more information.
         </p>
 
       </div>
