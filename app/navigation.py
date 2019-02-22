@@ -336,6 +336,13 @@ class MainNavigation(Navigation):
         },
         'files': {
             'files',
+            'files',
+            'files_new_letter',
+            'files_check',
+            'files_new_other',
+            'files_check_other',
+            'files_collection',
+            'files_sent',
         },
         'settings': {
             'branding_request',

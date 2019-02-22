@@ -11,38 +11,54 @@
 
 {% block maincolumn_content %}
 
-  <h1 class="heading-large">
-    {{ filename }}
-  </h1>
   {% if filename[-5:] == 'p.pdf' %}
-    <div class='banner-dangerous bottom-gutter'>
-      <h1 class='banner-title'>
-        This letter is too long
-      </h1>
-      <p>
-        Letters must be 10 pages or less
-      </p>
+    <div class='bottom-gutter'>
+      <div class='banner-dangerous'>
+        <h1 class='banner-title'>
+          This letter is too long
+        </h1>
+        <p>
+          Letters must be 10 pages or less
+        </p>
+      </div>
     </div>
-    <p>
-      <a href="{{ url_for('main.files_new_letter', service_id=current_service.id) }}" class="page-footer-back-link">Back</a>
-    </p>
+    <h2 class="heading-medium">
+      {{ filename }}
+    </h2>
     {% for i in [1, 2, 3, 4, 5, 3, 4, 5, 3, 4, 5] %}
       <div class="letter">
         <img src="/static/images/letter-examples/good/{{ i }}.png" />
       </div>
     {% endfor %}
-  {% elif filename[-5:] == 'v.pdf' %}
-    {{ banner('Content is outside the printable area on pages 1, 2, 3, 4 and 5', 'dangerous')}}
-    <p>
+    <div class="js-stick-at-bottom-when-scrolling">
       <a href="{{ url_for('main.files_new_letter', service_id=current_service.id) }}" class="page-footer-back-link">Back</a>
-    </p>
+    </div>
+  {% elif filename[-5:] == 'v.pdf' %}
+    <div class='bottom-gutter'>
+      <div class='banner-dangerous'>
+        <h1 class='banner-title'>
+          Notify can’t print this letter
+        </h1>
+        <p>
+          Content is outside the printable area on pages 1, 2, 3, 4 and 5
+        </p>
+      </div>
+    </div>
+    <h2 class="heading-medium">
+      {{ filename }}
+    </h2>
     {% for i in range(1, 6) %}
       <div class="letter">
         <img src="/static/images/letter-examples/bad-margins-with-overlay/{{ i }}.png" />
       </div>
     {% endfor %}
-
+    <div class="js-stick-at-bottom-when-scrolling">
+      <a href="{{ url_for('main.files_new_letter', service_id=current_service.id) }}" class="page-footer-back-link">Back</a>
+    </div>
   {% else %}
+    <h1 class="heading-large">
+      {{ filename }}
+    </h1>
     {% for i in range(1, 6) %}
       <div class="letter">
         <img src="/static/images/letter-examples/good/{{ i }}.png" />
