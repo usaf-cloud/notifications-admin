@@ -15,7 +15,14 @@
     {{ filename }}
   </h1>
   {% if filename[-5:] == 'p.pdf' %}
-    {{ banner('Too many pages', 'dangerous')}}
+    <div class='banner-dangerous bottom-gutter'>
+      <h1 class='banner-title'>
+        This letter is too long
+      </h1>
+      <p>
+        Letters must be 10 pages or less
+      </p>
+    </div>
     <p>
       <a href="{{ url_for('main.files_new_letter', service_id=current_service.id) }}" class="page-footer-back-link">Back</a>
     </p>
