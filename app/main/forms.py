@@ -1464,3 +1464,13 @@ class NewBatchForm(StripWhitespaceForm):
         ],
         validators=[DataRequired()]
     )
+
+
+class PageCountForm(StripWhitespaceForm):
+    page_count = RadioField(
+        'How many pages?',
+        choices=[
+            (str(i), str(i)) for i in range(1, 11)
+        ],
+        validators=[DataRequired()]
+    )
