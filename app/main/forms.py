@@ -1453,3 +1453,14 @@ class ClearCacheForm(StripWhitespaceForm):
         'What do you want to clear today',
         validators=[DataRequired()]
     )
+
+
+class NewBatchForm(StripWhitespaceForm):
+    batch_type = RadioField(
+        'How are your letters?',
+        choices=[
+            ('one', 'One'),
+            ('many', 'Many'),
+        ],
+        validators=[DataRequired()]
+    )
