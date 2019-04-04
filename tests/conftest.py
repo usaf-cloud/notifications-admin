@@ -2541,8 +2541,8 @@ def mock_get_all_email_branding(mocker):
         non_standard_values = [
             {'idx': 1, 'colour': 'red'},
             {'idx': 2, 'colour': 'orange'},
-            {'idx': 3, 'text': None, 'domain': 'nhs.uk'},
-            {'idx': 4, 'colour': 'blue', 'domain': 'voa.gov.uk'},
+            {'idx': 3, 'text': None},
+            {'idx': 4, 'colour': 'blue'},
         ]
         shuffle = sort_key is None
         return create_email_brandings(5, non_standard_values=non_standard_values, shuffle=shuffle)
@@ -2561,19 +2561,16 @@ def mock_get_all_letter_branding(mocker):
                 'id': str(UUID(int=0)),
                 'name': 'HM Government',
                 'filename': 'hm-government',
-                'domain': None,
             },
             {
                 'id': str(UUID(int=1)),
                 'name': 'Land Registry',
                 'filename': 'land-registry',
-                'domain': 'landregistry.gov.uk',
             },
             {
                 'id': str(UUID(int=2)),
                 'name': 'Animal and Plant Health Agency',
                 'filename': 'animal',
-                'domain': None,
             }
         ]
 
@@ -2589,7 +2586,6 @@ def mock_get_letter_branding_by_id(mocker):
             'id': _id,
             'name': 'HM Government',
             'filename': 'hm-government',
-            'domain': 'cabinet-office.gov.uk',
         }
     return mocker.patch(
         'app.letter_branding_client.get_letter_branding', side_effect=_get_branding_by_id
@@ -2613,7 +2609,6 @@ def create_email_branding(id, non_standard_values={}):
         'text': 'Organisation text',
         'id': id,
         'colour': '#f00',
-        'domain': 'sample.com',
         'brand_type': 'org',
     }
 
@@ -2675,8 +2670,8 @@ def mock_get_email_branding_without_brand_text(mocker, fake_uuid):
 
 
 @pytest.fixture(scope='function')
-def mock_create_email_branding(mocker):
-    def _create_email_branding(logo, name, text, colour, domain, brand_type):
+def ail_branding(mocker):
+    def _create_email_branding(logo, name, text, colour, brand_type):
         return
 
     return mocker.patch(
@@ -2686,7 +2681,7 @@ def mock_create_email_branding(mocker):
 
 @pytest.fixture(scope='function')
 def mock_update_email_branding(mocker):
-    def _update_email_branding(branding_id, logo, name, text, colour, domain, brand_type):
+    def _update_email_branding(branding_id, logo, name, text, colour, brand_type):
         return
 
     return mocker.patch(
