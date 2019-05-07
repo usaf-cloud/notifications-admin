@@ -11,7 +11,7 @@
 
 {% block maincolumn_content %}
 
-  {{ page_header("How many pages long is each letter?", back_link='javascript:history.go(-1)') }}
+  {{ page_header("How many pages long is each letter?", back_link=url_for('main.import_letters', service_id=current_service.id)) }}
 
   {% call form_wrapper() %}
     {{ radios(form.page_count, hide_legend=True) }}
