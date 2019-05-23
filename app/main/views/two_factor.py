@@ -86,7 +86,7 @@ def log_in_user(user_id):
         # Check if coming from new password page
         if 'password' in session.get('user_details', {}):
             user = user_api_client.update_password(user.id, password=session['user_details']['password'])
-        activated_user = user_api_client.activate_user(user)
+        activated_user = user.activate()
         login_user(activated_user)
     finally:
         # get rid of anything in the session that we don't expect to have been set during register/sign in flow

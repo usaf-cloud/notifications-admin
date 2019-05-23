@@ -1,7 +1,7 @@
 from flask import url_for
 from lxml import html
 
-from app.notify_client.user_api_client import User
+from app.models.user import User
 from tests import user_json
 
 

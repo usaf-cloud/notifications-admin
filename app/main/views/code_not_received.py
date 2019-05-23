@@ -3,14 +3,15 @@ from flask import redirect, render_template, session, url_for
 from app import user_api_client
 from app.main import main
 from app.main.forms import TextNotReceivedForm
-from app.models import User
+from app.models.user import User
 from app.utils import redirect_to_sign_in
 
 
 @main.route('/resend-email-verification')
 @redirect_to_sign_in
 def resend_email_verification():
-    User.from_email_address(session['user_details']['email']).send_verify_email()
+    user = User.from_email_address(session['user_details']['email'])
+    user.send_verify_email()
     return render_template('views/resend-email-verification.html', email=user.email_address)
 
 
@@ -26,7 +27,7 @@ def check_and_resend_text_code():
     form = TextNotReceivedForm(mobile_number=user.mobile_number)
     if form.validate_on_submit():
         user.send_verify_code(to=form.mobile_number.data)
-        user_api_client.update_user_attribute(user.id, mobile_number=form.mobile_number.data)
+        user.update(mobile_number=form.mobile_number.data)
         return redirect(url_for('.verify'))
 
     return render_template('views/text-not-received.html', form=form)

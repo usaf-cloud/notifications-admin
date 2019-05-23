@@ -1,6 +1,6 @@
 import pytest
 
-from app.notify_client.user_api_client import User
+from app.models.user import User
 
 
 def test_user():

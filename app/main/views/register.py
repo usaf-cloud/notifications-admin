@@ -11,7 +11,7 @@ from app.main.forms import (
     RegisterUserFromOrgInviteForm,
 )
 from app.main.views.verify import activate_user
-from app.models import User
+from app.models.user import User
 
 
 @main.route('/register', methods=['GET', 'POST'])

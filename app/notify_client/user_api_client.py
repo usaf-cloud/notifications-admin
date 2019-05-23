@@ -2,8 +2,7 @@ from itertools import chain
 
 from notifications_python_client.errors import HTTPError
 
-from app.models.user import (
-    User,
+from app.models.roles_and_permissions import (
     roles,
     translate_permissions_from_admin_roles_to_db,
 )
@@ -153,7 +152,7 @@ class UserApiClient(NotifyAdminAPIClient):
     @cache.delete('user-{user_id}')
     def add_user_to_organisation(self, org_id, user_id):
         resp = self.post('/organisations/{}/users/{}'.format(org_id, user_id), data={})
-        return User(resp['data'], max_failed_login_count=self.max_failed_login_count)
+        return resp['data']
 
     @cache.delete('service-{service_id}-template-folders')
     @cache.delete('user-{user_id}')
@@ -185,15 +184,8 @@ class UserApiClient(NotifyAdminAPIClient):
             return True
         return False
 
-    def activate_user(self, user):
-        if user.state == 'pending':
-            user_data = self._activate_user(user.id)
-            return User(user_data['data'], max_failed_login_count=self.max_failed_login_count)
-        else:
-            return user
-
     @cache.delete('user-{user_id}')
-    def _activate_user(self, user_id):
+    def activate_user(self, user_id):
         return self.post("/user/{}/activate".format(user_id), data=None)
 
     def send_change_email_verification(self, user_id, new_email):

@@ -4,7 +4,7 @@ from flask_login import login_required
 from app import user_api_client
 from app.main import main
 from app.main.forms import SearchUsersByEmailForm
-from app.models import User
+from app.models.user import User
 from app.utils import user_is_platform_admin
 
 

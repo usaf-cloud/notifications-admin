@@ -104,7 +104,7 @@ class Service(JSONModel):
 
     @cached_property
     def active_users(self):
-        return Users.from_service(self.id)
+        return Users.for_service(self.id)
 
     @cached_property
     def team_members(self):

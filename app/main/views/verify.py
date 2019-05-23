@@ -72,8 +72,8 @@ def activate_user(user_id):
     # the user will have a new current_session_id set by the API - store it in the cookie for future requests
     session['current_session_id'] = user.current_session_id
     organisation_id = session.get('organisation_id')
-    activated_user = user_api_client.activate_user(user)
-    login_user(activated_user)
+    activated_user = user.activate()
+    activated_user.login()
 
     invited_user = session.get('invited_user')
     if invited_user:

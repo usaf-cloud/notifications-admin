@@ -7,15 +7,16 @@ from flask import url_for
 from flask.testing import FlaskClient
 from flask_login import login_user
 
-from app.models.user import InvitedOrgUser
+from app.models.user import User
 
 
 class TestClient(FlaskClient):
     def login(self, user, mocker=None, service=None):
         # Skipping authentication here and just log them in
+        model_user = User(user)
         with self.session_transaction() as session:
-            session['current_session_id'] = user.current_session_id
-            session['user_id'] = user.id
+            session['current_session_id'] = model_user.current_session_id
+            session['user_id'] = model_user.id
         if mocker:
             mocker.patch('app.user_api_client.get_user', return_value=user)
         if mocker and service:
@@ -24,7 +25,7 @@ class TestClient(FlaskClient):
             mocker.patch('app.service_api_client.get_service', return_value={'data': service})
 
         with patch('app.events_api_client.create_event'):
-            login_user(user)
+            login_user(model_user)
 
     def logout(self, user):
         self.get(url_for("main.logout"))
@@ -97,14 +98,12 @@ def invited_user(
     auth_type='sms_auth',
     organisation=None
 ):
-    org_user = organisation is not None
     data = {
         'id': _id,
         'from_user': from_user,
         'email_address': email_address,
         'status': status,
         'created_at': created_at,
-        'auth_type': auth_type,
     }
     if service:
         data['service'] = service
@@ -112,16 +111,13 @@ def invited_user(
         data['permissions'] = permissions
     if organisation:
         data['organisation'] = organisation
-
-    if org_user:
-        return InvitedOrgUser(
-            data['id'],
-            data['organisation'],
-            data['from_user'],
-            data['email_address'],
-            data['status'],
-            data['created_at']
-        )
+        data['invited_by'] = from_user
+    if auth_type and not organisation:
+        data['auth_type'] = auth_type
+    if from_user and not organisation:
+        data['from_user'] = from_user
+    print(data)
+    return data
 
 
 def service_json(
@@ -328,7 +324,6 @@ TEST_USER_EMAIL = 'test@user.gov.uk'
 
 
 def create_test_api_user(state, permissions={}):
-    from app.notify_client.user_api_client import User
     user_data = {'id': 1,
                  'name': 'Test User',
                  'password': 'somepassword',
@@ -337,8 +332,7 @@ def create_test_api_user(state, permissions={}):
                  'state': state,
                  'permissions': permissions
                  }
-    user = User(user_data)
-    return user
+    return user_data
 
 
 def job_json(

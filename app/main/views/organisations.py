@@ -104,7 +104,7 @@ def invite_org_user(org_id):
     )
     if form.validate_on_submit():
         email_address = form.email_address.data
-        invited_org_user = org_invite_api_client.create_invite(
+        InviteOrgUser.create(
             current_user.id,
             org_id,
             email_address

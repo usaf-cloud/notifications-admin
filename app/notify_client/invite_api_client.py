@@ -1,9 +1,14 @@
-from app.models.user import (
-    InvitedUser,
+from app.models.roles_and_permissions import (
     roles,
     translate_permissions_from_admin_roles_to_db,
 )
-from app.notify_client import NotifyAdminAPIClient, _attach_current_user, cache
+from app.notify_client import (
+    HTTPError,
+    InviteTokenError,
+    NotifyAdminAPIClient,
+    _attach_current_user,
+    cache,
+)
 
 
 class InviteApiClient(NotifyAdminAPIClient):
@@ -31,16 +36,9 @@ class InviteApiClient(NotifyAdminAPIClient):
         }
         data = _attach_current_user(data)
         resp = self.post(url='/service/{}/invite'.format(service_id), data=data)
-        return InvitedUser(**resp['data'])
+        return resp['data']
 
     def get_invites_for_service(self, service_id):
-        return [
-            InvitedUser(**invite)
-            for invite in self._get_invites_for_service(service_id)
-            if invite['status'] != 'accepted'
-        ]
-
-    def _get_invites_for_service(self, service_id):
         return self.get(
             '/service/{}/invite'.format(service_id)
         )['data']
@@ -54,8 +52,15 @@ class InviteApiClient(NotifyAdminAPIClient):
         ])
 
     def check_token(self, token):
-        resp = self.get(url='/invite/service/{}'.format(token))
-        return InvitedUser(**resp['data'])
+        try:
+            resp = self.get(url='/invite/service/{}'.format(token))
+        except HTTPError as exception:
+            if exception.status_code == 400 and 'invitation' in exception.message:
+                raise InviteTokenError(exception.message['invitation'])
+            else:
+                raise e
+
+        return resp['data']
 
     def cancel_invited_user(self, service_id, invited_user_id):
         data = {'status': 'cancelled'}

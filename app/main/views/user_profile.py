@@ -14,6 +14,7 @@ from app.main.forms import (
     ConfirmPasswordForm,
     TwoFactorForm,
 )
+from app.models.user import User
 from app.utils import user_is_gov_user
 
 NEW_EMAIL = 'new-email'
@@ -37,7 +38,7 @@ def user_profile_name():
     form = ChangeNameForm(new_name=current_user.name)
 
     if form.validate_on_submit():
-        user_api_client.update_user_attribute(current_user.id, name=form.new_name.data)
+        current_user.update(name=form.new_name.data)
         return redirect(url_for('.user_profile'))
 
     return render_template(
@@ -99,9 +100,8 @@ def user_profile_email_confirm(token):
                              current_app.config['DANGEROUS_SALT'],
                              current_app.config['EMAIL_EXPIRY_SECONDS'])
     token_data = json.loads(token_data)
-    user_id = token_data['user_id']
-    new_email = token_data['email']
-    user_api_client.update_user_attribute(user_id, email_address=new_email)
+    user = User.from_id(token_data['user_id'])
+    user.update(email_address=token_data['email'])
     session.pop(NEW_EMAIL, None)
 
     return redirect(url_for('.user_profile'))
@@ -138,7 +138,7 @@ def user_profile_mobile_number_authenticate():
 
     if form.validate_on_submit():
         session[NEW_MOBILE_PASSWORD_CONFIRMED] = True
-        user_api_client.send_verify_code(current_user.id, 'sms', session[NEW_MOBILE])
+        current_user.send_verify_code(to=session[NEW_MOBILE])
         return redirect(url_for('.user_profile_mobile_number_confirm'))
 
     return render_template(
@@ -168,7 +168,7 @@ def user_profile_mobile_number_confirm():
         mobile_number = session[NEW_MOBILE]
         del session[NEW_MOBILE]
         del session[NEW_MOBILE_PASSWORD_CONFIRMED]
-        user_api_client.update_user_attribute(current_user.id, mobile_number=mobile_number)
+        current_user.update(mobile_number=mobile_number)
         return redirect(url_for('.user_profile'))
 
     return render_template(

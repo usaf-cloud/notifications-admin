@@ -44,7 +44,7 @@ from app.main.validators import (
     ValidEmail,
     ValidGovEmail,
 )
-from app.models.user import permissions, roles
+from app.models.roles_and_permissions import permissions, roles
 from app.utils import guess_name_from_email_address
 
 

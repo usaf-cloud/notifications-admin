@@ -1,40 +1,16 @@
-from itertools import chain
-
-from flask import abort, request, session
-from flask_login import AnonymousUserMixin, UserMixin
+from flask import abort, current_app, request, session
+from flask_login import AnonymousUserMixin, UserMixin, login_user
 from werkzeug.utils import cached_property
 
 from app.models.organisation import Organisation
+from app.models.roles_and_permissions import (
+    all_permissions, translate_permissions_from_db_to_admin_roles
+)
 from app.notify_client.invite_api_client import invite_api_client
 from app.notify_client.org_invite_api_client import org_invite_api_client
 from app.notify_client.organisations_api_client import organisations_client
 from app.notify_client.user_api_client import user_api_client
 from app.utils import is_gov_user
-
-roles = {
-    'send_messages': ['send_texts', 'send_emails', 'send_letters'],
-    'manage_templates': ['manage_templates'],
-    'manage_service': ['manage_users', 'manage_settings'],
-    'manage_api_keys': ['manage_api_keys'],
-    'view_activity': ['view_activity'],
-}
-
-# same dict as above, but flipped round
-roles_by_permission = {
-    permission: next(
-        role for role, permissions in roles.items() if permission in permissions
-    ) for permission in chain(*list(roles.values()))
-}
-
-all_permissions = set(roles_by_permission.values())
-
-permissions = (
-    ('view_activity', 'See dashboard'),
-    ('send_messages', 'Send messages'),
-    ('manage_templates', 'Add and edit templates'),
-    ('manage_service', 'Manage settings, team and usage'),
-    ('manage_api_keys', 'Manage API integration'),
-)
 
 
 def _get_service_id_from_view_args():
@@ -45,26 +21,8 @@ def _get_org_id_from_view_args():
     return str(request.view_args.get('org_id', '')) or None
 
 
-def translate_permissions_from_db_to_admin_roles(permissions):
-    """
-    Given a list of database permissions, return a set of roles
-
-    look them up in roles_by_permission, falling back to just passing through from the api if they aren't in the dict
-    """
-    return {roles_by_permission.get(permission, permission) for permission in permissions}
-
-
-def translate_permissions_from_admin_roles_to_db(permissions):
-    """
-    Given a list of admin roles (ie: checkboxes on a permissions edit page for example), return a set of db permissions
-
-    Looks them up in the roles dict, falling back to just passing through if they're not recognised.
-    """
-    return set(chain.from_iterable(roles.get(permission, [permission]) for permission in permissions))
-
-
 class User(UserMixin):
-    def __init__(self, fields, max_failed_login_count=3):
+    def __init__(self, fields):
         self.id = fields.get('id')
         self.name = fields.get('name')
         self.email_address = fields.get('email_address')
@@ -74,7 +32,7 @@ class User(UserMixin):
         self.auth_type = fields.get('auth_type')
         self.failed_login_count = fields.get('failed_login_count')
         self.state = fields.get('state')
-        self.max_failed_login_count = app.config["MAX_FAILED_LOGIN_COUNT"]
+        self.max_failed_login_count = current_app.config["MAX_FAILED_LOGIN_COUNT"]
         self.logged_in_at = fields.get('logged_in_at')
         self.platform_admin = fields.get('platform_admin')
         self.current_session_id = fields.get('current_session_id')
@@ -111,12 +69,30 @@ class User(UserMixin):
             in permissions_by_service.items()
         }
 
-    def get_id(self):
-        return self.id
+    def update(self, **kwargs):
+        user_api_client.update_user_attribute(self.id, **kwargs)
+
+    def set_permissions(self, service_id, permissions, folder_permissions):
+        user_api_client.set_user_permissions(
+            self.id,
+            service_id,
+            permissions=permissions,
+            folder_permissions=folder_permissions,
+        )
 
     def logged_in_elsewhere(self):
         # if the current user (ie: db object) has no session, they've never logged in before
         return self.current_session_id is not None and session.get('current_session_id') != self.current_session_id
+
+    def activate(self):
+        if self.state == 'pending':
+            user_data = user_api_client._activate_user(self.id)
+            return self.__class__(user_data['data'])
+        else:
+            return self
+
+    def login(self):
+        login_user(self)
 
     @property
     def is_active(self):
@@ -310,8 +286,31 @@ class InvitedUser(object):
         self.permissions = translate_permissions_from_db_to_admin_roles(self.permissions)
         self.folder_permissions = folder_permissions
 
+    @classmethod
+    def create(
+        cls,
+        invite_from_id,
+        service_id,
+        email_address,
+        permissions,
+        auth_type,
+        folder_permissions,
+    ):
+        return cls(invite_api_client.create_invite(
+            invite_from_id,
+            service_id,
+            email_address,
+            permissions,
+            auth_type,
+            folder_permissions,
+        ))
+
     def from_user(self):
         return User.from_id(self.from_user)
+
+    @classmethod
+    def from_token(cls, token):
+        return cls(invite_api_client.check_token(token))
 
     def has_permissions(self, *permissions):
         if self.status == 'cancelled':
@@ -378,6 +377,12 @@ class InvitedOrgUser(object):
                 other.email_address,
                 other.status))
 
+    @classmethod
+    def create(cls, invite_from_id, org_id, email_address):
+        return cls(org_invite_api_client.create_invite(
+            invite_from_id, org_id, email_address
+        ))
+
     def serialize(self, permissions_as_string=False):
         data = {'id': self.id,
                 'organisation': self.organisation,
@@ -407,6 +412,8 @@ class Users:
 
     @staticmethod
     def for_service(service_id):
+        print("HERE")
+        print(user_api_client.get_users_for_service(service_id))
         return [
             User(user)
             for user in user_api_client.get_users_for_service(service_id)
@@ -425,16 +432,17 @@ class InvitedUsers:
     @staticmethod
     def for_service(service_id):
         return [
-            InvitedUser(user)
-            for user in invite_api_client.get_invites_for_service(service_id=self.id)
+            InvitedUser(**invite)
+            for invite in invite_api_client.get_invites_for_service(service_id)
+            if invite['status'] != 'accepted'
         ]
 
     @staticmethod
     def for_organisation(org_id):
         return [
-            User(user)
-            for user in org_invite_api_client.get_invites_for_organisation(org_id=org_id)
-            if user['status'] != 'accepted'
+            InvitedOrgUser(**invite)
+            for invite in org_invite_api_client.get_invites_for_organisation(org_id)
+            if invite['status'] != 'accepted'
         ]
 
 
@@ -443,6 +451,6 @@ class UsersAndInvitedUsers:
     @staticmethod
     def for_organisation(org_id):
         return sorted(
-            Users.from_organisation(org_id) + InvitedUsers.from_organisation(org_id),
+            Users.for_organisation(org_id) + InvitedUsers.for_organisation(org_id),
             key=lambda user: user.email_address,
         )

@@ -1,7 +1,6 @@
 from flask import abort, flash, redirect, render_template, session, url_for
 from flask_login import current_user
 from markupsafe import Markup
-from notifications_python_client.errors import HTTPError
 
 from app import (
     invite_api_client,
@@ -11,19 +10,17 @@ from app import (
     user_api_client,
 )
 from app.main import main
-from app.models.user import User, Users
+from app.models.user import InvitedOrgUser, InvitedUser, User, Users
+from app.notify_client import InviteTokenError
 
 
 @main.route("/invitation/<token>")
 def accept_invite(token):
     try:
-        invited_user = invite_api_client.check_token(token)
-    except HTTPError as e:
-        if e.status_code == 400 and 'invitation' in e.message:
-            flash(e.message['invitation'])
-            return redirect(url_for('main.sign_in'))
-        else:
-            raise e
+        invited_user = InvitedUser.from_token(token)
+    except InviteTokenError as exception:
+        flash(str(exception.value))
+        return redirect(url_for('main.sign_in'))
 
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_user.email_address.lower():
         message = Markup("""
@@ -67,7 +64,7 @@ def accept_invite(token):
                     # we want them to start sending emails. it's always valid, so lets always update
                     invited_user.auth_type == 'email_auth'
             ):
-                user_api_client.update_user_attribute(existing_user.id, auth_type=invited_user.auth_type)
+                existing_user.update(auth_type=invited_user.auth_type)
             user_api_client.add_user_to_service(invited_user.service,
                                                 existing_user.id,
                                                 invited_user.permissions,
@@ -79,7 +76,7 @@ def accept_invite(token):
 
 @main.route("/organisation-invitation/<token>")
 def accept_org_invite(token):
-    invited_org_user = org_invite_api_client.check_token(token)
+    invited_org_user = InvitedOrgUser.from_token(token)
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_org_user.email_address.lower():
         message = Markup("""
             You’re signed in as {}.
@@ -106,7 +103,7 @@ def accept_org_invite(token):
     session['invited_org_user'] = invited_org_user.serialize()
 
     existing_user = User.from_email_address_or_none(invited_org_user.email_address)
-    organisation_users = Users.from_organisation(invited_org_user.organisation)
+    organisation_users = Users.for_organisation(invited_org_user.organisation)
 
     if existing_user:
         org_invite_api_client.accept_invite(invited_org_user.organisation, invited_org_user.id)

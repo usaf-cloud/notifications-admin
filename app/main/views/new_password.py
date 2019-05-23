@@ -48,7 +48,7 @@ def new_password(token):
             return log_in_user(user.id)
         else:
             # send user a 2fa sms code
-            user_api_client.send_verify_code(user.id, 'sms', user.mobile_number)
+            user.send_verify_code()
             return redirect(url_for('main.two_factor'))
     else:
         return render_template('views/new-password.html', token=token, form=form, user=user)

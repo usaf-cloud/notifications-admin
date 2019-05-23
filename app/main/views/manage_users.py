@@ -29,7 +29,7 @@ from app.main.forms import (
     PermissionsForm,
     SearchUsersForm,
 )
-from app.models.user import permissions
+from app.models.roles_and_permissions import permissions
 from app.utils import is_gov_user, redact_mobile_number, user_has_permissions
 
 
@@ -106,13 +106,13 @@ def edit_user_permissions(service_id, user_id):
     )
 
     if form.validate_on_submit():
-        user_api_client.set_user_permissions(
-            user_id, service_id,
+        user.set_permissions(
+            service_id,
             permissions=form.permissions,
             folder_permissions=form.folder_permissions.data,
         )
         if service_has_email_auth:
-            user_api_client.update_user_attribute(user_id, auth_type=form.login_authentication.data)
+            user.update(auth_type=form.login_authentication.data)
         return redirect(url_for('.manage_users', service_id=service_id))
 
     return render_template(
@@ -193,7 +193,7 @@ def confirm_edit_user_email(service_id, user_id):
         ))
     if request.method == 'POST':
         try:
-            user_api_client.update_user_attribute(str(user_id), email_address=new_email, updated_by=current_user.id)
+            user.update(email_address=new_email, updated_by=current_user.id)
         except HTTPError as e:
             abort(500, e)
         else:
@@ -253,7 +253,7 @@ def confirm_edit_user_mobile_number(service_id, user_id):
         ))
     if request.method == 'POST':
         try:
-            user_api_client.update_user_attribute(str(user_id), mobile_number=new_number, updated_by=current_user.id)
+            user.update(mobile_number=new_number, updated_by=current_user.id)
         except HTTPError as e:
             abort(500, e)
         else:
