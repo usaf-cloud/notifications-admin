@@ -412,8 +412,6 @@ class Users:
 
     @staticmethod
     def for_service(service_id):
-        print("HERE")
-        print(user_api_client.get_users_for_service(service_id))
         return [
             User(user)
             for user in user_api_client.get_users_for_service(service_id)

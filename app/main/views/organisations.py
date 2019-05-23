@@ -31,7 +31,7 @@ from app.main.forms import (
     SetLetterBranding,
 )
 from app.main.views.service_settings import get_branding_as_value_and_label
-from app.models.user import User, UsersAndInvitedUsers
+from app.models.user import InvitedOrgUser, User, UsersAndInvitedUsers
 from app.utils import user_has_permissions, user_is_platform_admin
 
 
@@ -104,7 +104,7 @@ def invite_org_user(org_id):
     )
     if form.validate_on_submit():
         email_address = form.email_address.data
-        InviteOrgUser.create(
+        invited_org_user = InvitedOrgUser.create(
             current_user.id,
             org_id,
             email_address

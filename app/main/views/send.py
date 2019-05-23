@@ -32,7 +32,6 @@ from app import (
     job_api_client,
     notification_api_client,
     service_api_client,
-    user_api_client,
 )
 from app.main import main
 from app.main.forms import (

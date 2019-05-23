@@ -18,7 +18,6 @@ from . import (
     api_key_json,
     generate_uuid,
     invite_json,
-    invited_user,
     job_json,
     notification_json,
     org_invite_json,

@@ -58,7 +58,7 @@ class InviteApiClient(NotifyAdminAPIClient):
             if exception.status_code == 400 and 'invitation' in exception.message:
                 raise InviteTokenError(exception.message['invitation'])
             else:
-                raise e
+                raise exception
 
         return resp['data']
 

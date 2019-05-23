@@ -104,6 +104,7 @@ def invited_user(
         'email_address': email_address,
         'status': status,
         'created_at': created_at,
+        'auth_type': auth_type,
     }
     if service:
         data['service'] = service
@@ -111,12 +112,7 @@ def invited_user(
         data['permissions'] = permissions
     if organisation:
         data['organisation'] = organisation
-        data['invited_by'] = from_user
-    if auth_type and not organisation:
-        data['auth_type'] = auth_type
-    if from_user and not organisation:
-        data['from_user'] = from_user
-    print(data)
+
     return data
 
 
