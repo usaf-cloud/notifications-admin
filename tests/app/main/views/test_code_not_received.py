@@ -57,8 +57,8 @@ def test_should_render_correct_resend_template_for_pending_user(
 
     with client.session_transaction() as session:
         session['user_details'] = {
-            'id': api_user_pending.id,
-            'email': api_user_pending.email_address}
+            'id': api_user_pending['id'],
+            'email': api_user_pending['email_address']}
     response = client.get(url_for('main.check_and_resend_text_code'))
     assert response.status_code == 200
 
@@ -87,8 +87,8 @@ def test_should_resend_verify_code_and_update_mobile_for_pending_user(
 
     with client.session_transaction() as session:
         session['user_details'] = {
-            'id': api_user_pending.id,
-            'email': api_user_pending.email_address}
+            'id': api_user_pending['id'],
+            'email': api_user_pending['email_address']}
     response = client.post(url_for('main.check_and_resend_text_code'),
                            data={'mobile_number': phone_number_to_register_with})
     assert response.status_code == 302
@@ -125,8 +125,8 @@ def test_check_and_redirect_to_verify_if_user_pending(
 
     with client.session_transaction() as session:
         session['user_details'] = {
-            'id': api_user_pending.id,
-            'email': api_user_pending.email_address}
+            'id': api_user_pending['id'],
+            'email': api_user_pending['email_address']}
     response = client.get(url_for('main.check_and_resend_verification_code'))
     assert response.status_code == 302
     assert response.location == url_for('main.verify', _external=True)

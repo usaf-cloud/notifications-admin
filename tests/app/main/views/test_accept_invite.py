@@ -105,9 +105,8 @@ def test_invite_goes_in_session(
     mock_add_user_to_service,
     mock_accept_invite,
 ):
-    invite = InvitedUser(**sample_invite)
-    invite.email_address = 'test@user.gov.uk'
-    mocker.patch('app.invite_api_client.check_token', return_value=invite)
+    sample_invite['email_address'] = 'test@user.gov.uk'
+    mocker.patch('app.invite_api_client.check_token', return_value=sample_invite)
 
     client_request.get(
         'main.accept_invite',
@@ -621,7 +620,7 @@ def test_existing_email_auth_user_with_phone_can_set_sms_auth(
     mock_add_user_to_service,
     mocker
 ):
-    sample_invite['email_address'] = api_user_active.email_address
+    sample_invite['email_address'] = api_user_active['email_address']
     service_one['permissions'].append('email_auth')
     sample_invite['auth_type'] = 'sms_auth'
 

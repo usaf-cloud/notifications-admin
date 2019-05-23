@@ -89,7 +89,7 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
     persisted,
     sms_limit,
 ):
-    api_user_active.email_address = email_address
+    api_user_active['email_address'] = email_address
     client_request.login(api_user_active)
     mock_get_organisation_by_domain(mocker, organisation_type=inherited)
     client_request.post(
@@ -178,7 +178,7 @@ def test_add_service_guesses_org_type_for_unknown_nhs_orgs(
     mock_get_all_email_branding,
     email_address,
 ):
-    api_user_active.email_address = email_address
+    api_user_active['email_address'] = email_address
     client_request.login(api_user_active)
     mocker.patch(
         'app.organisations_client.get_organisation_by_domain',

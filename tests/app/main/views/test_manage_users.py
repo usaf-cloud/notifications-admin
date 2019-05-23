@@ -135,9 +135,9 @@ def test_should_show_overview_page(
 ):
     current_user = user(fake_uuid)
     other_user = copy.deepcopy(active_user_view_permissions)
-    other_user.email_address = 'zzzzzzz@example.gov.uk'
-    other_user.name = 'ZZZZZZZZ'
-    other_user.id = 'zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz'
+    other_user['email_address'] = 'zzzzzzz@example.gov.uk'
+    other_user['name'] = 'ZZZZZZZZ'
+    other_user['id'] = 'zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz'
 
     mocker.patch('app.user_api_client.get_user', return_value=current_user)
     mocker.patch('app.user_api_client.get_users_for_service', return_value=[
@@ -165,7 +165,7 @@ def test_should_show_caseworker_on_overview_page(
     service_one['permissions'].append('caseworking')
     current_user = active_user_view_permissions(active_user_view_permissions)
     other_user = active_caseworking_user(fake_uuid)
-    other_user.email_address = 'zzzzzzz@example.gov.uk'
+    other_user['email_address'] = 'zzzzzzz@example.gov.uk'
 
     mocker.patch('app.user_api_client.get_user', return_value=current_user)
     mocker.patch('app.user_api_client.get_users_for_service', return_value=[

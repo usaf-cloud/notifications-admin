@@ -191,8 +191,8 @@ def test_two_factor_should_activate_pending_user(
     mocker.patch('app.service_api_client.get_services', return_value={'data': []})
     with client.session_transaction() as session:
         session['user_details'] = {
-            'id': api_user_pending.id,
-            'email_address': api_user_pending.email_address
+            'id': api_user_pending['id'],
+            'email_address': api_user_pending['email_address']
         }
     client.post(url_for('main.two_factor'), data={'sms_code': '12345'})
 

@@ -66,7 +66,10 @@ def test_should_activate_user_after_verify(
 ):
     mocker.patch('app.user_api_client.get_user', return_value=api_user_pending)
     with client.session_transaction() as session:
-        session['user_details'] = {'email_address': api_user_pending.email_address, 'id': api_user_pending.id}
+        session['user_details'] = {
+            'email_address': api_user_pending['email_address'],
+            'id': api_user_pending['id']
+        }
     client.post(url_for('main.verify'),
                 data={'sms_code': '12345'})
     assert mock_activate_user.called
@@ -78,7 +81,10 @@ def test_should_return_200_when_sms_code_is_wrong(
     mock_check_verify_code_code_not_found,
 ):
     with client_request.session_transaction() as session:
-        session['user_details'] = {'email_address': api_user_active.email_address, 'id': api_user_active.id}
+        session['user_details'] = {
+            'email_address': api_user_active['email_address'],
+            'id': api_user_active['id'],
+        }
 
     page = client_request.post(
         'main.verify',
@@ -104,7 +110,10 @@ def test_verify_email_redirects_to_verify_if_token_valid(
     mocker.patch('app.main.views.verify.check_token', return_value=json.dumps(token_data))
 
     with client.session_transaction() as session:
-        session['user_details'] = {'email_address': api_user_pending.email_address, 'id': api_user_pending.id}
+        session['user_details'] = {
+            'email_address': api_user_pending['email_address'],
+            'id': api_user_pending['id'],
+        }
 
     response = client.get(url_for('main.verify_email', token='notreal'))
 
@@ -112,10 +121,10 @@ def test_verify_email_redirects_to_verify_if_token_valid(
     assert response.location == url_for('main.verify', _external=True)
 
     assert not mock_check_verify_code.called
-    mock_send_verify_code.assert_called_once_with(api_user_pending.id, 'sms', api_user_pending.mobile_number)
+    mock_send_verify_code.assert_called_once_with(api_user_pending['id'], 'sms', api_user_pending['mobile_number'])
 
     with client.session_transaction() as session:
-        assert session['user_details'] == {'email': api_user_pending.email_address, 'id': api_user_pending.id}
+        assert session['user_details'] == {'email': api_user_pending['email_address'], 'id': api_user_pending['id']}
 
 
 def test_verify_email_redirects_to_email_sent_if_token_expired(
