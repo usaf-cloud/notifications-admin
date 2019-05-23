@@ -5,7 +5,10 @@ from flask_login import AnonymousUserMixin, UserMixin
 from werkzeug.utils import cached_property
 
 from app.models.organisation import Organisation
+from app.notify_client.invite_api_client import invite_api_client
+from app.notify_client.org_invite_api_client import org_invite_api_client
 from app.notify_client.organisations_api_client import organisations_client
+from app.notify_client.user_api_client import user_api_client
 from app.utils import is_gov_user
 
 roles = {
@@ -71,12 +74,24 @@ class User(UserMixin):
         self.auth_type = fields.get('auth_type')
         self.failed_login_count = fields.get('failed_login_count')
         self.state = fields.get('state')
-        self.max_failed_login_count = max_failed_login_count
+        self.max_failed_login_count = app.config["MAX_FAILED_LOGIN_COUNT"]
         self.logged_in_at = fields.get('logged_in_at')
         self.platform_admin = fields.get('platform_admin')
         self.current_session_id = fields.get('current_session_id')
         self.services = fields.get('services', [])
         self.organisations = fields.get('organisations', [])
+
+    @classmethod
+    def from_id(cls, user_id):
+        return cls(user_api_client.get_user(user_id))
+
+    @classmethod
+    def from_email_address(cls, email_address):
+        return cls(user_api_client.get_user_by_email(email_address))
+
+    @classmethod
+    def from_email_address_or_none(cls, email_address):
+        return cls(user_api_client.get_user_by_email_or_none(email_address))
 
     def _set_permissions(self, permissions_by_service):
         """
@@ -174,6 +189,14 @@ class User(UserMixin):
             if self.id in template_folder.get("users_with_permission", [])
         ]
 
+    @cached_property
+    def _services(self):
+        return user_api_client.get_services_for_user(self.id)
+
+    @property
+    def trial_mode_services(self):
+        pass
+
     def belongs_to_service(self, service_id):
         return str(service_id) in self.services
 
@@ -225,8 +248,37 @@ class User(UserMixin):
             dct['password'] = self._password
         return dct
 
+    @classmethod
+    def register(
+        cls,
+        name,
+        email_address,
+        mobile_number,
+        password,
+        auth_type,
+    ):
+        return cls(user_api_client.register_user(
+            name,
+            email_address,
+            mobile_number or None,
+            password,
+            auth_type,
+        ))
+
     def set_password(self, pwd):
         self._password = pwd
+
+    def send_verify_email(self):
+        user_api_client.send_verify_email(self.id, self.email_address)
+
+    def send_verify_code(self, to=None):
+        user_api_client.send_verify_code(self.id, 'sms', to or self.mobile_number)
+
+    def send_already_registered_email(self):
+        user_api_client.send_already_registered_email(self.id, self.email_address)
+
+    def get_new_session_id(self):
+        return self.__class__(user_api_client.get_user(self.id)).current_session_id
 
 
 class InvitedUser(object):
@@ -243,7 +295,7 @@ class InvitedUser(object):
                  folder_permissions):
         self.id = id
         self.service = str(service)
-        self.from_user = from_user
+        self._from_user = from_user
         self.email_address = email_address
         if isinstance(permissions, list):
             self.permissions = permissions
@@ -258,6 +310,9 @@ class InvitedUser(object):
         self.permissions = translate_permissions_from_db_to_admin_roles(self.permissions)
         self.folder_permissions = folder_permissions
 
+    def from_user(self):
+        return User.from_id(self.from_user)
+
     def has_permissions(self, *permissions):
         if self.status == 'cancelled':
             return False
@@ -271,12 +326,12 @@ class InvitedUser(object):
     def __eq__(self, other):
         return ((self.id,
                 self.service,
-                self.from_user,
+                self._from_user,
                 self.email_address,
                 self.auth_type,
                 self.status) == (other.id,
                 other.service,
-                other.from_user,
+                other._from_user,
                 other.email_address,
                 other.auth_type,
                 other.status))
@@ -284,7 +339,7 @@ class InvitedUser(object):
     def serialize(self, permissions_as_string=False):
         data = {'id': self.id,
                 'service': self.service,
-                'from_user': self.from_user,
+                'from_user': self._from_user,
                 'email_address': self.email_address,
                 'status': self.status,
                 'created_at': str(self.created_at),
@@ -307,7 +362,7 @@ class InvitedOrgUser(object):
     def __init__(self, id, organisation, invited_by, email_address, status, created_at):
         self.id = id
         self.organisation = str(organisation)
-        self.invited_by = invited_by
+        self._invited_by = invited_by
         self.email_address = email_address
         self.status = status
         self.created_at = created_at
@@ -315,11 +370,11 @@ class InvitedOrgUser(object):
     def __eq__(self, other):
         return ((self.id,
                 self.organisation,
-                self.invited_by,
+                self._invited_by,
                 self.email_address,
                 self.status) == (other.id,
                 other.organisation,
-                other.invited_by,
+                other._invited_by,
                 other.email_address,
                 other.status))
 
@@ -333,6 +388,10 @@ class InvitedOrgUser(object):
                 }
         return data
 
+    @property
+    def invited_by(self):
+        return User.from_id(self._invited_by)
+
 
 class AnonymousUser(AnonymousUserMixin):
     # set the anonymous user so that if a new browser hits us we don't error http://stackoverflow.com/a/19275188
@@ -342,3 +401,48 @@ class AnonymousUser(AnonymousUserMixin):
     @property
     def default_organisation(self):
         return Organisation(None)
+
+
+class Users:
+
+    @staticmethod
+    def for_service(service_id):
+        return [
+            User(user)
+            for user in user_api_client.get_users_for_service(service_id)
+        ]
+
+    @staticmethod
+    def for_organisation(org_id):
+        return [
+            User(user)
+            for user in user_api_client.get_users_for_organisation(org_id)
+        ]
+
+
+class InvitedUsers:
+
+    @staticmethod
+    def for_service(service_id):
+        return [
+            InvitedUser(user)
+            for user in invite_api_client.get_invites_for_service(service_id=self.id)
+        ]
+
+    @staticmethod
+    def for_organisation(org_id):
+        return [
+            User(user)
+            for user in org_invite_api_client.get_invites_for_organisation(org_id=org_id)
+            if user['status'] != 'accepted'
+        ]
+
+
+class UsersAndInvitedUsers:
+
+    @staticmethod
+    def for_organisation(org_id):
+        return sorted(
+            Users.from_organisation(org_id) + InvitedUsers.from_organisation(org_id),
+            key=lambda user: user.email_address,
+        )

@@ -13,6 +13,7 @@ from flask_login import current_user
 from app import invite_api_client, login_manager, user_api_client
 from app.main import main
 from app.main.forms import LoginForm
+from app.models.user import User
 
 
 @main.route('/sign-in', methods=(['GET', 'POST']))
@@ -24,7 +25,7 @@ def sign_in():
 
     if form.validate_on_submit():
 
-        user = user_api_client.get_user_by_email_or_none(form.email_address.data)
+        user = User.from_email_address_or_none(form.email_address.data)
         user = _get_and_verify_user(user, form.password.data)
         if user and user.state == 'pending':
             return redirect(url_for('main.resend_email_verification'))

@@ -11,6 +11,7 @@ from app import (
     user_api_client,
 )
 from app.main import main
+from app.models.user import User, Users
 
 
 @main.route("/invitation/<token>")
@@ -38,10 +39,9 @@ def accept_invite(token):
         abort(403)
 
     if invited_user.status == 'cancelled':
-        from_user = user_api_client.get_user(invited_user.from_user)
         service = service_api_client.get_service(invited_user.service)['data']
         return render_template('views/cancelled-invitation.html',
-                               from_user=from_user.name,
+                               from_user=invited_user.from_user.name,
                                service_name=service['name'])
 
     if invited_user.status == 'accepted':
@@ -50,8 +50,8 @@ def accept_invite(token):
 
     session['invited_user'] = invited_user.serialize()
 
-    existing_user = user_api_client.get_user_by_email_or_none(invited_user.email_address)
-    service_users = user_api_client.get_users_for_service(invited_user.service)
+    existing_user = User.from_email_address_or_none(invited_user.email_address)
+    service_users = Users.for_service(invited_user.service)
 
     if existing_user:
         invite_api_client.accept_invite(invited_user.service, invited_user.id)
@@ -94,10 +94,9 @@ def accept_org_invite(token):
         abort(403)
 
     if invited_org_user.status == 'cancelled':
-        invited_by = user_api_client.get_user(invited_org_user.invited_by)
         organisation = organisations_client.get_organisation(invited_org_user.organisation)
         return render_template('views/cancelled-invitation.html',
-                               from_user=invited_by.name,
+                               from_user=invited_org_user.invited_by.name,
                                organisation_name=organisation['name'])
 
     if invited_org_user.status == 'accepted':
@@ -106,8 +105,8 @@ def accept_org_invite(token):
 
     session['invited_org_user'] = invited_org_user.serialize()
 
-    existing_user = user_api_client.get_user_by_email_or_none(invited_org_user.email_address)
-    organisation_users = user_api_client.get_users_for_organisation(invited_org_user.organisation)
+    existing_user = User.from_email_address_or_none(invited_org_user.email_address)
+    organisation_users = Users.from_organisation(invited_org_user.organisation)
 
     if existing_user:
         org_invite_api_client.accept_invite(invited_org_user.organisation, invited_org_user.id)

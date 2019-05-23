@@ -3,6 +3,7 @@ from notifications_utils.field import Field
 from werkzeug.utils import cached_property
 
 from app.models import JSONModel
+from app.models.user import InvitedUsers, Users, User
 from app.models.organisation import Organisation
 from app.notify_client.api_key_api_client import api_key_api_client
 from app.notify_client.billing_api_client import billing_api_client
@@ -99,11 +100,11 @@ class Service(JSONModel):
 
     @cached_property
     def invited_users(self):
-        return invite_api_client.get_invites_for_service(service_id=self.id)
+        return InvitedUsers.for_service(self.id)
 
     @cached_property
     def active_users(self):
-        return user_api_client.get_users_for_service(service_id=self.id)
+        return Users.from_service(self.id)
 
     @cached_property
     def team_members(self):
@@ -137,7 +138,7 @@ class Service(JSONModel):
         if str(user_id) not in {user.id for user in self.active_users}:
             abort(404)
 
-        return user_api_client.get_user(user_id)
+        return User.from_id(user_id)
 
     @cached_property
     def all_templates(self):

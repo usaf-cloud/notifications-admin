@@ -11,6 +11,7 @@ from app.main.forms import (
     RegisterUserFromOrgInviteForm,
 )
 from app.main.views.verify import activate_user
+from app.models import User
 
 
 @main.route('/register', methods=['GET', 'POST'])
@@ -75,22 +76,25 @@ def register_from_org_invite():
 
 def _do_registration(form, send_sms=True, send_email=True, organisation_id=None):
     if user_api_client.is_email_already_in_use(form.email_address.data):
-        user = user_api_client.get_user_by_email(form.email_address.data)
+        user = User.from_email_address(form.email_address.data)
         if send_email:
-            user_api_client.send_already_registered_email(user.id, user.email_address)
+            user.send_already_registered_email()
         session['expiry_date'] = str(datetime.utcnow() + timedelta(hours=1))
         session['user_details'] = {"email": user.email_address, "id": user.id}
     else:
-        user = user_api_client.register_user(form.name.data,
-                                             form.email_address.data,
-                                             form.mobile_number.data or None,
-                                             form.password.data,
-                                             form.auth_type.data)
+        user = User.register(
+            name=form.name.data,
+            email_address=form.email_address.data,
+            mobile_number=form.mobile_number.data,
+            password=form.password.data,
+            auth_type=form.auth_type.data,
+        )
+
         if send_email:
-            user_api_client.send_verify_email(user.id, user.email_address)
+            user.send_verify_email()
 
         if send_sms:
-            user_api_client.send_verify_code(user.id, 'sms', user.mobile_number)
+            user.send_verify_code()
         session['expiry_date'] = str(datetime.utcnow() + timedelta(hours=1))
         session['user_details'] = {"email": user.email_address, "id": user.id}
     if organisation_id:

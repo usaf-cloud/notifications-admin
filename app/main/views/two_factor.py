@@ -15,6 +15,7 @@ from notifications_utils.url_safe_token import check_token
 from app import user_api_client
 from app.main import main
 from app.main.forms import TwoFactorForm
+from app.models.user import User
 from app.utils import redirect_to_sign_in
 
 
@@ -79,7 +80,7 @@ def _is_safe_redirect_url(target):
 
 def log_in_user(user_id):
     try:
-        user = user_api_client.get_user(user_id)
+        user = User.from_id(user_id)
         # the user will have a new current_session_id set by the API - store it in the cookie for future requests
         session['current_session_id'] = user.current_session_id
         # Check if coming from new password page

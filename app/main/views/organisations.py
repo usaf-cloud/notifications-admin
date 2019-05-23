@@ -31,6 +31,7 @@ from app.main.forms import (
     SetLetterBranding,
 )
 from app.main.views.service_settings import get_branding_as_value_and_label
+from app.models.user import User, UsersAndInvitedUsers
 from app.utils import user_has_permissions, user_is_platform_admin
 
 
@@ -85,14 +86,7 @@ def organisation_dashboard(org_id):
 @login_required
 @user_has_permissions()
 def manage_org_users(org_id):
-    users = sorted(
-        user_api_client.get_users_for_organisation(org_id=org_id) + [
-            invite for invite in org_invite_api_client.get_invites_for_organisation(org_id=org_id)
-            if invite.status != 'accepted'
-        ],
-        key=lambda user: user.email_address,
-    )
-
+    users = UsersAndInvitedUsers.for_organisation(org_id)
     return render_template(
         'views/organisations/organisation/users/index.html',
         users=users,
@@ -129,11 +123,9 @@ def invite_org_user(org_id):
 @login_required
 @user_has_permissions()
 def edit_user_org_permissions(org_id, user_id):
-    user = user_api_client.get_user(user_id)
-
     return render_template(
         'views/organisations/organisation/users/user/index.html',
-        user=user
+        user=User.from_id(user_id)
     )
 
 
@@ -141,7 +133,7 @@ def edit_user_org_permissions(org_id, user_id):
 @login_required
 @user_has_permissions()
 def remove_user_from_organisation(org_id, user_id):
-    user = user_api_client.get_user(user_id)
+    user = User.from_id(user_id)
     if request.method == 'POST':
         try:
             organisations_client.remove_user_from_organisation(org_id, user_id)
