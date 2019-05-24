@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask import abort, redirect, render_template, session, url_for
 from flask_login import current_user
 
-from app import invite_api_client, org_invite_api_client, user_api_client
+from app import invite_api_client, org_invite_api_client
 from app.main import main
 from app.main.forms import (
     RegisterUserForm,
@@ -75,8 +75,8 @@ def register_from_org_invite():
 
 
 def _do_registration(form, send_sms=True, send_email=True, organisation_id=None):
-    if user_api_client.is_email_already_in_use(form.email_address.data):
-        user = User.from_email_address(form.email_address.data)
+    user = User.from_email_address_or_none(form.email_address.data)
+    if user:
         if send_email:
             user.send_already_registered_email()
         session['expiry_date'] = str(datetime.utcnow() + timedelta(hours=1))

@@ -68,7 +68,7 @@ def test_should_render_correct_resend_template_for_pending_user(
     expected = 'Check your mobile phone number is correct and then resend the security code.'
     message = page.find_all('p')[1].text
     assert message == expected
-    assert page.find('form').input['value'] == api_user_pending.mobile_number
+    assert page.find('form').input['value'] == api_user_pending['mobile_number']
 
 
 @pytest.mark.parametrize('phone_number_to_register_with', [
@@ -94,8 +94,15 @@ def test_should_resend_verify_code_and_update_mobile_for_pending_user(
     assert response.status_code == 302
     assert response.location == url_for('main.verify', _external=True)
 
-    mock_update_user_attribute.assert_called_once_with(api_user_pending.id, mobile_number=phone_number_to_register_with)
-    mock_send_verify_code.assert_called_once_with(api_user_pending.id, 'sms', to=phone_number_to_register_with)
+    mock_update_user_attribute.assert_called_once_with(
+        api_user_pending['id'],
+        mobile_number=phone_number_to_register_with,
+    )
+    mock_send_verify_code.assert_called_once_with(
+        api_user_pending['id'],
+        'sms',
+        phone_number_to_register_with,
+    )
 
 
 def test_check_and_redirect_to_two_factor_if_user_active(

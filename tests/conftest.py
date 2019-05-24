@@ -1651,13 +1651,13 @@ def mock_activate_user(mocker):
 
 
 @pytest.fixture(scope='function')
-def mock_email_is_already_in_use(mocker):
-    return mocker.patch('app.user_api_client.is_email_already_in_use', return_value=True)
+def mock_email_is_already_in_use(mocker, api_user_active):
+    return mocker.patch('app.user_api_client.get_user_by_email_or_none', return_value=api_user_active)
 
 
 @pytest.fixture(scope='function')
 def mock_email_is_not_already_in_use(mocker):
-    return mocker.patch('app.user_api_client.is_email_already_in_use', return_value=False)
+    return mocker.patch('app.user_api_client.get_user_by_email_or_none', return_value=None)
 
 
 @pytest.fixture(scope='function')

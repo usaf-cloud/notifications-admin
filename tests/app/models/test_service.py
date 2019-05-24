@@ -1,6 +1,7 @@
 import uuid
 
 from app.models.service import Service
+from app.models.user import User
 
 INV_PARENT_FOLDER_ID = '7e979e79-d970-43a5-ac69-b625a8d147b0'
 INV_CHILD_1_FOLDER_ID = '92ee1ee0-e4ee-4dcc-b1a7-a5da9ebcfa2b'
@@ -75,7 +76,7 @@ def test_get_user_template_folders_only_returns_folders_visible_to_user(
 ):
     mock_get_template_folders.return_value = _get_all_folders(active_user_with_permissions)
     service = Service(service_one)
-    result = service.get_user_template_folders(active_user_with_permissions)
+    result = service.get_user_template_folders(User(active_user_with_permissions))
     assert result == [
         {
             'name': "Parent 1 - invisible / 1's Visible child",

@@ -13,7 +13,6 @@ from notifications_python_client.errors import HTTPError
 from app import (
     current_service,
     service_api_client,
-    user_api_client,
 )
 from app.event_handlers import (
     create_email_change_event,
@@ -29,7 +28,7 @@ from app.main.forms import (
     SearchUsersForm,
 )
 from app.models.roles_and_permissions import permissions
-from app.models.user import InvitedUser
+from app.models.user import InvitedUser, User
 from app.utils import is_gov_user, redact_mobile_number, user_has_permissions
 
 
@@ -155,7 +154,7 @@ def edit_user_email(service_id, user_id):
     user_email = user.email_address
 
     def _is_email_already_in_use(email):
-        return user_api_client.is_email_already_in_use(email)
+        return bool(User.from_email_address_or_none(email))
 
     if is_gov_user(user_email):
         form = ChangeEmailForm(_is_email_already_in_use, email_address=user_email)

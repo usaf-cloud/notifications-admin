@@ -51,13 +51,10 @@ class User(UserMixin):
 
     @classmethod
     def from_email_address_or_none(cls, email_address):
-        try:
-            response = user_api_client.get_user_by_email(email_address)
-            return cls(response) if response else None
-        except HTTPError as e:
-            if e.status_code == 404:
-                return None
-            raise e
+        response = user_api_client.get_user_by_email_or_none(email_address)
+        if response:
+            return cls(response)
+        return None
 
     def _set_permissions(self, permissions_by_service):
         """
@@ -78,7 +75,12 @@ class User(UserMixin):
         }
 
     def update(self, **kwargs):
-        user_api_client.update_user_attribute(self.id, **kwargs)
+        response = user_api_client.update_user_attribute(self.id, **kwargs)
+        self.__init__(response)
+
+    def update_password(self, password):
+        response = user_api_client.update_password(self.id, password)
+        self.__init__(response)
 
     def set_permissions(self, service_id, permissions, folder_permissions):
         user_api_client.set_user_permissions(

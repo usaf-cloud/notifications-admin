@@ -106,7 +106,7 @@ def test_verify_email_redirects_to_verify_if_token_valid(
     mock_send_verify_code,
     mock_check_verify_code,
 ):
-    token_data = {"user_id": api_user_pending.id, "secret_code": 'UNUSED'}
+    token_data = {"user_id": api_user_pending['id'], "secret_code": 'UNUSED'}
     mocker.patch('app.main.views.verify.check_token', return_value=json.dumps(token_data))
 
     with client.session_transaction() as session:

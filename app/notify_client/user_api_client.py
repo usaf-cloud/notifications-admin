@@ -45,6 +45,14 @@ class UserApiClient(NotifyAdminAPIClient):
         user_data = self.get('/user/email', params={'email': email_address})
         return user_data['data']
 
+    def get_user_by_email_or_none(self, email_address):
+        try:
+            return self.get_user_by_email(email_address)
+        except HTTPError as e:
+            if e.status_code == 404:
+                return None
+            raise e
+
     @cache.delete('user-{user_id}')
     def update_user_attribute(self, user_id, **kwargs):
         data = dict(kwargs)
@@ -171,11 +179,6 @@ class UserApiClient(NotifyAdminAPIClient):
         data = {'email': email_address}
         users = self.post(endpoint, data=data)
         return users
-
-    def is_email_already_in_use(self, email_address):
-        if self.get_user_by_email_or_none(email_address):
-            return True
-        return False
 
     @cache.delete('user-{user_id}')
     def activate_user(self, user_id):
