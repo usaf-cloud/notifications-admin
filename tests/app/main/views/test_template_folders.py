@@ -417,7 +417,7 @@ def test_get_manage_folder_page(
 ):
     folder_id = str(uuid.uuid4())
     mock_get_template_folders.return_value = [
-        _folder('folder_two', folder_id, None, \[active_user_with_permissions['id']\]),
+        _folder('folder_two', folder_id, None, [active_user_with_permissions['id']]),
     ]
     mocker.patch('app.models.service.Service.active_users', [active_user_with_permissions])
     page = client_request.get(
@@ -446,7 +446,7 @@ def test_get_manage_folder_viewing_permissions_for_users(
     team_member = active_user_view_permissions(str(uuid.uuid4()))
     team_member_2 = active_user_view_permissions(str(uuid.uuid4()))
     mock_get_template_folders.return_value = [
-        _folder('folder_two', folder_id, None, [active_user_with_permissions.id, team_member_2.id]),
+        _folder('folder_two', folder_id, None, [active_user_with_permissions['id'], team_member_2['id']]),
     ]
     mocker.patch('app.models.service.Service.active_users', [active_user_with_permissions, team_member, team_member_2])
 
@@ -464,10 +464,10 @@ def test_get_manage_folder_viewing_permissions_for_users(
     checkboxes = page.select('input[name=users_with_permission]')
 
     assert len(checkboxes) == 2
-    assert checkboxes[0]['value'] == team_member.id
+    assert checkboxes[0]['value'] == team_member['id']
     assert "checked" not in checkboxes[0].attrs
 
-    assert checkboxes[1]['value'] == team_member_2.id
+    assert checkboxes[1]['value'] == team_member_2['id']
     assert "checked" in checkboxes[1].attrs
 
     assert "Test User" in page.findAll('label', {'for': 'users_with_permission-0'})[0].text
@@ -480,7 +480,7 @@ def test_get_manage_folder_viewing_permissions_for_users_not_visible_when_no_man
     mock_get_template_folders,
     mocker
 ):
-    active_user_with_permissions.permissions[SERVICE_ONE_ID] = [
+    active_user_with_permissions['permissions'][SERVICE_ONE_ID] = [
         'send_texts',
         'send_emails',
         'send_letters',
@@ -636,7 +636,7 @@ def test_rename_folder(client_request, active_user_with_permissions, service_one
     mock_update = mocker.patch('app.template_folder_api_client.update_template_folder')
     folder_id = str(uuid.uuid4())
     mock_get_template_folders.return_value = [
-        _folder('folder_two', folder_id, None, \[active_user_with_permissions['id']\])
+        _folder('folder_two', folder_id, None, [active_user_with_permissions['id']])
     ]
     mocker.patch('app.models.service.Service.active_users', [active_user_with_permissions])
 
@@ -685,14 +685,14 @@ def test_manage_folder_users(
         service_one['id'],
         folder_id,
         name="new beautiful name",
-        users_with_permission=\[active_user_with_permissions['id']\]
+        users_with_permission=[active_user_with_permissions['id']]
     )
 
 
 def test_manage_folder_users_doesnt_change_permissions_current_user_cannot_manage_users(
     client_request, active_user_with_permissions, service_one, mock_get_template_folders, mocker
 ):
-    active_user_with_permissions.permissions[SERVICE_ONE_ID] = [
+    active_user_with_permissions['permissions'][SERVICE_ONE_ID] = [
         'send_texts',
         'send_emails',
         'send_letters',
@@ -1468,13 +1468,13 @@ def test_should_filter_templates_folder_page_based_on_user_permissions(
 ):
     service_one['permissions'] += ['letter']
     mock_get_template_folders.return_value = [
-        _folder('folder_A', FOLDER_TWO_ID, None, \[active_user_with_permissions['id']\]),
+        _folder('folder_A', FOLDER_TWO_ID, None, [active_user_with_permissions['id']]),
         _folder('folder_B', FOLDER_B_ID, FOLDER_TWO_ID, []),
-        _folder('folder_C', FOLDER_C_ID, FOLDER_TWO_ID, \[active_user_with_permissions['id']\]),
-        _folder('folder_D', None, FOLDER_TWO_ID, \[active_user_with_permissions['id']\]),
+        _folder('folder_C', FOLDER_C_ID, FOLDER_TWO_ID, [active_user_with_permissions['id']]),
+        _folder('folder_D', None, FOLDER_TWO_ID, [active_user_with_permissions['id']]),
         _folder('folder_E', PARENT_FOLDER_ID, users_with_permission=[]),
         _folder('folder_F', CHILD_FOLDER_ID, PARENT_FOLDER_ID, []),
-        _folder('folder_G', GRANDCHILD_FOLDER_ID, CHILD_FOLDER_ID, \[active_user_with_permissions['id']\]),
+        _folder('folder_G', GRANDCHILD_FOLDER_ID, CHILD_FOLDER_ID, [active_user_with_permissions['id']]),
     ]
     mocker.patch(
         'app.service_api_client.get_service_templates',

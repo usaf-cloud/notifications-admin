@@ -1,7 +1,6 @@
 from flask import abort, has_request_context, request
 from flask_login import current_user
 from notifications_python_client import __version__
-from notifications_python_client.errors import HTTPError
 from notifications_python_client.base import BaseAPIClient
 
 
@@ -63,5 +62,5 @@ class NotifyAdminAPIClient(BaseAPIClient):
         return super().delete(*args, **kwargs)
 
 
-class InviteTokenError(HTTPError):
-    Exception
+class InviteTokenError(Exception):
+    pass

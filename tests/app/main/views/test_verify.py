@@ -16,7 +16,7 @@ def test_should_return_verify_template(
     # TODO this lives here until we work out how to
     # reassign the session after it is lost mid register process
     with client.session_transaction() as session:
-        session['user_details'] = {'email_address': api_user_active.email_address, 'id': api_user_active.id}
+        session['user_details'] = {'email_address': api_user_active['email_address'], 'id': api_user_active['id']}
     response = client.get(url_for('main.verify'))
     assert response.status_code == 200
 
@@ -39,7 +39,7 @@ def test_should_redirect_to_add_service_when_sms_code_is_correct(
     mocker.patch('app.user_api_client.get_user', return_value=api_user_active)
 
     with client.session_transaction() as session:
-        session['user_details'] = {'email_address': api_user_active.email_address, 'id': api_user_active.id}
+        session['user_details'] = {'email_address': api_user_active['email_address'], 'id': api_user_active['id']}
         # user's only just created their account so no session in the cookie
         session.pop('current_session_id', None)
 
@@ -52,7 +52,7 @@ def test_should_redirect_to_add_service_when_sms_code_is_correct(
     with client.session_transaction() as session:
         assert session['current_session_id'] == str(uuid.UUID(int=1))
 
-    mock_check_verify_code.assert_called_once_with(api_user_active.id, '12345', 'sms')
+    mock_check_verify_code.assert_called_once_with(api_user_active['id'], '12345', 'sms')
 
 
 def test_should_activate_user_after_verify(
@@ -148,7 +148,7 @@ def test_verify_email_redirects_to_sign_in_if_user_active(
     mock_send_verify_code,
     mock_check_verify_code,
 ):
-    token_data = {"user_id": api_user_active.id, "secret_code": 12345}
+    token_data = {"user_id": api_user_active['id'], "secret_code": 12345}
     mocker.patch('app.main.views.verify.check_token', return_value=json.dumps(token_data))
 
     response = client.get(url_for('main.verify_email', token='notreal'), follow_redirects=True)

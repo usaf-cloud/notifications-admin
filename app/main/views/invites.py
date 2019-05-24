@@ -19,7 +19,7 @@ def accept_invite(token):
     try:
         invited_user = InvitedUser.from_token(token)
     except InviteTokenError as exception:
-        flash(str(exception.value))
+        flash(str(exception))
         return redirect(url_for('main.sign_in'))
 
     if not current_user.is_anonymous and current_user.email_address.lower() != invited_user.email_address.lower():

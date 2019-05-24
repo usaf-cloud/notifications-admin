@@ -3,7 +3,7 @@ import pytest
 from app.models.user import User
 
 
-def test_user():
+def test_user(app_):
     user_data = {'id': 1,
                  'name': 'Test User',
                  'email_address': 'test@user.gov.uk',
@@ -19,13 +19,13 @@ def test_user():
     assert user.mobile_number == '+4412341234'
     assert user.state == 'pending'
 
-    # user has three failed logins before being locked
-    assert user.max_failed_login_count == 3
+    # user has ten failed logins before being locked
+    assert user.max_failed_login_count == app_.config['MAX_FAILED_LOGIN_COUNT'] == 10
     assert user.failed_login_count == 0
     assert not user.is_locked()
 
     # set failed logins to threshold
-    user.failed_login_count = 3
+    user.failed_login_count = app_.config['MAX_FAILED_LOGIN_COUNT']
     assert user.is_locked()
 
     with pytest.raises(TypeError):

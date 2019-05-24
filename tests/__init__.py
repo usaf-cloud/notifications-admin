@@ -365,9 +365,9 @@ def job_json(
         'job_status': job_status,
         'statistics': [],
         'created_by': created_by_json(
-            created_by.id,
-            created_by.name,
-            created_by.email_address
+            created_by['id'],
+            created_by['name'],
+            created_by['email_address'],
         ),
         'scheduled_for': scheduled_for
     }
@@ -506,8 +506,8 @@ def validate_route_permission(mocker,
                               permissions,
                               usr,
                               service):
-    usr._permissions[str(service['id'])] = permissions
-    usr.services = [service['id']]
+    usr['permissions'][str(service['id'])] = permissions
+    usr['services'] = [service['id']]
     mocker.patch(
         'app.user_api_client.check_verify_code',
         return_value=(True, ''))
@@ -544,7 +544,7 @@ def validate_route_permission_with_client(mocker,
                                           permissions,
                                           usr,
                                           service):
-    usr._permissions[str(service['id'])] = permissions
+    usr['permissions'][str(service['id'])] = permissions
     mocker.patch(
         'app.user_api_client.check_verify_code',
         return_value=(True, ''))

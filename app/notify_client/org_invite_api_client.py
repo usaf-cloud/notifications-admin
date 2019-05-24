@@ -1,5 +1,5 @@
+from notifications_python_client.errors import HTTPError
 from app.notify_client import (
-    HTTPError,
     InviteTokenError,
     NotifyAdminAPIClient,
     _attach_current_user,

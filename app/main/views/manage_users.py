@@ -12,7 +12,6 @@ from notifications_python_client.errors import HTTPError
 
 from app import (
     current_service,
-    invite_api_client,
     service_api_client,
     user_api_client,
 )
@@ -30,6 +29,7 @@ from app.main.forms import (
     SearchUsersForm,
 )
 from app.models.roles_and_permissions import permissions
+from app.models.user import InvitedUser
 from app.utils import is_gov_user, redact_mobile_number, user_has_permissions
 
 
@@ -64,7 +64,7 @@ def invite_user(service_id):
 
     if form.validate_on_submit():
         email_address = form.email_address.data
-        invited_user = invite_api_client.create_invite(
+        invited_user = InvitedUser.create(
             current_user.id,
             service_id,
             email_address,

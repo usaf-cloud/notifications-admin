@@ -45,13 +45,6 @@ class UserApiClient(NotifyAdminAPIClient):
         user_data = self.get('/user/email', params={'email': email_address})
         return user_data['data']
 
-    def get_user_by_email_or_none(self, email_address):
-        try:
-            return self.get_user_by_email(email_address)
-        except HTTPError as e:
-            if e.status_code == 404:
-                return None
-
     @cache.delete('user-{user_id}')
     def update_user_attribute(self, user_id, **kwargs):
         data = dict(kwargs)

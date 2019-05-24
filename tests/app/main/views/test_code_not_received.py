@@ -12,19 +12,19 @@ def test_should_render_email_verification_resend_show_email_address_and_resend_v
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
-            'id': api_user_active.id,
-            'email': api_user_active.email_address}
+            'id': api_user_active['id'],
+            'email': api_user_active['email_address']}
     response = client.get(url_for('main.resend_email_verification'))
     assert response.status_code == 200
 
     page = BeautifulSoup(response.data.decode('utf-8'), 'html.parser')
 
     assert page.h1.string == 'Check your email'
-    expected = "A new confirmation email has been sent to {}".format(api_user_active.email_address)
+    expected = "A new confirmation email has been sent to {}".format(api_user_active['email_address'])
 
     message = page.find_all('p')[1].text
     assert message == expected
-    mock_send_verify_email.assert_called_with(api_user_active.id, api_user_active.email_address)
+    mock_send_verify_email.assert_called_with(api_user_active['id'], api_user_active['email_address'])
 
 
 def test_should_render_correct_resend_template_for_active_user(
@@ -35,8 +35,8 @@ def test_should_render_correct_resend_template_for_active_user(
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
-            'id': api_user_active.id,
-            'email': api_user_active.email_address}
+            'id': api_user_active['id'],
+            'email': api_user_active['email_address']}
     response = client.get(url_for('main.check_and_resend_text_code'))
     assert response.status_code == 200
 
@@ -106,8 +106,8 @@ def test_check_and_redirect_to_two_factor_if_user_active(
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
-            'id': api_user_active.id,
-            'email': api_user_active.email_address}
+            'id': api_user_active['id'],
+            'email': api_user_active['email_address']}
     response = client.get(url_for('main.check_and_resend_verification_code'))
     assert response.status_code == 302
     assert response.location == url_for('main.two_factor', _external=True)

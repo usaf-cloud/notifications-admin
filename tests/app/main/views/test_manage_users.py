@@ -5,7 +5,6 @@ import pytest
 from flask import url_for
 
 import app
-from app.models.user import InvitedUser
 from app.utils import is_gov_user
 from tests.conftest import (
     SERVICE_ONE_ID,
@@ -151,7 +150,7 @@ def test_should_show_overview_page(
     assert normalize_spaces(page.select('.user-list-item')[0].text) == expected_self_text
     # [1:5] are invited users
     assert normalize_spaces(page.select('.user-list-item')[6].text) == expected_coworker_text
-    app.user_api_client.get_users_for_service.assert_called_once_with(service_id=SERVICE_ONE_ID)
+    app.user_api_client.get_users_for_service.assert_called_once_with(SERVICE_ONE_ID)
 
 
 def test_should_show_caseworker_on_overview_page(
@@ -602,9 +601,9 @@ def test_edit_user_permissions_including_authentication_with_email_auth_service(
     client_request.post(
         'main.edit_user_permissions',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _data={
-            'email_address': active_user_with_permissions.email_address,
+            'email_address': active_user_with_permissions['email_address'],
             'send_messages': 'y',
             'manage_templates': 'y',
             'manage_service': 'y',
@@ -620,7 +619,7 @@ def test_edit_user_permissions_including_authentication_with_email_auth_service(
     )
 
     mock_set_user_permissions.assert_called_with(
-        str(active_user_with_permissions.id),
+        str(active_user_with_permissions['id']),
         SERVICE_ONE_ID,
         permissions={
             'send_messages',
@@ -631,7 +630,7 @@ def test_edit_user_permissions_including_authentication_with_email_auth_service(
         folder_permissions=[]
     )
     mock_update_user_attribute.assert_called_with(
-        str(active_user_with_permissions.id),
+        str(active_user_with_permissions['id']),
         auth_type=auth_type
     )
 
@@ -686,11 +685,10 @@ def test_invite_user(
 ):
     sample_invite['email_address'] = 'test@example.gov.uk'
 
-    data = [InvitedUser(**sample_invite)]
     assert is_gov_user(email_address) == gov_user
-    mocker.patch('app.invite_api_client.get_invites_for_service', return_value=data)
+    mocker.patch('app.invite_api_client.get_invites_for_service', return_value=[sample_invite])
     mocker.patch('app.user_api_client.get_users_for_service', return_value=[active_user_with_permissions])
-    mocker.patch('app.invite_api_client.create_invite', return_value=InvitedUser(**sample_invite))
+    mocker.patch('app.invite_api_client.create_invite', return_value=sample_invite)
     page = client_request.post(
         'main.invite_user',
         service_id=SERVICE_ONE_ID,
@@ -740,11 +738,10 @@ def test_invite_user_with_email_auth_service(
     service_one['permissions'].append('email_auth')
     sample_invite['email_address'] = 'test@example.gov.uk'
 
-    data = [InvitedUser(**sample_invite)]
     assert is_gov_user(email_address) == gov_user
-    mocker.patch('app.invite_api_client.get_invites_for_service', return_value=data)
+    mocker.patch('app.invite_api_client.get_invites_for_service', return_value=[sample_invite])
     mocker.patch('app.user_api_client.get_users_for_service', return_value=[active_user_with_permissions])
-    mocker.patch('app.invite_api_client.create_invite', return_value=InvitedUser(**sample_invite))
+    mocker.patch('app.invite_api_client.create_invite', return_value=sample_invite)
     page = client_request.post(
         'main.invite_user',
         service_id=SERVICE_ONE_ID,
@@ -842,8 +839,7 @@ def test_manage_users_shows_invited_user(
     expected_text,
 ):
     sample_invite['status'] = invite_status
-    data = [InvitedUser(**sample_invite)]
-    mocker.patch('app.invite_api_client.get_invites_for_service', return_value=data)
+    mocker.patch('app.invite_api_client.get_invites_for_service', return_value=[sample_invite])
     mocker.patch('app.user_api_client.get_users_for_service', return_value=[active_user_with_permissions])
 
     page = client_request.get('main.manage_users', service_id=SERVICE_ONE_ID)
@@ -862,7 +858,7 @@ def test_manage_users_does_not_show_accepted_invite(
     sample_invite['id'] = invited_user_id
     sample_invite['status'] = 'accepted'
     mocker.patch('app.user_api_client.get_users_for_service', return_value=[active_user_with_permissions])
-    mocker.patch('app.invite_api_client._get_invites_for_service', return_value=[sample_invite])
+    mocker.patch('app.invite_api_client.get_invites_for_service', return_value=[sample_invite])
 
     page = client_request.get('main.manage_users', service_id=SERVICE_ONE_ID)
 
@@ -883,7 +879,7 @@ def test_user_cant_invite_themselves(
         'main.invite_user',
         service_id=SERVICE_ONE_ID,
         _data={
-            'email_address': active_user_with_permissions.email_address,
+            'email_address': active_user_with_permissions['email_address'],
             'send_messages': 'y',
             'manage_service': 'y',
             'manage_api_keys': 'y',
@@ -935,7 +931,7 @@ def test_manage_user_page_shows_how_many_folders_user_can_view(
         {'id': 'folder-id-3', 'name': 'f3', 'parent_id': None, 'users_with_permission': []},
     ]
     for i in range(folders_user_can_see):
-        mock_get_template_folders.return_value[i]['users_with_permission'].append(api_user_active.id)
+        mock_get_template_folders.return_value[i]['users_with_permission'].append(api_user_active['id'])
 
     page = client_request.get('main.manage_users', service_id=service_one['id'])
 
@@ -970,7 +966,7 @@ def test_manage_user_page_doesnt_show_folder_hint_if_service_cant_edit_folder_pe
 ):
     service_one['permissions'] = []
     mock_get_template_folders.return_value = [
-        {'id': 'folder-id-1', 'name': 'f1', 'parent_id': None, 'users_with_permission': [api_user_active.id]},
+        {'id': 'folder-id-1', 'name': 'f1', 'parent_id': None, 'users_with_permission': [api_user_active['id']]},
     ]
 
     page = client_request.get('main.manage_users', service_id=service_one['id'])
@@ -988,12 +984,12 @@ def test_remove_user_from_service(
     client_request.post(
         'main.remove_user_from_service',
         service_id=service_one['id'],
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _expected_redirect=url_for('main.manage_users', service_id=service_one['id'], _external=True)
     )
     mock_remove_user_from_service.assert_called_once_with(
         service_one['id'],
-        str(active_user_with_permissions.id)
+        str(active_user_with_permissions['id'])
     )
 
 
@@ -1032,8 +1028,8 @@ def test_edit_user_email_page(
     )
 
     assert page.find('h1').text == "Change team member’s email address"
-    assert page.select('p[id=user_name]')[0].text == "This will change the email address for {}.".format(user.name)
-    assert page.select('input[type=email]')[0].attrs["value"] == user.email_address
+    assert page.select('p[id=user_name]')[0].text == "This will change the email address for {}.".format(user['name'])
+    assert page.select('input[type=email]')[0].attrs["value"] == user['email_address']
     assert page.select('button[type=submit]')[0].text == "Save"
 
 
@@ -1057,12 +1053,12 @@ def test_edit_user_email_redirects_to_confirmation(
     client_request.post(
         'main.edit_user_email',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _expected_status=302,
         _expected_redirect=url_for(
             'main.confirm_edit_user_email',
             service_id=SERVICE_ONE_ID,
-            user_id=active_user_with_permissions.id,
+            user_id=active_user_with_permissions['id'],
             _external=True,
         ),
     )
@@ -1078,9 +1074,9 @@ def test_edit_user_email_without_changing_goes_back_to_team_members(
     client_request.post(
         'main.edit_user_email',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _data={
-            'email_address': active_user_with_permissions.email_address
+            'email_address': active_user_with_permissions['email_address']
         },
         _expected_status=302,
         _expected_redirect=url_for(
@@ -1101,12 +1097,12 @@ def test_edit_user_email_can_change_any_email_address_to_a_gov_email_address(
     mock_update_user_attribute,
     original_email_address
 ):
-    active_user_with_permissions.email_address = original_email_address
+    active_user_with_permissions['email_address'] = original_email_address
 
     client_request.post(
         'main.edit_user_email',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _data={
             'email_address': 'new-email-address@gov.uk'
         },
@@ -1114,7 +1110,7 @@ def test_edit_user_email_can_change_any_email_address_to_a_gov_email_address(
         _expected_redirect=url_for(
             'main.confirm_edit_user_email',
             service_id=SERVICE_ONE_ID,
-            user_id=active_user_with_permissions.id,
+            user_id=active_user_with_permissions['id'],
             _external=True
         ),
     )
@@ -1127,12 +1123,12 @@ def test_edit_user_email_can_change_a_non_gov_email_address_to_another_non_gov_e
     mock_get_users_by_service,
     mock_update_user_attribute,
 ):
-    active_user_with_permissions.email_address = 'old@example.com'
+    active_user_with_permissions['email_address'] = 'old@example.com'
 
     client_request.post(
         'main.edit_user_email',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _data={
             'email_address': 'new@example.com'
         },
@@ -1140,7 +1136,7 @@ def test_edit_user_email_can_change_a_non_gov_email_address_to_another_non_gov_e
         _expected_redirect=url_for(
             'main.confirm_edit_user_email',
             service_id=SERVICE_ONE_ID,
-            user_id=active_user_with_permissions.id,
+            user_id=active_user_with_permissions['id'],
             _external=True
         ),
     )
@@ -1156,7 +1152,7 @@ def test_edit_user_email_cannot_change_a_gov_email_address_to_a_non_gov_email_ad
     page = client_request.post(
         'main.edit_user_email',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _data={
             'email_address': 'new_email@example.com'
         },
@@ -1178,14 +1174,14 @@ def test_confirm_edit_user_email_page(
     page = client_request.get(
         'main.confirm_edit_user_email',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
     )
 
     assert 'Confirm change of email address' in page.text
     for text in [
         'New email address:',
         new_email,
-        'We will send {} an email to tell them about the change.'.format(active_user_with_permissions.name)
+        'We will send {} an email to tell them about the change.'.format(active_user_with_permissions['name'])
     ]:
         assert text in page.text
     assert 'Confirm' in page.text
@@ -1199,7 +1195,7 @@ def test_confirm_edit_user_email_page_redirects_if_session_empty(
     page = client_request.get(
         'main.confirm_edit_user_email',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _follow_redirects=True,
     )
     assert 'Confirm change of email address' not in page.text
@@ -1227,7 +1223,7 @@ def test_confirm_edit_user_email_changes_user_email(
 ):
     # We want active_user_with_permissions (the current user) to update the email address for api_user_active
     # By default both users would have the same id, so we change the id of api_user_active
-    api_user_active.id = str(uuid.uuid4())
+    api_user_active['id'] = str(uuid.uuid4())
     mocker.patch('app.user_api_client.get_users_for_service',
                  return_value=[api_user_active, active_user_with_permissions])
     # get_user gets called twice - first to check if current user can see the page, then to see if the team member
@@ -1243,7 +1239,7 @@ def test_confirm_edit_user_email_changes_user_email(
     client_request.post(
         'main.confirm_edit_user_email',
         service_id=service_one['id'],
-        user_id=api_user_active.id,
+        user_id=api_user_active['id'],
         _expected_status=302,
         _expected_redirect=url_for(
             'main.manage_users',
@@ -1253,14 +1249,14 @@ def test_confirm_edit_user_email_changes_user_email(
     )
 
     mock_update_user_attribute.assert_called_once_with(
-        api_user_active.id,
+        api_user_active['id'],
         email_address=new_email,
-        updated_by=active_user_with_permissions.id
+        updated_by=active_user_with_permissions['id']
     )
     mock_event_handler.assert_called_once_with(
-        api_user_active.id,
-        active_user_with_permissions.id,
-        api_user_active.email_address,
+        api_user_active['id'],
+        active_user_with_permissions['id'],
+        api_user_active['email_address'],
         new_email)
 
 
@@ -1286,21 +1282,18 @@ def test_edit_user_permissions_page_displays_redacted_mobile_number_and_change_l
     service_one,
     mocker
 ):
-    user = active_user_with_permissions
-    mocker.patch('app.user_api_client.get_user', return_value=user)
-
     page = client_request.get(
         'main.edit_user_permissions',
         service_id=service_one['id'],
-        user_id=user.id
+        user_id=active_user_with_permissions['id'],
     )
 
-    assert user.name in page.find('h1').text
+    assert active_user_with_permissions['name'] in page.find('h1').text
     mobile_number_paragraph = page.select('p[id=user_mobile_number]')[0]
     assert '0770 •  •  •  • 762' in mobile_number_paragraph.text
     change_link = mobile_number_paragraph.findChild()
     assert change_link.attrs['href'] == '/services/{}/users/{}/edit-mobile-number'.format(
-        service_one['id'], user.id
+        service_one['id'], active_user_with_permissions['id']
     )
 
 
@@ -1314,7 +1307,7 @@ def test_edit_user_permissions_with_delete_query_shows_banner(
     page = client_request.get(
         'main.edit_user_permissions',
         service_id=service_one['id'],
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         delete=1
     )
 
@@ -1323,7 +1316,7 @@ def test_edit_user_permissions_with_delete_query_shows_banner(
     assert banner.form.attrs['action'] == url_for(
         'main.remove_user_from_service',
         service_id=service_one['id'],
-        user_id=active_user_with_permissions.id
+        user_id=active_user_with_permissions['id']
     )
 
 
@@ -1334,17 +1327,16 @@ def test_edit_user_mobile_number_page(
     service_one,
     mocker
 ):
-    user = active_user_with_permissions
-    mocker.patch('app.user_api_client.get_user', return_value=user)
-
     page = client_request.get(
         'main.edit_user_mobile_number',
         service_id=service_one['id'],
-        user_id=user.id
+        user_id=active_user_with_permissions['id'],
     )
 
     assert page.find('h1').text == "Change team member’s mobile number"
-    assert page.select('p[id=user_name]')[0].text == "This will change the mobile number for {}.".format(user.name)
+    assert page.select('p[id=user_name]')[0].text == (
+        "This will change the mobile number for {}."
+    ).format(active_user_with_permissions['name'])
     assert page.select('input[name=mobile_number]')[0].attrs["value"] == "0770••••762"
     assert page.select('button[type=submit]')[0].text == "Save"
 
@@ -1357,13 +1349,13 @@ def test_edit_user_mobile_number_redirects_to_confirmation(
     client_request.post(
         'main.edit_user_mobile_number',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _data={'mobile_number': '07554080636'},
         _expected_status=302,
         _expected_redirect=url_for(
             'main.confirm_edit_user_mobile_number',
             service_id=SERVICE_ONE_ID,
-            user_id=active_user_with_permissions.id,
+            user_id=active_user_with_permissions['id'],
             _external=True,
         ),
     )
@@ -1380,7 +1372,7 @@ def test_edit_user_mobile_number_redirects_to_manage_users_if_number_not_changed
     client_request.post(
         'main.edit_user_mobile_number',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _data={'mobile_number': '0770••••762'},
         _expected_status=302,
         _expected_redirect=url_for(
@@ -1405,14 +1397,14 @@ def test_confirm_edit_user_mobile_number_page(
     page = client_request.get(
         'main.confirm_edit_user_mobile_number',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
     )
 
     assert 'Confirm change of mobile number' in page.text
     for text in [
         'New mobile number:',
         new_number,
-        'We will send {} a text message to tell them about the change.'.format(active_user_with_permissions.name)
+        'We will send {} a text message to tell them about the change.'.format(active_user_with_permissions['name'])
     ]:
         assert text in page.text
     assert 'Confirm' in page.text
@@ -1429,7 +1421,7 @@ def test_confirm_edit_user_mobile_number_page_redirects_if_session_empty(
     page = client_request.get(
         'main.confirm_edit_user_mobile_number',
         service_id=SERVICE_ONE_ID,
-        user_id=active_user_with_permissions.id,
+        user_id=active_user_with_permissions['id'],
         _expected_status=302,
     )
     assert 'Confirm change of mobile number' not in page.text
@@ -1445,7 +1437,7 @@ def test_confirm_edit_user_mobile_number_changes_user_mobile_number(
 ):
     # We want active_user_with_permissions (the current user) to update the mobile number for api_user_active
     # By default both users would have the same id, so we change the id of api_user_active
-    api_user_active.id = str(uuid.uuid4())
+    api_user_active['id'] = str(uuid.uuid4())
 
     mocker.patch('app.user_api_client.get_users_for_service',
                  return_value=[api_user_active, active_user_with_permissions])
@@ -1462,7 +1454,7 @@ def test_confirm_edit_user_mobile_number_changes_user_mobile_number(
     client_request.post(
         'main.confirm_edit_user_mobile_number',
         service_id=SERVICE_ONE_ID,
-        user_id=api_user_active.id,
+        user_id=api_user_active['id'],
         _expected_status=302,
         _expected_redirect=url_for(
             'main.manage_users',
@@ -1471,14 +1463,14 @@ def test_confirm_edit_user_mobile_number_changes_user_mobile_number(
         ),
     )
     mock_update_user_attribute.assert_called_once_with(
-        api_user_active.id,
+        api_user_active['id'],
         mobile_number=new_number,
-        updated_by=active_user_with_permissions.id
+        updated_by=active_user_with_permissions['id']
     )
     mock_event_handler.assert_called_once_with(
-        api_user_active.id,
-        active_user_with_permissions.id,
-        api_user_active.mobile_number,
+        api_user_active['id'],
+        active_user_with_permissions['id'],
+        api_user_active['mobile_number'],
         new_number)
 
 

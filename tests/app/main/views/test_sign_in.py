@@ -26,7 +26,7 @@ def test_sign_in_explains_session_timeout(client):
 
 
 def test_sign_in_explains_other_browser(logged_in_client, api_user_active, mocker):
-    api_user_active.current_session_id = str(uuid.UUID(int=1))
+    api_user_active['current_session_id'] = str(uuid.UUID(int=1))
     mocker.patch('app.user_api_client.get_user', return_value=api_user_active)
 
     with logged_in_client.session_transaction() as session:
@@ -43,7 +43,7 @@ def test_doesnt_redirect_to_sign_in_if_no_session_info(
     api_user_active,
     mock_get_organisation_by_domain,
 ):
-    assert api_user_active.current_session_id is None
+    assert api_user_active['current_session_id'] is None
 
     with client_request.session_transaction() as session:
         session['current_session_id'] = None
@@ -64,7 +64,7 @@ def test_redirect_to_sign_in_if_logged_in_from_other_browser(
     db_sess_id,
     cookie_sess_id
 ):
-    api_user_active.current_session_id = db_sess_id
+    api_user_active['current_session_id'] = db_sess_id
     mocker.patch('app.user_api_client.get_user', return_value=api_user_active)
     with logged_in_client.session_transaction() as session:
         session['current_session_id'] = str(cookie_sess_id)
@@ -104,7 +104,7 @@ def test_process_sms_auth_sign_in_return_2fa_template(
             'password': password})
     assert response.status_code == 302
     assert response.location == url_for('.two_factor', _external=True)
-    mock_verify_password.assert_called_with(api_user_active.id, password)
+    mock_verify_password.assert_called_with(api_user_active['id'], password)
     mock_get_user_by_email.assert_called_with('valid@example.gov.uk')
 
 

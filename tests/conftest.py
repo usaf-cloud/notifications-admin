@@ -1453,11 +1453,11 @@ def mock_send_change_email_verification(mocker):
 @pytest.fixture(scope='function')
 def mock_register_user(mocker, api_user_pending):
     def _register(name, email_address, mobile_number, password, auth_type):
-        api_user_pending.name = name
-        api_user_pending.email_address = email_address
-        api_user_pending.mobile_number = mobile_number
-        api_user_pending.password = password
-        api_user_pending.auth_type = auth_type
+        api_user_pending['name'] = name
+        api_user_pending['email_address'] = email_address
+        api_user_pending['mobile_number'] = mobile_number
+        api_user_pending['password'] = password
+        api_user_pending['auth_type'] = auth_type
         return api_user_pending
 
     return mocker.patch('app.user_api_client.register_user', side_effect=_register)
@@ -2121,7 +2121,7 @@ def mock_has_permissions(mocker):
         return True
 
     return mocker.patch(
-        'app.notify_client.user_api_client.User.has_permissions',
+        'app.models.user.User.has_permissions',
         side_effect=_has_permission)
 
 

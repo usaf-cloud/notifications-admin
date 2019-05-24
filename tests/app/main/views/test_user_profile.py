@@ -96,7 +96,7 @@ def test_should_redirect_to_user_profile_when_user_confirms_email_link(
     mock_update_user_attribute,
 ):
 
-    token = generate_token(payload=json.dumps({'user_id': api_user_active.id, 'email': 'new_email@gov.uk'}),
+    token = generate_token(payload=json.dumps({'user_id': api_user_active['id'], 'email': 'new_email@gov.uk'}),
                            secret=app_.config['SECRET_KEY'], salt=app_.config['DANGEROUS_SALT'])
     response = logged_in_client.get(url_for_endpoint_with_token('main.user_profile_email_confirm',
                                                                 token=token))

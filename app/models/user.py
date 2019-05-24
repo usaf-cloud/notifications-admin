@@ -1,11 +1,13 @@
 from flask import abort, current_app, request, session
 from flask_login import AnonymousUserMixin, UserMixin, login_user
+from notifications_python_client.errors import HTTPError
 from werkzeug.utils import cached_property
 
 from app.models.organisation import Organisation
 from app.models.roles_and_permissions import (
     all_permissions, translate_permissions_from_db_to_admin_roles
 )
+from app.notify_client import InviteTokenError
 from app.notify_client.invite_api_client import invite_api_client
 from app.notify_client.org_invite_api_client import org_invite_api_client
 from app.notify_client.organisations_api_client import organisations_client
@@ -49,7 +51,13 @@ class User(UserMixin):
 
     @classmethod
     def from_email_address_or_none(cls, email_address):
-        return cls(user_api_client.get_user_by_email_or_none(email_address))
+        try:
+            response = user_api_client.get_user_by_email(email_address)
+            return cls(response) if response else None
+        except HTTPError as e:
+            if e.status_code == 404:
+                return None
+            raise e
 
     def _set_permissions(self, permissions_by_service):
         """
@@ -296,7 +304,7 @@ class InvitedUser(object):
         auth_type,
         folder_permissions,
     ):
-        return cls(invite_api_client.create_invite(
+        return cls(**invite_api_client.create_invite(
             invite_from_id,
             service_id,
             email_address,
@@ -305,12 +313,19 @@ class InvitedUser(object):
             folder_permissions,
         ))
 
+    @property
     def from_user(self):
-        return User.from_id(self.from_user)
+        return User.from_id(self._from_user)
 
     @classmethod
     def from_token(cls, token):
-        return cls(invite_api_client.check_token(token))
+        try:
+            return cls(**invite_api_client.check_token(token))
+        except HTTPError as exception:
+            if exception.status_code == 400 and 'invitation' in exception.message:
+                raise InviteTokenError(exception.message['invitation'])
+            else:
+                raise exception
 
     def has_permissions(self, *permissions):
         if self.status == 'cancelled':

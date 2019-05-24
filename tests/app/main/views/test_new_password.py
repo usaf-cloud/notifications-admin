@@ -16,7 +16,7 @@ def test_should_render_new_password_template(
     mock_send_verify_code,
     mock_get_user_by_email_request_password_reset,
 ):
-    data = json.dumps({'email': api_user_active.email_address, 'created_at': str(datetime.utcnow())})
+    data = json.dumps({'email': api_user_active['email_address'], 'created_at': str(datetime.utcnow())})
     token = generate_token(data, app_.config['SECRET_KEY'],
                            app_.config['DANGEROUS_SALT'])
 
@@ -98,7 +98,7 @@ def test_should_sign_in_when_password_reset_is_successful_for_email_auth(
     mock_update_user_password
 ):
     user = mock_get_user_by_email_request_password_reset.return_value
-    user.auth_type = 'email_auth'
+    user['auth_type'] = 'email_auth'
     data = json.dumps({'email': user.email_address, 'created_at': str(datetime.utcnow())})
     token = generate_token(data, app_.config['SECRET_KEY'], app_.config['DANGEROUS_SALT'])
 

@@ -112,7 +112,7 @@ def test_should_add_service_and_redirect_to_tour_when_no_services(
         organisation_type=persisted,
         message_limit=50,
         restricted=True,
-        user_id=api_user_active.id,
+        user_id=api_user_active['id'],
         email_from='testing.the.post',
     )
     mock_create_service_template.assert_called_once_with(
@@ -228,7 +228,7 @@ def test_should_add_service_and_redirect_to_dashboard_when_existing_service(
         organisation_type=organisation_type,
         message_limit=app_.config['DEFAULT_SERVICE_LIMIT'],
         restricted=True,
-        user_id=api_user_active.id,
+        user_id=api_user_active['id'],
         email_from='testing.the.post',
     )
     mock_create_or_update_free_sms_fragment_limit.assert_called_once_with(101, free_allowance)
@@ -271,7 +271,7 @@ def test_non_whitelist_user_cannot_access_create_service_page(
     mock_get_non_govuser,
     api_nongov_user_active,
 ):
-    assert not is_gov_user(api_nongov_user_active.email_address)
+    assert not is_gov_user(api_nongov_user_active['email_address'])
     client_request.get(
         'main.add_service',
         _expected_status=403,
@@ -283,7 +283,7 @@ def test_non_whitelist_user_cannot_create_service(
     mock_get_non_govuser,
     api_nongov_user_active,
 ):
-    assert not is_gov_user(api_nongov_user_active.email_address)
+    assert not is_gov_user(api_nongov_user_active['email_address'])
     client_request.post(
         'main.add_service',
         _data={'name': 'SERVICE TWO'},
