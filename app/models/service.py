@@ -17,7 +17,6 @@ from app.notify_client.service_api_client import service_api_client
 from app.notify_client.template_folder_api_client import (
     template_folder_api_client,
 )
-from app.notify_client.user_api_client import user_api_client
 from app.utils import get_default_sms_sender
 
 
@@ -119,13 +118,10 @@ class Service(JSONModel):
 
     @cached_property
     def has_team_members(self):
-        return (
-            user_api_client.get_count_of_users_with_permission(
-                self.id, 'manage_service'
-            ) + invite_api_client.get_count_of_invites_with_permission(
-                self.id, 'manage_service'
-            )
-        ) > 1
+        return len([
+            user for user in self.team_members
+            if user.has_permission_for_service(self.id, 'manage_service')
+        ]) > 1
 
     def cancel_invite(self, invited_user_id):
         if str(invited_user_id) not in {user.id for user in self.invited_users}:
@@ -575,6 +571,5 @@ class Service(JSONModel):
             (not self.has_templates, '_template_content'),
             (self.needs_to_change_sms_sender, '_sms_sender'),
         ):
-            print(tag)
             if test:
                 yield BASE + '_incomplete' + tag

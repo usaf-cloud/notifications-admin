@@ -3,7 +3,6 @@ from itertools import chain
 from notifications_python_client.errors import HTTPError
 
 from app.models.roles_and_permissions import (
-    roles,
     translate_permissions_from_admin_roles_to_db,
 )
 from app.notify_client import NotifyAdminAPIClient, cache
@@ -124,14 +123,6 @@ class UserApiClient(NotifyAdminAPIClient):
     def get_users_for_service(self, service_id):
         endpoint = '/service/{}/users'.format(service_id)
         return self.get(endpoint)['data']
-
-    def get_count_of_users_with_permission(self, service_id, permission):
-        if permission not in roles.keys():
-            raise TypeError('{} is not a valid permission'.format(permission))
-        return len([
-            user for user in self.get_users_for_service(service_id)
-            if user.has_permission_for_service(service_id, permission)
-        ])
 
     def get_users_for_organisation(self, org_id):
         endpoint = '/organisations/{}/users'.format(org_id)

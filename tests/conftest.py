@@ -2179,12 +2179,12 @@ def mock_s3_set_metadata(mocker, content=None):
 
 
 @pytest.fixture(scope='function')
-def sample_invite(mocker, service_one, status='pending'):
+def sample_invite(mocker, service_one, status='pending', permissions=None):
     id_ = USER_ONE_ID
     from_user = service_one['users'][0]
     email_address = 'invited_user@test.gov.uk'
     service_id = service_one['id']
-    permissions = 'view_activity,send_messages,manage_service,manage_api_keys'
+    permissions = permissions or 'view_activity,send_messages,manage_service,manage_api_keys'
     created_at = str(datetime.utcnow())
     auth_type = 'sms_auth'
     folder_permissions = []

@@ -5,7 +5,6 @@ from markupsafe import Markup
 from app import (
     org_invite_api_client,
     organisations_client,
-    service_api_client,
     user_api_client,
 )
 from app.main import main
