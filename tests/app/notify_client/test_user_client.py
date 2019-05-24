@@ -4,7 +4,6 @@ from unittest.mock import call
 import pytest
 
 from app import invite_api_client, service_api_client, user_api_client
-from app.models.user import User
 from tests import sample_uuid
 from tests.conftest import SERVICE_ONE_ID, api_user_pending
 
