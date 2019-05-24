@@ -529,7 +529,6 @@ def test_existing_user_accepts_and_sets_email_auth(
 
     service_one['permissions'].append('email_auth')
     sample_invite['auth_type'] = 'email_auth'
-    mocker.patch('app.main.views.invites.service_api_client.get_service', return_value={'data': service_one})
     mocker.patch('app.invite_api_client.check_token', return_value=sample_invite)
 
     client_request.get(
@@ -561,7 +560,6 @@ def test_existing_user_doesnt_get_auth_changed_by_service_without_permission(
     assert 'email_auth' not in service_one['permissions']
 
     sample_invite['auth_type'] = 'email_auth'
-    mocker.patch('app.main.views.invites.service_api_client.get_service', return_value={'data': service_one})
     mocker.patch('app.invite_api_client.check_token', return_value=sample_invite)
 
     client_request.get(
@@ -594,7 +592,6 @@ def test_existing_email_auth_user_without_phone_cannot_set_sms_auth(
     sample_invite['auth_type'] = 'sms_auth'
 
     mocker.patch('app.main.views.invites.user_api_client.get_user_by_email', return_value=api_user_active)
-    mocker.patch('app.main.views.invites.service_api_client.get_service', return_value={'data': service_one})
     mocker.patch('app.invite_api_client.check_token', return_value=sample_invite)
 
     client_request.get(
