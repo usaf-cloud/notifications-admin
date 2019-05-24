@@ -193,8 +193,8 @@ def test_should_redirect_after_mobile_number_confirm(
 ):
     user_before = create_user(fake_uuid)
     user_after = create_user(fake_uuid)
-    user_before.current_session_id = str(uuid.UUID(int=1))
-    user_after.current_session_id = str(uuid.UUID(int=2))
+    user_before['current_session_id'] = str(uuid.UUID(int=1))
+    user_after['current_session_id'] = str(uuid.UUID(int=2))
 
     # first time (login decorator) return normally, second time (after 2FA return with new session id)
     mocker.patch('app.user_api_client.get_user', side_effect=[user_before, user_after])
@@ -202,7 +202,7 @@ def test_should_redirect_after_mobile_number_confirm(
     with client_request.session_transaction() as session:
         session['new-mob-password-confirmed'] = True
         session['new-mob'] = phone_number_to_register_with
-        session['current_session_id'] = user_before.current_session_id
+        session['current_session_id'] = user_before['current_session_id']
 
     client_request.post(
         'main.user_profile_mobile_number_confirm',
@@ -216,7 +216,7 @@ def test_should_redirect_after_mobile_number_confirm(
 
     # make sure the current_session_id has changed to what the API returned
     with client_request.session_transaction() as session:
-        assert session['current_session_id'] == user_after.current_session_id
+        assert session['current_session_id'] == user_after['current_session_id']
 
 
 def test_should_show_password_page(

@@ -88,7 +88,7 @@ def multiple_reply_to_email_addresses(mocker):
         ]
 
     return mocker.patch(
-        'app.notify_client.service_api_client.service_api_client.get_reply_to_email_addresses',
+        'app.service_api_client.get_reply_to_email_addresses',
         side_effect=_get,
     )
 
@@ -314,7 +314,7 @@ def multiple_sms_senders(mocker):
             }
         ]
 
-    return mocker.patch('app.notify_client.service_api_client.service_api_client.get_sms_senders', side_effect=_get)
+    return mocker.patch('app.service_api_client.get_sms_senders', side_effect=_get)
 
 
 @pytest.fixture(scope='function')
@@ -348,7 +348,7 @@ def multiple_sms_senders_with_diff_default(mocker):
             }
         ]
 
-    return mocker.patch('app.notify_client.service_api_client.service_api_client.get_sms_senders', side_effect=_get)
+    return mocker.patch('app.service_api_client.get_sms_senders', side_effect=_get)
 
 
 @pytest.fixture(scope='function')
@@ -374,7 +374,7 @@ def multiple_sms_senders_no_inbound(mocker):
             }
         ]
 
-    return mocker.patch('app.notify_client.service_api_client.service_api_client.get_sms_senders', side_effect=_get)
+    return mocker.patch('app.service_api_client.get_sms_senders', side_effect=_get)
 
 
 @pytest.fixture(scope='function')
@@ -400,7 +400,7 @@ def single_sms_sender(mocker):
             }
         ]
 
-    return mocker.patch('app.notify_client.service_api_client.service_api_client.get_sms_senders', side_effect=_get)
+    return mocker.patch('app.service_api_client.get_sms_senders', side_effect=_get)
 
 
 @pytest.fixture(scope='function')
@@ -416,7 +416,7 @@ def get_default_sms_sender(mocker):
             'updated_at': None
         }
 
-    return mocker.patch('app.notify_client.service_api_client.service_api_client.get_sms_sender', side_effect=_get)
+    return mocker.patch('app.service_api_client.get_sms_sender', side_effect=_get)
 
 
 @pytest.fixture(scope='function')
@@ -1642,10 +1642,9 @@ def mock_update_user_attribute(mocker, api_user_active):
 
 
 @pytest.fixture
-def mock_activate_user(mocker):
-    def _activate(user):
-        user.state = 'active'
-        return user
+def mock_activate_user(mocker, api_user_active):
+    def _activate(user_id):
+        return {'data': api_user_active}
 
     return mocker.patch('app.user_api_client.activate_user', side_effect=_activate)
 

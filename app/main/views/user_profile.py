@@ -53,9 +53,7 @@ def user_profile_name():
 @user_is_gov_user
 def user_profile_email():
 
-    def _is_email_already_in_use(email):
-        return user_api_client.is_email_already_in_use(email)
-    form = ChangeEmailForm(_is_email_already_in_use,
+    form = ChangeEmailForm(User.already_registered,
                            email_address=current_user.email_address)
 
     if form.validate_on_submit():

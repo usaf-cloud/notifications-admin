@@ -1230,7 +1230,7 @@ def test_confirm_edit_user_email_changes_user_email(
                  return_value=[api_user_active, active_user_with_permissions])
     # get_user gets called twice - first to check if current user can see the page, then to see if the team member
     # whose email address we're changing belongs to the service
-    mocker.patch('app.models.service.user_api_client.get_user',
+    mocker.patch('app.user_api_client.get_user',
                  side_effect=[active_user_with_permissions, api_user_active])
     mock_event_handler = mocker.patch('app.main.views.manage_users.create_email_change_event')
 
@@ -1445,7 +1445,7 @@ def test_confirm_edit_user_mobile_number_changes_user_mobile_number(
                  return_value=[api_user_active, active_user_with_permissions])
     # get_user gets called twice - first to check if current user can see the page, then to see if the team member
     # whose mobile number we're changing belongs to the service
-    mocker.patch('app.models.service.user_api_client.get_user',
+    mocker.patch('app.user_api_client.get_user',
                  side_effect=[active_user_with_permissions, api_user_active])
     mock_event_handler = mocker.patch('app.main.views.manage_users.create_mobile_number_change_event')
 

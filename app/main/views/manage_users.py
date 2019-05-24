@@ -153,13 +153,10 @@ def edit_user_email(service_id, user_id):
     user = current_service.get_team_member(user_id)
     user_email = user.email_address
 
-    def _is_email_already_in_use(email):
-        return bool(User.from_email_address_or_none(email))
-
     if is_gov_user(user_email):
-        form = ChangeEmailForm(_is_email_already_in_use, email_address=user_email)
+        form = ChangeEmailForm(User.already_registered, email_address=user_email)
     else:
-        form = ChangeNonGovEmailForm(_is_email_already_in_use, email_address=user_email)
+        form = ChangeNonGovEmailForm(User.already_registered, email_address=user_email)
 
     if request.form.get('email_address', '').strip() == user_email:
         return redirect(url_for('.manage_users', service_id=current_service.id))

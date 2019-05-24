@@ -4,6 +4,8 @@ import pytest
 from bs4 import BeautifulSoup
 from flask import url_for
 
+from app.models.user import User
+
 
 def test_render_sign_in_template_for_new_user(
     client
@@ -43,7 +45,7 @@ def test_doesnt_redirect_to_sign_in_if_no_session_info(
     api_user_active,
     mock_get_organisation_by_domain,
 ):
-    assert api_user_active['current_session_id'] is None
+    assert 'current_session_id' not in api_user_active
 
     with client_request.session_transaction() as session:
         session['current_session_id'] = None
@@ -124,8 +126,8 @@ def test_process_email_auth_sign_in_return_2fa_template(
             'password': 'val1dPassw0rd!'})
     assert response.status_code == 302
     assert response.location == url_for('.two_factor_email_sent', _external=True)
-    mock_send_verify_code.assert_called_with(api_user_active_email_auth.id, 'email', None)
-    mock_verify_password.assert_called_with(api_user_active_email_auth.id, 'val1dPassw0rd!')
+    mock_send_verify_code.assert_called_with(api_user_active_email_auth['id'], 'email', None)
+    mock_verify_password.assert_called_with(api_user_active_email_auth['id'], 'val1dPassw0rd!')
 
 
 def test_should_return_locked_out_true_when_user_is_locked(
@@ -191,8 +193,10 @@ def test_email_address_is_treated_case_insensitively_when_signing_in_as_invited_
 ):
     sample_invite['email_address'] = 'TEST@user.gov.uk'
 
-    mocker.patch('app.user_api_client.get_user_by_email_or_none', return_value=api_user_active)
-    mocker.patch('app.main.views.sign_in._get_and_verify_user', return_value=api_user_active)
+    mocker.patch(
+        'app.models.user.User.from_email_address_and_password_or_none',
+        return_value=User(api_user_active),
+    )
 
     with client.session_transaction() as session:
         session['invited_user'] = sample_invite

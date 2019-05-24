@@ -728,7 +728,7 @@ def test_should_check_for_sending_things_right(
         }.get(template_type)
     active_user_with_permissions,
     mock_get_users = mocker.patch(
-        'app.notify_client.user_api_client.user_api_client.get_users_for_service',
+        'app.user_api_client.get_users_for_service',
         return_value=(
             [active_user_with_permissions(fake_uuid)] * count_of_users_with_manage_service +
             [active_user_no_settings_permission(fake_uuid)]

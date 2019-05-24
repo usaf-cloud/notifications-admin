@@ -56,6 +56,21 @@ class User(UserMixin):
             return cls(response)
         return None
 
+    @staticmethod
+    def already_registered(email_address):
+        return bool(User.from_email_address_or_none(email_address))
+
+    @classmethod
+    def from_email_address_and_password_or_none(cls, email_address, password):
+        user = cls.from_email_address_or_none(email_address)
+        if not user:
+            return None
+        if user.locked:
+            return None
+        if not user_api_client.verify_password(user.id, password):
+            return None
+        return user
+
     def _set_permissions(self, permissions_by_service):
         """
         Permissions is a dict {'service_id': ['permission a', 'permission b', 'permission c']}
@@ -96,7 +111,7 @@ class User(UserMixin):
 
     def activate(self):
         if self.state == 'pending':
-            user_data = user_api_client._activate_user(self.id)
+            user_data = user_api_client.activate_user(self.id)
             return self.__class__(user_data['data'])
         else:
             return self
@@ -193,7 +208,8 @@ class User(UserMixin):
         if not self.belongs_to_service(service_id):
             abort(403)
 
-    def is_locked(self):
+    @property
+    def locked(self):
         return self.failed_login_count >= self.max_failed_login_count
 
     @property
@@ -431,6 +447,10 @@ class InvitedOrgUser(object):
 
 class AnonymousUser(AnonymousUserMixin):
     # set the anonymous user so that if a new browser hits us we don't error http://stackoverflow.com/a/19275188
+
+    # THIS SHOULDN’T BE NEEDED
+    platform_admin = False
+
     def logged_in_elsewhere(self):
         return False
 

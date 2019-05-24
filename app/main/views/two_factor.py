@@ -31,7 +31,7 @@ def two_factor_email_sent():
 @main.route('/email-auth/<token>', methods=['GET'])
 def two_factor_email(token):
     if current_user.is_authenticated:
-        return redirect_when_logged_in(current_user.id)
+        return redirect_when_logged_in()
 
     # checks url is valid, and hasn't timed out
     try:
@@ -93,10 +93,10 @@ def log_in_user(user_id):
         session.pop("user_details", None)
         session.pop("file_uploads", None)
 
-    return redirect_when_logged_in(user_id)
+    return redirect_when_logged_in()
 
 
-def redirect_when_logged_in(user_id):
+def redirect_when_logged_in():
     next_url = request.args.get('next')
     if next_url and _is_safe_redirect_url(next_url):
         return redirect(next_url)

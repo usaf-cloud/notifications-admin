@@ -265,9 +265,9 @@ def template_version_json(service_id,
                           **kwargs):
     template = template_json(service_id, id_, **kwargs)
     template['created_by'] = created_by_json(
-        created_by.id,
-        created_by.name,
-        created_by.email_address
+        created_by['id'],
+        created_by['name'],
+        created_by['email_address'],
     )
     if created_at is None:
         created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')

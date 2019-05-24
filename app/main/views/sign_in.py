@@ -25,8 +25,10 @@ def sign_in():
 
     if form.validate_on_submit():
 
-        user = User.from_email_address_or_none(form.email_address.data)
-        user = _get_and_verify_user(user, form.password.data)
+        user = User.from_email_address_and_password_or_none(
+            form.email_address.data, form.password.data
+        )
+
         if user and user.state == 'pending':
             return redirect(url_for('main.resend_email_verification'))
 
@@ -84,14 +86,3 @@ def sign_in_again():
     return redirect(
         url_for('main.sign_in', next=request.path)
     )
-
-
-def _get_and_verify_user(user, password):
-    if not user:
-        return None
-    elif user.is_locked():
-        return None
-    elif not user_api_client.verify_password(user.id, password):
-        return None
-    else:
-        return user

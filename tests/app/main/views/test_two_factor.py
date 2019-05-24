@@ -147,7 +147,7 @@ def test_two_factor_should_set_password_when_new_password_exists_in_session(
     assert response.status_code == 302
     assert response.location == url_for('main.show_accounts_or_dashboard', _external=True)
 
-    mock_update_user_password.assert_called_once_with(api_user_active['id'], password='changedpassword')
+    mock_update_user_password.assert_called_once_with(api_user_active['id'], 'changedpassword')
 
 
 def test_two_factor_returns_error_when_user_is_locked(
@@ -159,8 +159,8 @@ def test_two_factor_returns_error_when_user_is_locked(
 ):
     with client.session_transaction() as session:
         session['user_details'] = {
-            'id': api_user_locked.id,
-            'email': api_user_locked.email_address,
+            'id': api_user_locked['id'],
+            'email': api_user_locked['email_address'],
         }
     response = client.post(url_for('main.two_factor'),
                            data={'sms_code': '12345'})
@@ -197,7 +197,6 @@ def test_two_factor_should_activate_pending_user(
     client.post(url_for('main.two_factor'), data={'sms_code': '12345'})
 
     assert mock_activate_user.called
-    assert api_user_pending.is_active
 
 
 def test_valid_two_factor_email_link_logs_in_user(

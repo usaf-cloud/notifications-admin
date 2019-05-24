@@ -35,7 +35,7 @@ def test_should_redirect_to_add_service_when_sms_code_is_correct(
     mock_create_event,
     fake_uuid,
 ):
-    api_user_active.current_session_id = str(uuid.UUID(int=1))
+    api_user_active['current_session_id'] = str(uuid.UUID(int=1))
     mocker.patch('app.user_api_client.get_user', return_value=api_user_active)
 
     with client.session_transaction() as session:
