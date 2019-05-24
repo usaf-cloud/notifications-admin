@@ -775,6 +775,7 @@ def test_invite_user_with_email_auth_service(
 def test_cancel_invited_user_cancels_user_invitations(
     client_request,
     mock_get_invites_for_service,
+    sample_invite,
     active_user_with_permissions,
     mocker,
 ):
@@ -782,7 +783,7 @@ def test_cancel_invited_user_cancels_user_invitations(
     client_request.get(
         'main.cancel_invited_user',
         service_id=SERVICE_ONE_ID,
-        invited_user_id=sample_uuid(),
+        invited_user_id=sample_invite['id'],
         _expected_status=302,
         _expected_redirect=url_for(
             'main.manage_users', service_id=SERVICE_ONE_ID, _external=True
@@ -790,7 +791,7 @@ def test_cancel_invited_user_cancels_user_invitations(
     )
     mock_cancel.assert_called_once_with(
         service_id=SERVICE_ONE_ID,
-        invited_user_id=sample_uuid(),
+        invited_user_id=sample_invite['id'],
     )
 
 
@@ -803,7 +804,7 @@ def test_cancel_invited_user_doesnt_work_if_user_not_invited_to_this_service(
     client_request.get(
         'main.cancel_invited_user',
         service_id=SERVICE_ONE_ID,
-        invited_user_id=USER_ONE_ID,
+        invited_user_id=sample_uuid(),
         _expected_status=404,
     )
     assert mock_cancel.called is False
@@ -1049,6 +1050,7 @@ def test_edit_user_email_redirects_to_confirmation(
     client_request,
     active_user_with_permissions,
     mock_get_users_by_service,
+    mock_get_user_by_email_not_found,
 ):
     client_request.post(
         'main.edit_user_email',
@@ -1067,7 +1069,7 @@ def test_edit_user_email_redirects_to_confirmation(
 def test_edit_user_email_without_changing_goes_back_to_team_members(
     client_request,
     active_user_with_permissions,
-    mock_get_user,
+    mock_get_user_by_email,
     mock_get_users_by_service,
     mock_update_user_attribute,
 ):
@@ -1092,7 +1094,7 @@ def test_edit_user_email_without_changing_goes_back_to_team_members(
 def test_edit_user_email_can_change_any_email_address_to_a_gov_email_address(
     client_request,
     active_user_with_permissions,
-    mock_get_user,
+    mock_get_user_by_email_not_found,
     mock_get_users_by_service,
     mock_update_user_attribute,
     original_email_address
@@ -1119,7 +1121,7 @@ def test_edit_user_email_can_change_any_email_address_to_a_gov_email_address(
 def test_edit_user_email_can_change_a_non_gov_email_address_to_another_non_gov_email_address(
     client_request,
     active_user_with_permissions,
-    mock_get_user,
+    mock_get_user_by_email_not_found,
     mock_get_users_by_service,
     mock_update_user_attribute,
 ):
@@ -1145,7 +1147,7 @@ def test_edit_user_email_can_change_a_non_gov_email_address_to_another_non_gov_e
 def test_edit_user_email_cannot_change_a_gov_email_address_to_a_non_gov_email_address(
     client_request,
     active_user_with_permissions,
-    mock_get_user,
+    mock_get_user_by_email_not_found,
     mock_get_users_by_service,
     mock_update_user_attribute,
 ):

@@ -57,11 +57,11 @@ def accept_invite(token):
             service = Service.from_id(invited_user.service)
             # if the service you're being added to can modify auth type, then check if this is relevant
             if service.has_permission('email_auth') and (
-                    # they have a phone number, we want them to start using it. if they dont have a mobile we just
-                    # ignore that option of the invite
-                    (existing_user.mobile_number and invited_user.auth_type == 'sms_auth') or
-                    # we want them to start sending emails. it's always valid, so lets always update
-                    invited_user.auth_type == 'email_auth'
+                # they have a phone number, we want them to start using it. if they dont have a mobile we just
+                # ignore that option of the invite
+                (existing_user.mobile_number and invited_user.auth_type == 'sms_auth') or
+                # we want them to start sending emails. it's always valid, so lets always update
+                invited_user.auth_type == 'email_auth'
             ):
                 existing_user.update(auth_type=invited_user.auth_type)
             invited_user.add_to_service()

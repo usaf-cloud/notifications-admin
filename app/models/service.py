@@ -128,7 +128,8 @@ class Service(JSONModel):
         ) > 1
 
     def cancel_invite(self, invited_user_id):
-
+        print(invited_user_id)
+        print({user.id for user in self.invited_users})
         if str(invited_user_id) not in {user.id for user in self.invited_users}:
             abort(404)
 
