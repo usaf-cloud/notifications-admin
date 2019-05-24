@@ -143,6 +143,7 @@ class UserApiClient(NotifyAdminAPIClient):
 
     @cache.delete('user-{user_id}')
     def add_user_to_organisation(self, org_id, user_id):
+        print(org_id, user_id)
         resp = self.post('/organisations/{}/users/{}'.format(org_id, user_id), data={})
         return resp['data']
 

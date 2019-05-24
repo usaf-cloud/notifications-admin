@@ -426,14 +426,14 @@ class InvitedOrgUser(object):
 
     @classmethod
     def create(cls, invite_from_id, org_id, email_address):
-        return cls(org_invite_api_client.create_invite(
+        return cls(**org_invite_api_client.create_invite(
             invite_from_id, org_id, email_address
         ))
 
     def serialize(self, permissions_as_string=False):
         data = {'id': self.id,
                 'organisation': self.organisation,
-                'invited_by': self.invited_by,
+                'invited_by': self._invited_by,
                 'email_address': self.email_address,
                 'status': self.status,
                 'created_at': str(self.created_at)
@@ -443,6 +443,16 @@ class InvitedOrgUser(object):
     @property
     def invited_by(self):
         return User.from_id(self._invited_by)
+
+    @classmethod
+    def from_token(cls, token):
+        try:
+            return cls(**org_invite_api_client.check_token(token))
+        except HTTPError as exception:
+            if exception.status_code == 400 and 'invitation' in exception.message:
+                raise InviteTokenError(exception.message['invitation'])
+            else:
+                raise exception
 
 
 class AnonymousUser(AnonymousUserMixin):

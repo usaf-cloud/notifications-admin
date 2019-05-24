@@ -30,3 +30,13 @@ def test_user(app_):
 
     with pytest.raises(TypeError):
         user.has_permissions('to_do_bad_things')
+
+
+def test_activate_user(app_, api_user_pending, mock_activate_user):
+    assert User(api_user_pending).activate() == User(api_user_pending)
+    mock_activate_user.assert_called_once_with(api_user_pending['id'])
+
+
+def test_activate_user_already_active(app_, api_user_active, mock_activate_user):
+    assert User(api_user_active).activate() == User(api_user_active)
+    assert mock_activate_user.called is False

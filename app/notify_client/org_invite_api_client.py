@@ -1,6 +1,4 @@
-from notifications_python_client.errors import HTTPError
 from app.notify_client import (
-    InviteTokenError,
     NotifyAdminAPIClient,
     _attach_current_user,
 )
@@ -29,14 +27,7 @@ class OrgInviteApiClient(NotifyAdminAPIClient):
         return resp['data']
 
     def check_token(self, token):
-        try:
-            resp = self.get(url='/invite/organisation/{}'.format(token))
-        except HTTPError as exception:
-            if exception.status_code == 400 and 'invitation' in exception.message:
-                raise InviteTokenError(exception.message['invitation'])
-            else:
-                raise exception
-
+        resp = self.get(url='/invite/organisation/{}'.format(token))
         return resp['data']
 
     def cancel_invited_user(self, org_id, invited_user_id):
