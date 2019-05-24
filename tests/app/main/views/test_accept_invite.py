@@ -37,7 +37,12 @@ def test_existing_user_accept_invite_calls_api_and_redirects_to_dashboard(
     mock_check_invite_token.assert_called_with('thisisnotarealtoken')
     mock_get_unknown_user_by_email.assert_called_with('invited_user@test.gov.uk')
     assert mock_accept_invite.call_count == 1
-    mock_add_user_to_service.assert_called_with(expected_service, USER_ONE_ID, expected_permissions, [])
+    mock_add_user_to_service.assert_called_with(
+        expected_service,
+        USER_ONE_ID,
+        expected_permissions,
+        [],
+    )
 
     assert response.status_code == 302
     assert response.location == url_for('main.service_dashboard', service_id=expected_service, _external=True)

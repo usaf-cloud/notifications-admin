@@ -61,6 +61,10 @@ class Service(JSONModel):
         if 'permissions' not in self._dict:
             self.permissions = {'email', 'sms', 'letter'}
 
+    @classmethod
+    def from_id(cls, service_id):
+        return cls(service_api_client.get_service(service_id)['data'])
+
     def update(self, **kwargs):
         return service_api_client.update_service(self.id, **kwargs)
 

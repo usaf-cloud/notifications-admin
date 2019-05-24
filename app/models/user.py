@@ -315,6 +315,17 @@ class InvitedUser(object):
             folder_permissions,
         ))
 
+    def accept_invite(self):
+        invite_api_client.accept_invite(self.service, self.id)
+
+    def add_to_service(self):
+        user_api_client.add_user_to_service(
+            self.service,
+            self.id,
+            self.permissions,
+            self.folder_permissions,
+        )
+
     @property
     def from_user(self):
         return User.from_id(self._from_user)

@@ -3,13 +3,13 @@ from flask_login import current_user
 from markupsafe import Markup
 
 from app import (
-    invite_api_client,
     org_invite_api_client,
     organisations_client,
     service_api_client,
     user_api_client,
 )
 from app.main import main
+from app.models.service import Service
 from app.models.user import InvitedOrgUser, InvitedUser, User, Users
 from app.notify_client import InviteTokenError
 
@@ -36,10 +36,10 @@ def accept_invite(token):
         abort(403)
 
     if invited_user.status == 'cancelled':
-        service = service_api_client.get_service(invited_user.service)['data']
+        service = Service.from_id(invited_user.service)
         return render_template('views/cancelled-invitation.html',
                                from_user=invited_user.from_user.name,
-                               service_name=service['name'])
+                               service_name=service.name)
 
     if invited_user.status == 'accepted':
         session.pop('invited_user', None)
@@ -48,16 +48,15 @@ def accept_invite(token):
     session['invited_user'] = invited_user.serialize()
 
     existing_user = User.from_email_address_or_none(invited_user.email_address)
-    service_users = Users.for_service(invited_user.service)
 
     if existing_user:
-        invite_api_client.accept_invite(invited_user.service, invited_user.id)
-        if existing_user in service_users:
+        invited_user.accept_invite()
+        if existing_user in Users.for_service(invited_user.service):
             return redirect(url_for('main.service_dashboard', service_id=invited_user.service))
         else:
-            service = service_api_client.get_service(invited_user.service)['data']
+            service = Service.from_id(invited_user.service)
             # if the service you're being added to can modify auth type, then check if this is relevant
-            if 'email_auth' in service['permissions'] and (
+            if service.has_permission('email_auth') and (
                     # they have a phone number, we want them to start using it. if they dont have a mobile we just
                     # ignore that option of the invite
                     (existing_user.mobile_number and invited_user.auth_type == 'sms_auth') or
@@ -65,11 +64,8 @@ def accept_invite(token):
                     invited_user.auth_type == 'email_auth'
             ):
                 existing_user.update(auth_type=invited_user.auth_type)
-            user_api_client.add_user_to_service(invited_user.service,
-                                                existing_user.id,
-                                                invited_user.permissions,
-                                                invited_user.folder_permissions)
-            return redirect(url_for('main.service_dashboard', service_id=invited_user.service))
+            invited_user.add_to_service()
+            return redirect(url_for('main.service_dashboard', service_id=service.id))
     else:
         return redirect(url_for('main.register_from_invite'))
 

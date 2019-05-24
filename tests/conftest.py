@@ -2180,7 +2180,7 @@ def mock_s3_set_metadata(mocker, content=None):
 
 @pytest.fixture(scope='function')
 def sample_invite(mocker, service_one, status='pending'):
-    id_ = str(sample_uuid())
+    id_ = USER_ONE_ID
     from_user = service_one['users'][0]
     email_address = 'invited_user@test.gov.uk'
     service_id = service_one['id']
