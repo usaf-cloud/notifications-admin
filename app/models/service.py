@@ -128,8 +128,6 @@ class Service(JSONModel):
         ) > 1
 
     def cancel_invite(self, invited_user_id):
-        print(invited_user_id)
-        print({user.id for user in self.invited_users})
         if str(invited_user_id) not in {user.id for user in self.invited_users}:
             abort(404)
 
@@ -577,5 +575,6 @@ class Service(JSONModel):
             (not self.has_templates, '_template_content'),
             (self.needs_to_change_sms_sender, '_sms_sender'),
         ):
+            print(tag)
             if test:
                 yield BASE + '_incomplete' + tag

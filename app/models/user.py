@@ -104,6 +104,9 @@ class User(UserMixin):
     def login(self):
         login_user(self)
 
+    def reset_failed_login_count(self):
+        user_api_client.reset_failed_login_count(self.id)
+
     @property
     def is_active(self):
         return self.state == 'active'

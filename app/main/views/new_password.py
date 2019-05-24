@@ -12,7 +12,6 @@ from flask import (
 from itsdangerous import SignatureExpired
 from notifications_utils.url_safe_token import check_token
 
-from app import user_api_client
 from app.main import main
 from app.main.forms import NewPasswordForm
 from app.main.views.two_factor import log_in_user
@@ -38,7 +37,7 @@ def new_password(token):
     form = NewPasswordForm()
 
     if form.validate_on_submit():
-        user_api_client.reset_failed_login_count(user.id)
+        user.reset_failed_login_count()
         session['user_details'] = {
             'id': user.id,
             'email': user.email_address,
